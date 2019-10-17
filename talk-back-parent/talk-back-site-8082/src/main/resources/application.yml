@@ -1,0 +1,12 @@
+
+spring:
+   jackson:
+      time-zone: GMT+8
+      date-format: yyyy-MM-dd HH:mm:ss
+   application:
+      name: talkback-site
+   profiles:
+      active: dev
+   mvc: 
+      favicon: 
+         enabled: true

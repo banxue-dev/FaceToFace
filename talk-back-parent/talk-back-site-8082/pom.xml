@@ -6,7 +6,7 @@
 		<artifactId>talk-back-parent</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<artifactId>talk-back-site-8081</artifactId>
+	<artifactId>talk-back-site-8082</artifactId>
 	
 	<dependencies>
 		<dependency>
