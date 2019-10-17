@@ -1,8 +1,7 @@
 package com.ftf.service;
 
-import java.util.List;
-
 import com.ftf.entity.TimeSite;
+import com.ftf.utils.R;
 
 /**
 作者：fengchase
@@ -19,7 +18,7 @@ public interface ISiteService {
 	 * 2019年10月17日
 	 * 作者：fengchase
 	 */
-	TimeSite getById(String id);
+	R getById(String id);
 
 	/**
 	 * 根据用户id，时间段查询，
@@ -30,7 +29,7 @@ public interface ISiteService {
 	 * 2019年10月17日
 	 * 作者：fengchase
 	 */
-	List<TimeSite> getByUserIdAndTimes(String userId, String startTime, String endTime);
+	R getByUserIdAndTimes(String userId, String startTime, String endTime);
 
 	/**
 	 * 添加一条数据
@@ -40,7 +39,7 @@ public interface ISiteService {
 	 * 2019年10月17日
 	 * 作者：fengchase
 	 */
-	Integer add(TimeSite p1);
+	R add(TimeSite p1);
 
 }
 

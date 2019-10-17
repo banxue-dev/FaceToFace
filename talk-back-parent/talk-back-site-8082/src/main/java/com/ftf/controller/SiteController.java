@@ -1,6 +1,5 @@
 package com.ftf.controller;
 
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,6 +10,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.ftf.dao.TimeSiteDao;
 import com.ftf.entity.TimeSite;
 import com.ftf.service.ISiteService;
+import com.ftf.utils.R;
 
 /**
  * 作者：fengchase 时间：2019年10月16日 文件：SiteController.java 项目：talkbacksite
@@ -20,34 +20,28 @@ import com.ftf.service.ISiteService;
 public class SiteController {
 
 	@Autowired
-	private TimeSiteDao timeSiteDao;
-	
-	@Autowired
 	private ISiteService siteService;
 
 	@PostMapping("/add")
 	@ResponseBody
-	public String add() {
+	public R add() {
 		TimeSite p1 = new TimeSite();
 		p1.setSiteJson("{'x':'1'}");
 		p1.setUserId("1");
-		siteService.add(p1);
-		return "成功";
+		R r=siteService.add(p1);
+		return r;
 	}
 	@PostMapping("/getById")
 	@ResponseBody
-	public String getById(String id) {
-		TimeSite n =siteService.getById(id);
-		return n.getSiteJson();
+	public R getById(String id) {
+		R r=siteService.getById(id);
+		return r;
 	}
 	@PostMapping("/getByUserIdAndTimes")
 	@ResponseBody
-	public String getByUserIdAndTimes(String userId,String startTime,String endTime) {
+	public R getByUserIdAndTimes(String userId,String startTime,String endTime) {
 		
-		List<TimeSite> lst=siteService.getByUserIdAndTimes( userId, startTime, endTime);
-		for(TimeSite ts:lst) {
-			System.out.println(ts.getSiteJson());
-		}
-		return "成功,8082";
+		R r=siteService.getByUserIdAndTimes( userId, startTime, endTime);
+		return r;
 	}
 }

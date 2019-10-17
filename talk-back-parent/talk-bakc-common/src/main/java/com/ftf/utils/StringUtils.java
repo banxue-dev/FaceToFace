@@ -38,13 +38,28 @@ public class StringUtils {
 	 * 2019年9月25日
 	 * 作者：fengchase
 	 */
-	public static boolean isNulls(Object ... objs) {
-		for(Object obj:objs) {
-			if(obj==null) {
+	public static boolean isNulls(String ... objs) {
+		for(String obj:objs) {
+			if(isNull(obj)) {
 				return true;
 			}
 		}
 		return false;
+	}
+	/**
+	 * 验证是否为空，只要这些有一个为空，就会返回true
+	 * @param objs
+	 * @return
+	 * 2019年9月25日
+	 * 作者：fengchase
+	 */
+	public static boolean isNotNulls(String ... objs) {
+		for(String obj:objs) {
+			if(isNull(obj)) {
+				return false;
+			}
+		}
+		return true;
 	}
 	public static String getNull(String value, String defalut_value) {
 		if (isNull(value)) {
