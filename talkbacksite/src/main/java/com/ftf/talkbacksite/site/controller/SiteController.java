@@ -31,13 +31,6 @@ public class SiteController {
 	@Autowired
 	private ISiteService siteService;
 
-	@PostMapping("/hello")
-	@ResponseBody
-	public String hello() {
-
-		return "hello word";
-	}
-
 	@PostMapping("/add")
 	@ResponseBody
 	public String add() {
@@ -50,31 +43,14 @@ public class SiteController {
 	@PostMapping("/getById")
 	@ResponseBody
 	public String getById(String id) {
-//		mongoTemplate.insert(p1, TimeUtils.getCurrentTime("yyyy-MM-dd"));
-		TimeSite n =mongoTemplate.findById(id, TimeSite.class,TimeUtils.getCurrentTime("yyyy-MM-dd"));
-//		timeSiteDao.insert(p1);
+		TimeSite n =siteService.getById(id);
 		return n.getSiteJson();
 	}
 	@PostMapping("/getByUserIdAndTimes")
 	@ResponseBody
 	public String getByUserIdAndTimes(String userId,String startTime,String endTime) {
-		TimeSite p1 = new TimeSite();
-		p1.setCreateTime(TimeUtils.getCurrentTime());
-		p1.setSiteJson("{'x':'1'}");
-		p1.setUserId("1");
-		p1.setSid(snowflakeIdWorker.nextId() + "");
-//		TimeSite n =mongoTemplate.findById(id, TimeSite.class,TimeUtils.getCurrentTime("yyyy-MM-dd"));
-		Query query=new Query();
-		Criteria criter=new Criteria();
-		criter.and("userId").is(userId);
-		if(StringUtils.isNotNull(startTime)) {
-			criter.and("createTime").gte(startTime);
-		}
-		if(StringUtils.isNotNull(endTime)) {
-			criter.and("createTime").lte(endTime);
-		}
-		query.addCriteria(criter);
-		List<TimeSite> lst=mongoTemplate.find(query, TimeSite.class,TimeUtils.getCurrentTime("yyyy-MM-dd"));
+		
+		List<TimeSite> lst=siteService.getByUserIdAndTimes( userId, startTime, endTime);
 		for(TimeSite ts:lst) {
 			System.out.println(ts.getSiteJson());
 		}
