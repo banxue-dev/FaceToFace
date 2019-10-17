@@ -12,6 +12,8 @@ import org.springframework.data.mongodb.core.convert.DefaultMongoTypeMapper;
 import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 import org.springframework.data.mongodb.core.mapping.MongoMappingContext;
 
+import com.ftf.utils.SnowflakeIdWorker;
+
 @Configuration
 public class MongoConfig {
 	@Bean
@@ -27,4 +29,8 @@ public class MongoConfig {
         mappingConverter.setTypeMapper(new DefaultMongoTypeMapper(null));
         return mappingConverter;
     }
+	@Bean
+	public SnowflakeIdWorker idWorker() {
+		return new SnowflakeIdWorker(0,0);
+	}
 }
