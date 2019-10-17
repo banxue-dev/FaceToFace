@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import com.ftf.entity.TimeSite;
 import com.ftf.service.ISiteService;
+import com.ftf.utils.FileLog;
 import com.ftf.utils.R;
 import com.ftf.utils.SnowflakeIdWorker;
 import com.ftf.utils.StringUtils;
@@ -146,6 +147,7 @@ public class SiteServiceImpl implements ISiteService {
 					}
 				}
 			}
+			FileLog.debugLog("test日志");
 			return R.okdata(lst);
 		} catch (Exception e) {
 			e.printStackTrace();
