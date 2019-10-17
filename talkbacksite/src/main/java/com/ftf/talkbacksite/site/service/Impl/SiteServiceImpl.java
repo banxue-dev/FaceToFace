@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.stereotype.Service;
 
 import com.ftf.talkbacksite.site.entity.TimeSite;
 import com.ftf.talkbacksite.site.service.ISiteService;
@@ -20,6 +21,7 @@ import com.ftf.talkbacksite.utils.TimeUtils;
 文件：SiteServiceImpl.java
 项目：talkbacksite
 */
+@Service
 public class SiteServiceImpl implements ISiteService {
 
 	@Autowired
