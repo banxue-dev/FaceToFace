@@ -3,12 +3,14 @@ package com.ftf.service.Impl;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
+import org.springframework.data.domain.Sort;
 import java.util.List;
 
 import org.bson.BSON;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -62,15 +64,24 @@ public class SiteServiceImpl implements ISiteService {
 			}
 			return R.ok();
 		} catch (Exception e) {
-			e.printStackTrace();
+			FileLog.errorLog(e,"添加出现异常");
 		}
 		return R.error();
 	}
 
 	@Override
-	public R getById(String id) {
-		TimeSite n = mongoTemplate.findById(id, TimeSite.class, TimeUtils.getCurrentTime("yyyy-MM-dd"));
-		return R.okdata(n);
+	public R getById(String id,String todays) {
+		try {
+
+			if (StringUtils.isNulls(id,todays)) {
+				return R.error("用户id和todays不能为空");
+			}
+			TimeSite n = mongoTemplate.findById(id, TimeSite.class, todays);
+			return R.okdata(n);
+		}catch(Exception e) {
+			FileLog.errorLog(e,"通过id获取数据出现异常");
+			return R.error("异常");
+		}
 	}
 
 	@Override
@@ -107,7 +118,7 @@ public class SiteServiceImpl implements ISiteService {
 					/*
 					 * 只能查询近3天的数据
 					 */
-					d=TimeUtils.getDayCompareDate(curentime,startTime , "yyyy-MM-dd");
+					d=TimeUtils.getDayCompareDate(startTime,startTime , "yyyy-MM-dd");
 					if(d>lastDay || d<0) {
 						/*
 						 * 超过了3天则不查询
@@ -138,6 +149,8 @@ public class SiteServiceImpl implements ISiteService {
 				}
 			}
 			query.addCriteria(criter);
+			Sort sort=new Sort(Sort.Direction.DESC, "createTime");
+			query.with(sort);
 			for(int i=0;i<d;i++) {
 				String collectionName=TimeUtils.getTimeDayAfterV2("yyyy-MM-dd", curentime, i);
 				if(mongoTemplate.collectionExists(collectionName)) {
@@ -150,7 +163,7 @@ public class SiteServiceImpl implements ISiteService {
 			FileLog.debugLog("test日志");
 			return R.okdata(lst);
 		} catch (Exception e) {
-			e.printStackTrace();
+			FileLog.errorLog(e,"通过userid和时间区间获取数据出现异常");
 			return R.error("服务器出现异常");
 		}
 	}

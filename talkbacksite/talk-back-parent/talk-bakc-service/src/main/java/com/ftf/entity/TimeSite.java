@@ -23,10 +23,20 @@ public class TimeSite {
 	 * 位置json
 	 */
 	private String siteJson;
+	/**
+	 * 上下线状态：0在线，1：下线
+	 */
+	private Integer upDownState;
 	
 	private String userId;
 	
 	
+	public Integer getUpDownState() {
+		return upDownState;
+	}
+	public void setUpDownState(Integer upDownState) {
+		this.upDownState = upDownState;
+	}
 	public String getSid() {
 		return sid;
 	}

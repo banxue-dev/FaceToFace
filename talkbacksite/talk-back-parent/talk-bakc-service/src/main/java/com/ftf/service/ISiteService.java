@@ -18,7 +18,7 @@ public interface ISiteService {
 	 * 2019年10月17日
 	 * 作者：fengchase
 	 */
-	R getById(String id);
+	R getById(String id,String todays);
 
 	/**
 	 * 根据用户id，时间段查询，

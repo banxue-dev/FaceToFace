@@ -24,17 +24,18 @@ public class SiteController {
 
 	@PostMapping("/add")
 	@ResponseBody
-	public R add() {
+	public R add(String siteJson,String userId,Integer upDownState) {
 		TimeSite p1 = new TimeSite();
-		p1.setSiteJson("{'x':'1'}");
-		p1.setUserId("1");
+		p1.setSiteJson(siteJson);
+		p1.setUserId(userId);
+		p1.setUpDownState(upDownState);
 		R r=siteService.add(p1);
 		return r;
 	}
 	@PostMapping("/getById")
 	@ResponseBody
-	public R getById(String id) {
-		R r=siteService.getById(id);
+	public R getById(String id,String collectionName) {
+		R r=siteService.getById(id,collectionName);
 		return r;
 	}
 	@PostMapping("/getByUserIdAndTimes")
