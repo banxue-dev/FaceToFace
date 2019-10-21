@@ -15,8 +15,8 @@ import java.util.Map;
 
 public class TimeUtils {
 
-    private static String NormalFormat = "yyyy-MM-dd HH:mm:ss";
-    private static String YMDFormat = "yyyy-MM-dd HH:mm:ss";
+    public static String NormalFormat = "yyyy-MM-dd HH:mm:ss";
+    public static String YMDFormat = "yyyy-MM-dd";
 
     /**
      * 由出生日期获得年龄

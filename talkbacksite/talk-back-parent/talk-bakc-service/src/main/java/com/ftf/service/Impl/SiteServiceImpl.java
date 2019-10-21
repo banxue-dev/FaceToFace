@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import com.ftf.entity.TimeSite;
 import com.ftf.service.ISiteService;
 import com.ftf.utils.FileLog;
+import com.ftf.utils.PageBean;
 import com.ftf.utils.R;
 import com.ftf.utils.SnowflakeIdWorker;
 import com.ftf.utils.StringUtils;
@@ -41,7 +42,7 @@ public class SiteServiceImpl implements ISiteService {
 
 	/*
 	 * 只能获取最近几天的数据
-	 * eg：3  表示只能获取今天、昨天、前天的数据
+	 * eg：2  表示只能获取今天、昨天、前天的数据
 	 */
 	private  int lastDay=2;
 	@Override
@@ -84,8 +85,11 @@ public class SiteServiceImpl implements ISiteService {
 		}
 	}
 
+	/**
+	 * pageNum 从1 开始
+	 */
 	@Override
-	public R getByUserIdAndTimes(String userId, String startTime, String endTime) {
+	public R getByUserIdAndTimes(String userId, String startTime, String endTime,String pageNum,String pageSize) {
 
 		List<TimeSite> lst = new LinkedList<TimeSite>();
 		if (StringUtils.isNull(userId)) {
@@ -114,16 +118,16 @@ public class SiteServiceImpl implements ISiteService {
 				/*
 				 * 都不为空
 				 */
-				if (TimeUtils.compareDate(endTime, startTime,"yyyy-MM-dd") == 1) {
+				if (TimeUtils.compareDate(endTime, startTime,TimeUtils.NormalFormat) == 1) {
 					/*
 					 * 只能查询近3天的数据
 					 */
-					d=TimeUtils.getDayCompareDate(startTime,startTime , "yyyy-MM-dd");
+					d=TimeUtils.getDayCompareDate(endTime,startTime , TimeUtils.YMDFormat);
 					if(d>lastDay || d<0) {
 						/*
 						 * 超过了3天则不查询
 						 */
-						return R.error("只能查询最近3天的数据");
+						return R.error("只能查询最近"+(lastDay+1)+"天的数据");
 					}else {
 						/*
 						 * 这里17号和15号之前的差值这里是2，因为要算上当天，而且下面的for循环是从0开始的，所以这里加个1
@@ -151,21 +155,71 @@ public class SiteServiceImpl implements ISiteService {
 			query.addCriteria(criter);
 			Sort sort=new Sort(Sort.Direction.DESC, "createTime");
 			query.with(sort);
+			Boolean isBreak=false;
+			/**
+			 * 先查总数，再设置分页条件
+			 */
+			Query notPage=query;
+			Long counts=this.getCountByQuery(notPage, d, curentime);
+			Long findCount=0L;
+			PageBean<TimeSite> page=new PageBean<TimeSite>(pageNum, pageSize,null);
+			page.setTotalItems(counts);
+			query.skip(page.getStart()).limit(page.getPageSize());
+			if(Integer.parseInt(pageNum)>page.getTotalPageCount()) {
+				FileLog.errorLog("需要查询的页数大于了总页数。");
+				return R.okdata(page);
+			}
 			for(int i=0;i<d;i++) {
 				String collectionName=TimeUtils.getTimeDayAfterV2("yyyy-MM-dd", curentime, i);
 				if(mongoTemplate.collectionExists(collectionName)) {
+					/**
+					 * 已经找了的条数
+					 */
+					findCount+=mongoTemplate.count(query, TimeSite.class, collectionName);
 					List<TimeSite> clst= mongoTemplate.find(query, TimeSite.class, collectionName);
 					if(clst!=null && clst.size()>0) {
 						lst.addAll(clst);
+						if(i<d-1 && lst.size()<page.getPageSize())  {
+							/*
+							 * 不是最后一个集合，查询的数据又不够，那么就把skip和limit重新赋值一下。
+							 * 这里把isbreak赋值为true表示如果下一个集合里面没有查到数据，就可以直接退出
+							 */
+							isBreak=true;
+							query.skip(0).limit(page.getPageSize()-lst.size());
+						}else {
+							break;
+						}
+					}else {
+						/*
+						 * 没数据了，如果是从分页里面没拿到数据后，再次获取没拿到数据，那么就不继续了 
+						 */
+						if(isBreak) {
+							break;
+						}else {
+							query.skip(page.getStart()-findCount).limit(page.getPageSize()-lst.size());
+						}
 					}
 				}
 			}
+			page.setDatas(lst);
 			FileLog.debugLog("test日志");
-			return R.okdata(lst);
+			return R.okdata(page);
 		} catch (Exception e) {
 			FileLog.errorLog(e,"通过userid和时间区间获取数据出现异常");
 			return R.error("服务器出现异常");
 		}
+	}
+	
+	
+	public Long getCountByQuery(Query query,int d,String curentime) {
+		Long re=0L;
+		for(int i=0;i<d;i++) {
+			String collectionName=TimeUtils.getTimeDayAfterV2("yyyy-MM-dd", curentime, i);
+			if(mongoTemplate.collectionExists(collectionName)) {
+				re+=mongoTemplate.count(query, TimeSite.class, collectionName);
+			}
+		}
+		return re;
 	}
 	public static void main(String[] args) {
 		int d=0;

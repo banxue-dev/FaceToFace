@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.ftf.dao.TimeSiteDao;
 import com.ftf.entity.TimeSite;
 import com.ftf.service.ISiteService;
 import com.ftf.utils.R;
@@ -19,30 +18,30 @@ import com.ftf.utils.R;
 @RequestMapping("/site")
 public class SiteController {
 
-	
 	@Autowired
 	private ISiteService siteService;
 
 	@PostMapping("/add")
 	@ResponseBody
-	public R add(String siteJson,String userId) {
+	public R add(String siteJson,String userId,Integer upDownState) {
 		TimeSite p1 = new TimeSite();
 		p1.setSiteJson(siteJson);
 		p1.setUserId(userId);
+		p1.setUpDownState(upDownState);
 		R r=siteService.add(p1);
 		return r;
 	}
 	@PostMapping("/getById")
 	@ResponseBody
-	public R getById(String id) {
-		R r=siteService.getById(id);
+	public R getById(String id,String collectionName) {
+		R r=siteService.getById(id,collectionName);
 		return r;
 	}
 	@PostMapping("/getByUserIdAndTimes")
 	@ResponseBody
-	public R getByUserIdAndTimes(String userId,String startTime,String endTime) {
+	public R getByUserIdAndTimes(String userId,String startTime,String endTime,String pageNum,String pageSize) {
 		
-		R r=siteService.getByUserIdAndTimes( userId, startTime, endTime);
+		R r=siteService.getByUserIdAndTimes( userId, startTime, endTime,pageNum,pageSize);
 		return r;
 	}
 }

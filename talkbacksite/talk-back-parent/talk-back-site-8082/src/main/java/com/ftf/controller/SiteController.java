@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.ftf.dao.TimeSiteDao;
 import com.ftf.entity.TimeSite;
 import com.ftf.service.ISiteService;
 import com.ftf.utils.R;
@@ -40,9 +39,9 @@ public class SiteController {
 	}
 	@PostMapping("/getByUserIdAndTimes")
 	@ResponseBody
-	public R getByUserIdAndTimes(String userId,String startTime,String endTime) {
+	public R getByUserIdAndTimes(String userId,String startTime,String endTime,String pageNum,String pageSize) {
 		
-		R r=siteService.getByUserIdAndTimes( userId, startTime, endTime);
+		R r=siteService.getByUserIdAndTimes( userId, startTime, endTime,pageNum,pageSize);
 		return r;
 	}
 }
