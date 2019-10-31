@@ -13,11 +13,11 @@
       <el-form-item label="邮箱" prop="email">
         <el-input v-model="form.email" />
       </el-form-item>
-      <el-form-item label="部门">
-        <treeselect v-model="deptId" :options="depts" style="width: 178px" placeholder="选择部门" @select="selectFun" />
+      <el-form-item label="组织">
+        <treeselect v-model="deptId" :options="depts" style="width: 178px" placeholder="选择组织" @select="selectFun" />
       </el-form-item>
       <el-form-item label="岗位">
-        <el-select v-model="jobId" style="width: 178px" placeholder="请先选择部门">
+        <el-select v-model="jobId" style="width: 178px" placeholder="请先选择组织">
           <el-option
             v-for="(item, index) in jobs"
             :key="item.name + index"
@@ -105,7 +105,7 @@ export default {
         if (valid) {
           if (this.deptId === null || this.deptId === undefined) {
             this.$message({
-              message: '部门不能为空',
+              message: '组织不能为空',
               type: 'warning'
             })
           } else if (this.jobId === null) {

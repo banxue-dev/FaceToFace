@@ -50,3 +50,12 @@ export function updateEmail(code, data) {
   })
 }
 
+// 获取用户集合
+export function getUsers(params) {
+  return request({
+    url: 'api/dept',
+    method: 'get',
+    params
+  })
+}
+

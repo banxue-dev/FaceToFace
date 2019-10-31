@@ -109,7 +109,7 @@ export default {
   data() {
     return {
       icon: 'el-icon-refresh', delAllLoading: false,
-      url: '', headers: { 'Authorization': 'Bearer ' + getToken() }, dialog: false,
+      url: '', headers: { 'Authorization': getToken() }, dialog: false,
       dialogImageUrl: '', dialogVisible: false, fileList: [], files: [],
       newWin: null, downloadLoading: false, delLoading: false
     }

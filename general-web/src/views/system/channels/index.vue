@@ -2,15 +2,10 @@
   <div class="app-container">
     <!--工具栏-->
     <div class="head-container">
-      <!-- 搜索 -->
-      <el-input v-model="query.value" clearable placeholder="输入岗位名称搜索" style="width: 200px;" class="filter-item" @keyup.enter.native="toQuery"/>
-      <el-select v-model="query.enabled" clearable placeholder="状态" class="filter-item" style="width: 90px" @change="toQuery">
-        <el-option v-for="item in enabledTypeOptions" :key="item.key" :label="item.display_name" :value="item.key"/>
-      </el-select>
-      <el-button class="filter-item" size="mini" type="success" icon="el-icon-search" @click="toQuery">搜索</el-button>
       <!-- 新增 -->
-      <div v-permission="['ADMIN','USERJOB_ALL','USERJOB_CREATE']" style="display: inline-block;margin: 0px 2px;">
+      <div style="display: inline-block;margin: 0px 2px;">
         <el-button
+          v-permission="['ADMIN','CHANNELSINFO_ALL','CHANNELSINFO_CREATE']"
           class="filter-item"
           size="mini"
           type="primary"
@@ -19,37 +14,33 @@
       </div>
     </div>
     <!--表单组件-->
-    <eForm ref="form" :is-add="isAdd" :dicts="dicts"/>
+    <eForm ref="form" :is-add="isAdd"/>
     <!--表格渲染-->
     <el-table v-loading="loading" :data="data" size="small" style="width: 100%;">
-      <el-table-column prop="name" label="名称"/>
-      <el-table-column label="所属组织">
-        <template slot-scope="scope">
-          <div>{{ scope.row.deptSuperiorName ? scope.row.deptSuperiorName + ' / ' : '' }}{{ scope.row.dept.name }}</div>
-        </template>
-      </el-table-column>
-      <el-table-column prop="sort" label="排序">
-        <template slot-scope="scope">
-          {{ scope.row.sort }}
-        </template>
-      </el-table-column>
-      <el-table-column label="状态" align="center">
-        <template slot-scope="scope">
-          <div v-for="item in dicts" :key="item.id">
-            <el-tag v-if="scope.row.enabled.toString() === item.value" :type="scope.row.enabled ? '' : 'info'">{{ item.label }}</el-tag>
-          </div>
-        </template>
-      </el-table-column>
-      <el-table-column prop="createTime" label="创建日期">
+      <el-table-column prop="id" label="id"/>
+      <el-table-column prop="attr" label="频道属性（0音频，1音视频）"/>
+      <el-table-column prop="channelsName" label="频道名"/>
+      <el-table-column prop="createTime" label="创建时间">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.createTime) }}</span>
         </template>
       </el-table-column>
-      <el-table-column v-if="checkPermission(['ADMIN','USERJOB_ALL','USERJOB_EDIT','USERJOB_DELETE'])" label="操作" width="130px" align="center" fixed="right">
+      <el-table-column prop="createUser" label="创建用户"/>
+      <el-table-column prop="maxPersonNumber" label="频道内最大人数"/>
+      <el-table-column prop="mode" label="频道模式（0申请发言，1自由发言，2静默）"/>
+      <el-table-column prop="recordSwitch" label="频道录音开关(0开，1关)"/>
+      <el-table-column prop="updateTime" label="修改时间">
         <template slot-scope="scope">
-          <el-button v-permission="['ADMIN','USERJOB_ALL','USERJOB_EDIT']" size="mini" type="primary" icon="el-icon-edit" @click="edit(scope.row)"/>
+          <span>{{ parseTime(scope.row.updateTime) }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="updateUser" label="修改用户"/>
+      <el-table-column prop="deptId" label="组织ID"/>
+      <el-table-column v-if="checkPermission(['ADMIN','CHANNELSINFO_ALL','CHANNELSINFO_EDIT','CHANNELSINFO_DELETE'])" label="操作" width="150px" align="center">
+        <template slot-scope="scope">
+          <el-button v-permission="['ADMIN','CHANNELSINFO_ALL','CHANNELSINFO_EDIT']" size="mini" type="primary" icon="el-icon-edit" @click="edit(scope.row)"/>
           <el-popover
-            v-permission="['ADMIN','USERJOB_ALL','USERJOB_DELETE']"
+            v-permission="['ADMIN','CHANNELSINFO_ALL','CHANNELSINFO_DELETE']"
             :ref="scope.row.id"
             placement="top"
             width="180">
@@ -77,42 +68,29 @@
 <script>
 import checkPermission from '@/utils/permission'
 import initData from '@/mixins/initData'
-import initDict from '@/mixins/initDict'
-import { del } from '@/api/job'
+import { del } from '@/api/channelsInfo'
 import { parseTime } from '@/utils/index'
 import eForm from './form'
 export default {
-  name: 'Job',
   components: { eForm },
-  mixins: [initData, initDict],
+  mixins: [initData],
   data() {
     return {
       delLoading: false,
-      enabledTypeOptions: [
-        { key: 'true', display_name: '正常' },
-        { key: 'false', display_name: '禁用' }
-      ]
     }
   },
   created() {
     this.$nextTick(() => {
       this.init()
-      // 加载数据字典
-      this.getDict('job_status')
     })
   },
   methods: {
     parseTime,
     checkPermission,
     beforeInit() {
-      this.url = 'api/job'
-      const sort = 'sort,asc'
+      this.url = 'api/channelsInfo'
+      const sort = 'id,desc'
       this.params = { page: this.page, size: this.size, sort: sort }
-      const query = this.query
-      const value = query.value
-      const enabled = query.enabled
-      if (value) { this.params['name'] = value }
-      if (enabled !== '' && enabled !== null) { this.params['enabled'] = enabled }
       return true
     },
     subDelete(id) {
@@ -135,22 +113,24 @@ export default {
     },
     add() {
       this.isAdd = true
-      this.$refs.form.getDepts()
       this.$refs.form.dialog = true
     },
     edit(data) {
       this.isAdd = false
       const _this = this.$refs.form
-      _this.getDepts()
       _this.form = {
         id: data.id,
-        name: data.name,
-        sort: data.sort,
-        enabled: data.enabled.toString(),
+        attr: data.attr,
+        channelsName: data.channelsName,
         createTime: data.createTime,
-        dept: { id: data.dept.id }
+        createUser: data.createUser,
+        maxPersonNumber: data.maxPersonNumber,
+        mode: data.mode,
+        recordSwitch: data.recordSwitch,
+        updateTime: data.updateTime,
+        updateUser: data.updateUser,
+        deptId: data.deptId
       }
-      _this.deptId = data.dept.id
       _this.dialog = true
     }
   }

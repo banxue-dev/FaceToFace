@@ -1,14 +1,25 @@
 <template>
-  <el-dialog :append-to-body="true" :close-on-click-modal="false" :before-close="cancel" :visible.sync="dialog" :title="isAdd ? '新增部门' : '编辑部门'" width="500px">
-    <el-form ref="form" :model="form" :rules="rules" size="small" label-width="80px">
+  <el-dialog :append-to-body="true" :close-on-click-modal="false" :before-close="cancel" :visible.sync="dialog" :title="isAdd ? '新增组织' : '编辑组织'" width="500px">
+    <el-form ref="form" :model="form" :rules="rules" size="small" label-width="100px">
       <el-form-item label="名称" prop="name">
-        <el-input v-model="form.name" style="width: 370px;"/>
+        <el-input v-model="form.name" style="width: 350px;"/>
       </el-form-item>
       <el-form-item v-if="form.pid !== 0" label="状态" prop="enabled">
         <el-radio v-for="item in dicts" :key="item.id" v-model="form.enabled" :label="item.value">{{ item.label }}</el-radio>
       </el-form-item>
-      <el-form-item v-if="form.pid !== 0" style="margin-bottom: 0px;" label="上级部门">
-        <treeselect v-model="form.pid" :options="depts" style="width: 370px;" placeholder="选择上级类目" />
+      <el-form-item v-if="form.pid !== 0" label="负责人">
+        <el-select v-model="query.enabled" clearable placeholder="选择组织负责人" class="filter-item" style="width: 90px" @change="toQuery">
+          <el-option v-for="item in enabledTypeOptions" :key="item.key" :label="item.display_name" :value="item.key"/>
+        </el-select>
+      </el-form-item>
+      <el-form-item v-if="form.pid !== 0" label="上级组织">
+        <treeselect v-model="form.pid" :options="depts" style="width: 350px;" placeholder="选择上级组织" />
+      </el-form-item>
+      <el-form-item label="账号上限" prop="maxPersonNumber">
+        <el-input-number v-model.number="form.maxPersonNumber" :min="0" controls-position="right" style="width: 350px;"/>
+      </el-form-item>
+      <el-form-item label="企业识别码" prop="enterpriseCode">
+        <el-input v-model="form.enterpriseCode" style="width: 350px;"/>
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
@@ -41,7 +52,9 @@ export default {
         id: '',
         name: '',
         pid: 1,
-        enabled: 'true'
+        enabled: 'true',
+        enterpriseCode: '',
+        maxPersonNumber: ''
       },
       rules: {
         name: [
@@ -64,7 +77,7 @@ export default {
             } else this.doEdit()
           } else {
             this.$message({
-              message: '上级部门不能为空',
+              message: '上级组织不能为空',
               type: 'warning'
             })
           }
@@ -114,12 +127,18 @@ export default {
     getDepts() {
       getDepts({ enabled: true }).then(res => {
         this.depts = res.content
+        console.log(JSON.stringify(res.content))
       })
+    },
+    getUsers() {
+
     }
   }
 }
 </script>
 
-<style scoped>
-
+<style rel="stylesheet/scss" lang="scss" scoped>
+  /deep/ .el-input-number .el-input__inner {
+    text-align: left;
+  }
 </style>

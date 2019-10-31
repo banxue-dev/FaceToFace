@@ -41,7 +41,7 @@ export default {
   data() {
     return {
       loading: false, dialog: false,
-      headers: { 'Authorization': 'Bearer ' + getToken() },
+      headers: { 'Authorization': getToken() },
       form: {
         id: '',
         name: ''

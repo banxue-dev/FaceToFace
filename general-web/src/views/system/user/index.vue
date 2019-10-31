@@ -3,10 +3,10 @@
     <!--form 组件-->
     <eForm ref="form" :is-add="isAdd" :dicts="dicts"/>
     <el-row :gutter="20">
-      <!--部门数据-->
+      <!--组织数据-->
       <el-col :xs="9" :sm="6" :md="4" :lg="4" :xl="4">
         <div class="head-container">
-          <el-input v-model="deptName" clearable placeholder="输入部门名称搜索" prefix-icon="el-icon-search" style="width: 100%;" class="filter-item" @input="getDeptDatas"/>
+          <el-input v-model="deptName" clearable placeholder="输入组织名称搜索" prefix-icon="el-icon-search" style="width: 100%;" class="filter-item" @input="getDeptDatas"/>
         </div>
         <el-tree :data="depts" :props="defaultProps" :expand-on-click-node="false" default-expand-all @node-click="handleNodeClick"/>
       </el-col>
@@ -46,7 +46,7 @@
           <el-table-column prop="username" label="用户名"/>
           <el-table-column prop="phone" label="电话"/>
           <el-table-column :show-overflow-tooltip="true" prop="email" label="邮箱"/>
-          <el-table-column label="部门 / 岗位">
+          <el-table-column label="组织 / 岗位">
             <template slot-scope="scope">
               <div>{{ scope.row.dept.name }} / {{ scope.row.job.name }}</div>
             </template>

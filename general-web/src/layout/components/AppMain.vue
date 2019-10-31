@@ -7,8 +7,9 @@
     </transition>
     <div v-if="$store.state.settings.showFooter" id="el-main-footer">
       <span v-html="$store.state.settings.footerTxt"/>
-      <span> ⋅ </span>
-      <a href="http://www.beian.miit.gov.cn" target="_blank">{{ $store.state.settings.caseNumber }}</a>
+      <!--<span v-html="$store.state.settings.footerTxt"/>-->
+      <!--<span> ⋅ </span>-->
+      <!--<a href="http://www.beian.miit.gov.cn" target="_blank">{{ $store.state.settings.caseNumber }}</a>-->
     </div>
   </section>
 </template>
