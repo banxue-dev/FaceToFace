@@ -1,14 +1,14 @@
 package com.general.modules.system.service.impl;
 
+import com.general.modules.system.domain.DictDetail;
+import com.general.modules.system.service.DictDetailService;
+import com.general.modules.system.service.mapper.DictDetailMapper;
 import com.general.utils.PageUtil;
 import com.general.utils.QueryHelp;
 import com.general.utils.ValidationUtil;
-import com.general.modules.system.domain.DictDetail;
 import com.general.modules.system.service.dto.DictDetailQueryCriteria;
 import com.general.modules.system.repository.DictDetailRepository;
-import com.general.modules.system.service.DictDetailService;
 import com.general.modules.system.service.dto.DictDetailDTO;
-import com.general.modules.system.service.mapper.DictDetailMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

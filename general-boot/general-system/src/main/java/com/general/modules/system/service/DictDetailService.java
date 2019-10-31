@@ -1,8 +1,8 @@
 package com.general.modules.system.service;
 
+import com.general.modules.system.domain.DictDetail;
 import com.general.modules.system.service.dto.DictDetailDTO;
 import com.general.modules.system.service.dto.DictDetailQueryCriteria;
-import com.general.modules.system.domain.DictDetail;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;

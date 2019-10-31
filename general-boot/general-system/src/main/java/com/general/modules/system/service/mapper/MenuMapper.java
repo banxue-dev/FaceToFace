@@ -1,8 +1,8 @@
 package com.general.modules.system.service.mapper;
 
 import com.general.mapper.EntityMapper;
-import com.general.modules.system.service.dto.MenuDTO;
 import com.general.modules.system.domain.Menu;
+import com.general.modules.system.service.dto.MenuDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 

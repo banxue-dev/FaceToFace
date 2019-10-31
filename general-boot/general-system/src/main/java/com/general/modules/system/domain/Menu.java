@@ -40,7 +40,7 @@ public class Menu implements Serializable {
 
     private String component;
 
-    @Column(unique = true,name = "component_name")
+    @Column(unique = true,name = "component_name",length = 100)
     private String componentName;
 
     private String icon;

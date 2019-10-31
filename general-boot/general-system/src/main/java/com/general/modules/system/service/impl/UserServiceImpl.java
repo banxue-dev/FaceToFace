@@ -2,17 +2,19 @@ package com.general.modules.system.service.impl;
 
 import com.general.exception.EntityExistException;
 import com.general.exception.EntityNotFoundException;
+import com.general.modules.system.domain.User;
+import com.general.modules.system.domain.UserAvatar;
+import com.general.modules.system.service.DeptService;
+import com.general.modules.system.service.UserService;
+import com.general.modules.system.service.dto.DeptDTO;
 import com.general.modules.system.service.dto.RoleSmallDTO;
 import com.general.modules.system.service.dto.UserDTO;
 import com.general.modules.system.service.dto.UserQueryCriteria;
 import com.general.modules.system.service.mapper.UserMapper;
 import com.general.utils.*;
 import com.general.modules.monitor.service.RedisService;
-import com.general.modules.system.domain.User;
-import com.general.modules.system.domain.UserAvatar;
 import com.general.modules.system.repository.UserAvatarRepository;
 import com.general.modules.system.repository.UserRepository;
-import com.general.modules.system.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -48,6 +50,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserAvatarRepository userAvatarRepository;
 
+    @Autowired
+    private DeptService deptService;
+
     @Value("${file.avatar}")
     private String avatar;
 
@@ -73,6 +78,13 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public UserDTO create(User resources) {
+
+        //验证组织人员是否已满
+        Long deptId = resources.getDept().getId();
+        //查询组织信息
+        DeptDTO dept = deptService.findById(deptId);
+        //查询组织下的人数
+
 
         if(userRepository.findByUsername(resources.getUsername())!=null){
             throw new EntityExistException(User.class,"username",resources.getUsername());

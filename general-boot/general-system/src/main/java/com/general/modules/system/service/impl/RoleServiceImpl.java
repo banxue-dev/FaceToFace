@@ -1,6 +1,8 @@
 package com.general.modules.system.service.impl;
 
 import com.general.exception.EntityExistException;
+import com.general.modules.system.domain.Role;
+import com.general.modules.system.service.RoleService;
 import com.general.modules.system.service.dto.RoleDTO;
 import com.general.modules.system.service.dto.RoleQueryCriteria;
 import com.general.modules.system.service.dto.RoleSmallDTO;
@@ -9,9 +11,7 @@ import com.general.modules.system.service.mapper.RoleSmallMapper;
 import com.general.utils.PageUtil;
 import com.general.utils.QueryHelp;
 import com.general.utils.ValidationUtil;
-import com.general.modules.system.domain.Role;
 import com.general.modules.system.repository.RoleRepository;
-import com.general.modules.system.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

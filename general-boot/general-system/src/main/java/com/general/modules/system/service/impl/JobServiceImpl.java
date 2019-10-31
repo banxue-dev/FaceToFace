@@ -1,15 +1,15 @@
 package com.general.modules.system.service.impl;
 
+import com.general.modules.system.domain.Job;
+import com.general.modules.system.service.JobService;
+import com.general.modules.system.service.mapper.JobMapper;
 import com.general.utils.PageUtil;
 import com.general.utils.QueryHelp;
 import com.general.utils.ValidationUtil;
-import com.general.modules.system.domain.Job;
 import com.general.modules.system.repository.DeptRepository;
 import com.general.modules.system.service.dto.JobQueryCriteria;
 import com.general.modules.system.repository.JobRepository;
-import com.general.modules.system.service.JobService;
 import com.general.modules.system.service.dto.JobDTO;
-import com.general.modules.system.service.mapper.JobMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

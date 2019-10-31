@@ -1,8 +1,8 @@
 package com.general.modules.system.service.mapper;
 
 import com.general.mapper.EntityMapper;
-import com.general.modules.system.service.dto.RoleDTO;
 import com.general.modules.system.domain.Role;
+import com.general.modules.system.service.dto.RoleDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 

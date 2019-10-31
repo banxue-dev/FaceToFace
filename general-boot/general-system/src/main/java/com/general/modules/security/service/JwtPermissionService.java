@@ -1,7 +1,7 @@
 package com.general.modules.security.service;
 
-import com.general.modules.system.service.dto.UserDTO;
 import com.general.modules.system.domain.Role;
+import com.general.modules.system.service.dto.UserDTO;
 import com.general.modules.system.repository.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;

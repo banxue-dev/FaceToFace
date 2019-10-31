@@ -1,8 +1,8 @@
 package com.general.modules.system.controller;
 
 import com.general.aop.log.Log;
-import com.general.modules.system.domain.Permission;
 import com.general.exception.BadRequestException;
+import com.general.modules.system.domain.Permission;
 import com.general.modules.system.service.PermissionService;
 import com.general.modules.system.service.dto.PermissionDTO;
 import com.general.modules.system.service.dto.PermissionQueryCriteria;

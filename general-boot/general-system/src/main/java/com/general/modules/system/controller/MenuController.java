@@ -1,8 +1,8 @@
 package com.general.modules.system.controller;
 
 import com.general.aop.log.Log;
-import com.general.modules.system.domain.Menu;
 import com.general.exception.BadRequestException;
+import com.general.modules.system.domain.Menu;
 import com.general.modules.system.service.MenuService;
 import com.general.modules.system.service.RoleService;
 import com.general.modules.system.service.UserService;

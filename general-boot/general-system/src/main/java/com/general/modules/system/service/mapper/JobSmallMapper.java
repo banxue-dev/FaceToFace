@@ -1,8 +1,8 @@
 package com.general.modules.system.service.mapper;
 
 import com.general.mapper.EntityMapper;
-import com.general.modules.system.service.dto.JobSmallDTO;
 import com.general.modules.system.domain.Job;
+import com.general.modules.system.service.dto.JobSmallDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 

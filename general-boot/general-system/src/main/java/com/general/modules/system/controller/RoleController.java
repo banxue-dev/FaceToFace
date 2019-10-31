@@ -2,8 +2,8 @@ package com.general.modules.system.controller;
 
 import cn.hutool.core.lang.Dict;
 import com.general.aop.log.Log;
-import com.general.modules.system.domain.Role;
 import com.general.exception.BadRequestException;
+import com.general.modules.system.domain.Role;
 import com.general.modules.system.service.RoleService;
 import com.general.modules.system.service.dto.RoleQueryCriteria;
 import com.general.modules.system.service.dto.RoleSmallDTO;

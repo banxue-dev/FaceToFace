@@ -39,7 +39,6 @@ public class SwaggerConfig {
         ticketPar.name(tokenHeader).description("token")
                 .modelRef(new ModelRef("string"))
                 .parameterType("header")
-                .defaultValue("Bearer ")
                 .required(true)
                 .build();
         pars.add(ticketPar.build());
@@ -54,7 +53,7 @@ public class SwaggerConfig {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("eladmin 接口文档")
+                .title("接口文档")
                 .version("2.1")
                 .build();
     }

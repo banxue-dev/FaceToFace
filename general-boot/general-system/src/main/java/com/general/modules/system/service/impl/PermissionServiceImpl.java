@@ -2,15 +2,15 @@ package com.general.modules.system.service.impl;
 
 import com.general.exception.BadRequestException;
 import com.general.exception.EntityExistException;
+import com.general.modules.system.domain.Permission;
+import com.general.modules.system.service.PermissionService;
+import com.general.modules.system.service.RoleService;
 import com.general.modules.system.service.dto.PermissionDTO;
 import com.general.modules.system.service.dto.PermissionQueryCriteria;
 import com.general.modules.system.service.mapper.PermissionMapper;
 import com.general.utils.QueryHelp;
 import com.general.utils.ValidationUtil;
-import com.general.modules.system.domain.Permission;
 import com.general.modules.system.repository.PermissionRepository;
-import com.general.modules.system.service.PermissionService;
-import com.general.modules.system.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;

@@ -38,6 +38,16 @@ public class DeptDTO implements Serializable {
 
     private Timestamp createTime;
 
+    /**
+     * 组织内最大人数
+     */
+    private Integer maxPersonNumber;
+
+    /**
+     * 企业识别码
+     */
+    private String enterpriseCode;
+
     public String getLabel() {
         return name;
     }

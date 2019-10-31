@@ -2,13 +2,13 @@ package com.general.modules.system.service.impl;
 
 import com.general.exception.BadRequestException;
 import com.general.modules.system.domain.Dept;
+import com.general.modules.system.service.DeptService;
+import com.general.modules.system.service.mapper.DeptMapper;
 import com.general.utils.QueryHelp;
 import com.general.utils.ValidationUtil;
 import com.general.modules.system.service.dto.DeptQueryCriteria;
 import com.general.modules.system.repository.DeptRepository;
-import com.general.modules.system.service.DeptService;
 import com.general.modules.system.service.dto.DeptDTO;
-import com.general.modules.system.service.mapper.DeptMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;

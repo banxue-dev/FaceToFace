@@ -1,9 +1,9 @@
 package com.general.modules.system.controller;
 
 import com.general.aop.log.Log;
-import com.general.modules.system.domain.Dept;
 import com.general.config.DataScope;
 import com.general.exception.BadRequestException;
+import com.general.modules.system.domain.Dept;
 import com.general.modules.system.service.DeptService;
 import com.general.modules.system.service.dto.DeptDTO;
 import com.general.modules.system.service.dto.DeptQueryCriteria;
@@ -47,7 +47,7 @@ public class DeptController {
     @PreAuthorize("hasAnyRole('ADMIN','DEPT_ALL','DEPT_CREATE')")
     public ResponseEntity create(@Validated @RequestBody Dept resources){
         if (resources.getId() != null) {
-            throw new BadRequestException("A new "+ ENTITY_NAME +" cannot already have an ID");
+            throw new BadRequestException("新的部门 "+ ENTITY_NAME +" 存在部门ID");
         }
         return new ResponseEntity(deptService.create(resources),HttpStatus.CREATED);
     }

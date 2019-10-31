@@ -1,11 +1,11 @@
 package com.general.modules.security.service;
 
 import com.general.exception.BadRequestException;
+import com.general.modules.system.service.UserService;
 import com.general.modules.system.service.dto.DeptSmallDTO;
 import com.general.modules.system.service.dto.JobSmallDTO;
 import com.general.modules.system.service.dto.UserDTO;
 import com.general.modules.security.security.JwtUser;
-import com.general.modules.system.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

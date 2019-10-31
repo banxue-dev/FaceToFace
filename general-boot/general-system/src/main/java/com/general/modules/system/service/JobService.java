@@ -1,8 +1,8 @@
 package com.general.modules.system.service;
 
+import com.general.modules.system.domain.Job;
 import com.general.modules.system.service.dto.JobDTO;
 import com.general.modules.system.service.dto.JobQueryCriteria;
-import com.general.modules.system.domain.Job;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
