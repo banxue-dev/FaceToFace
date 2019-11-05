@@ -3,7 +3,6 @@ package com.general.modules.security.service;
 import com.general.exception.BadRequestException;
 import com.general.modules.system.service.UserService;
 import com.general.modules.system.service.dto.DeptSmallDTO;
-import com.general.modules.system.service.dto.JobSmallDTO;
 import com.general.modules.system.service.dto.UserDTO;
 import com.general.modules.security.security.JwtUser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +47,6 @@ public class JwtUserDetailsService implements UserDetailsService {
                 user.getEmail(),
                 user.getPhone(),
                 Optional.ofNullable(user.getDept()).map(DeptSmallDTO::getName).orElse(null),
-                Optional.ofNullable(user.getJob()).map(JobSmallDTO::getName).orElse(null),
                 permissionService.mapToGrantedAuthorities(user),
                 user.getEnabled(),
                 user.getCreateTime(),

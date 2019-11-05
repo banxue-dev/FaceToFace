@@ -11,7 +11,7 @@ import org.mapstruct.ReportingPolicy;
  * @author L
  * @date 2018-11-23
  */
-@Mapper(componentModel = "spring",uses = {RoleMapper.class, DeptMapper.class, JobMapper.class},unmappedTargetPolicy = ReportingPolicy.IGNORE)
+@Mapper(componentModel = "spring",uses = {RoleMapper.class, DeptMapper.class},unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface UserMapper extends EntityMapper<UserDTO, User> {
 
     @Mapping(source = "user.userAvatar.realName",target = "avatar")

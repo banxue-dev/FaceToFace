@@ -3,6 +3,7 @@ package com.general.modules.system.service;
 import com.general.modules.system.domain.User;
 import com.general.modules.system.service.dto.UserDTO;
 import com.general.modules.system.service.dto.UserQueryCriteria;
+import io.swagger.models.auth.In;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -22,6 +23,7 @@ public interface UserService {
 
     /**
      * get
+     *
      * @param id
      * @return
      */
@@ -30,6 +32,7 @@ public interface UserService {
 
     /**
      * create
+     *
      * @param resources
      * @return
      */
@@ -38,6 +41,7 @@ public interface UserService {
 
     /**
      * update
+     *
      * @param resources
      */
     @CacheEvict(allEntries = true)
@@ -45,6 +49,7 @@ public interface UserService {
 
     /**
      * delete
+     *
      * @param id
      */
     @CacheEvict(allEntries = true)
@@ -52,6 +57,7 @@ public interface UserService {
 
     /**
      * findByName
+     *
      * @param userName
      * @return
      */
@@ -60,6 +66,7 @@ public interface UserService {
 
     /**
      * 修改密码
+     *
      * @param username
      * @param encryptPassword
      */
@@ -67,7 +74,24 @@ public interface UserService {
     void updatePass(String username, String encryptPassword);
 
     /**
+     * @Description: 修改定位开关
+     * @Author LuoJing
+     * @Date 2019/11/1 16:14
+     */
+    @CacheEvict(allEntries = true)
+    void updateLocationSwitch(Long id, Integer status);
+
+    /**
+     * @Description: 修改视频开关
+     * @Author LuoJing
+     * @Date 2019/11/1 16:14
+     */
+    @CacheEvict(allEntries = true)
+    void updateVideoSwitch(Long id, Integer status);
+
+    /**
      * 修改头像
+     *
      * @param file
      */
     @CacheEvict(allEntries = true)
@@ -75,6 +99,7 @@ public interface UserService {
 
     /**
      * 修改邮箱
+     *
      * @param username
      * @param email
      */

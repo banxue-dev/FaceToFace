@@ -19,7 +19,7 @@ import io.swagger.annotations.*;
 @Api(tags = "账号事件接口")
 @RestController
 @RequestMapping("pass")
-public class UserEventController {
+public class ApiUserEventController {
 
     @Autowired
     private UserEventService userEventService;

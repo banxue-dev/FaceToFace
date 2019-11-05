@@ -70,10 +70,6 @@ public class User implements Serializable {
     private Set<Role> roles;
 
     @OneToOne
-    @JoinColumn(name = "job_id", columnDefinition = "bigint(20) COMMENT '岗位ID'")
-    private Job job;
-
-    @OneToOne
     @JoinColumn(name = "dept_id", columnDefinition = "varchar(20) COMMENT '组织ID'")
     private Dept dept;
 

@@ -131,7 +131,6 @@ public class UserServiceImpl implements UserService {
         user.setEnabled(resources.getEnabled());
         user.setRoles(resources.getRoles());
         user.setDept(resources.getDept());
-        user.setJob(resources.getJob());
         user.setPhone(resources.getPhone());
         userRepository.save(user);
     }
@@ -161,6 +160,18 @@ public class UserServiceImpl implements UserService {
     @Transactional(rollbackFor = Exception.class)
     public void updatePass(String username, String pass) {
         userRepository.updatePass(username,pass,new Date());
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void updateLocationSwitch(Long id, Integer status) {
+        userRepository.updateLocationSwitch(id,status);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void updateVideoSwitch(Long id, Integer status) {
+        userRepository.updateVideoSwitch(id,status);
     }
 
     @Override
@@ -200,7 +211,6 @@ public class UserServiceImpl implements UserService {
             map.put("手机号码", userDTO.getPhone());
             map.put("角色", roles);
             map.put("部门", userDTO.getDept().getName());
-            map.put("岗位", userDTO.getJob().getName());
             map.put("最后修改密码的时间", userDTO.getLastPasswordResetTime());
             map.put("创建日期", userDTO.getCreateTime());
             list.add(map);

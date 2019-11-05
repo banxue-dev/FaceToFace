@@ -17,7 +17,7 @@ import io.swagger.annotations.*;
 * @author L
 * @date 2019-10-24
 */
-@Api(tags = "频道管理")
+@Api(tags = "频道管理接口")
 @RestController
 @RequestMapping("api")
 public class ChannelsInfoController {
