@@ -46,9 +46,9 @@
           <el-table-column prop="username" label="用户名"/>
           <el-table-column prop="phone" label="电话"/>
           <el-table-column :show-overflow-tooltip="true" prop="email" label="邮箱"/>
-          <el-table-column label="组织 / 岗位">
+          <el-table-column label="组织">
             <template slot-scope="scope">
-              <div>{{ scope.row.dept.name }} / {{ scope.row.job.name }}</div>
+              <div>{{ scope.row.dept.name }}</div>
             </template>
           </el-table-column>
           <el-table-column label="状态" align="center">
@@ -164,7 +164,6 @@ export default {
       }).catch(err => {
         this.delLoading = false
         this.$refs[id].doClose()
-        console.log(err.response.data.message)
       })
     },
     getDeptDatas() {
@@ -219,13 +218,11 @@ export default {
       _this.getDepts()
       _this.getRoleLevel()
       _this.roleIds = []
-      _this.form = { id: data.id, username: data.username, phone: data.phone, email: data.email, enabled: data.enabled.toString(), roles: [], dept: { id: data.dept.id }, job: { id: data.job.id }}
+      _this.form = { id: data.id, username: data.username, phone: data.phone, email: data.email, enabled: data.enabled.toString(), roles: [], dept: { id: data.dept.id }}
       data.roles.forEach(function(data, index) {
         _this.roleIds.push(data.id)
       })
       _this.deptId = data.dept.id
-      _this.jobId = data.job.id
-      _this.getJobs(_this.deptId)
       _this.dialog = true
     }
   }

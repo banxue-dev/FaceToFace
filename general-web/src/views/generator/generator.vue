@@ -149,11 +149,9 @@ export default {
               this.cancel()
             }).catch(err => {
               this.cancel()
-              console.log(err.response.data.message)
             })
           }).catch(err => {
             this.cancel()
-            console.log(err.response.data.message)
           })
         } else {
           return false

@@ -99,7 +99,6 @@ export default {
       }).catch(err => {
         this.delLoading = false
         this.$refs[index].doClose()
-        console.log(err.response.data.message)
       })
     },
     deleteAll() {

@@ -14,7 +14,7 @@
       </div>
     </div>
     <!--表单组件-->
-    <eForm ref="form" :is-add="isAdd"/>
+    <eForm ref="form" :is-add="isAdd" :dictMap="dictMap"/>
     <!--表格渲染-->
     <el-table v-loading="loading" :data="data" size="small" style="width: 100%;">
       <el-table-column prop="id" label="id"/>
@@ -68,20 +68,23 @@
 <script>
 import checkPermission from '@/utils/permission'
 import initData from '@/mixins/initData'
+import initDict from '@/mixins/initDict'
 import { del } from '@/api/channelsInfo'
 import { parseTime } from '@/utils/index'
 import eForm from './form'
 export default {
   components: { eForm },
-  mixins: [initData],
+  mixins: [initData, initDict],
   data() {
     return {
-      delLoading: false,
+      delLoading: false
     }
   },
   created() {
     this.$nextTick(() => {
       this.init()
+      // 加载数据字典
+      this.getDictMap('channels_record_switch,channels_attr,channels_mode')
     })
   },
   methods: {
@@ -108,12 +111,12 @@ export default {
       }).catch(err => {
         this.delLoading = false
         this.$refs[id].doClose()
-        console.log(err.response.data.message)
       })
     },
     add() {
       this.isAdd = true
       this.$refs.form.dialog = true
+      this.$refs.form.getDepts()
     },
     edit(data) {
       this.isAdd = false

@@ -163,7 +163,6 @@ export default {
           duration: 2500
         })
       }).catch(err => {
-        console.log(err.response.data.message)
       })
     },
     updateStatus(id, status) {
@@ -175,7 +174,6 @@ export default {
           duration: 2500
         })
       }).catch(err => {
-        console.log(err.response.data.message)
       })
     },
     subDelete(id) {
@@ -193,7 +191,6 @@ export default {
       }).catch(err => {
         this.delLoading = false
         this.$refs[id].doClose()
-        console.log(err.response.data.message)
       })
     },
     toQuery() {
@@ -231,7 +228,6 @@ export default {
         this.init()
       }).catch(err => {
         this.loading = false
-        console.log(err.response.data.message)
       })
     },
     doEdit() {
@@ -246,7 +242,6 @@ export default {
         this.init()
       }).catch(err => {
         this.loading = false
-        console.log(err.response.data.message)
       })
     },
     resetForm() {

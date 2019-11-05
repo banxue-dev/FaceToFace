@@ -136,7 +136,6 @@ export default {
       }).catch(err => {
         this.delLoading = false
         this.$refs[id].doClose()
-        console.log(err.response.data.message)
       })
     },
     add() {
@@ -160,7 +159,7 @@ export default {
         createTime: data.createTime,
         enabled: data.enabled.toString(),
         enterpriseCode: data.enterpriseCode,
-        maxPersonNumber: data.maxPersonNumber
+        maxPersonNumber: data.maxPersonNumber,
       }
       _this.dialog = true
     }

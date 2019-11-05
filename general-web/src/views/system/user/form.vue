@@ -14,19 +14,10 @@
         <el-input v-model="form.email" />
       </el-form-item>
       <el-form-item label="组织">
-        <treeselect v-model="deptId" :options="depts" style="width: 178px" placeholder="选择组织" @select="selectFun" />
-      </el-form-item>
-      <el-form-item label="岗位">
-        <el-select v-model="jobId" style="width: 178px" placeholder="请先选择组织">
-          <el-option
-            v-for="(item, index) in jobs"
-            :key="item.name + index"
-            :label="item.name"
-            :value="item.id"/>
-        </el-select>
+        <treeselect v-model="deptId" :options="depts" style="width: 184px" placeholder="选择组织" />
       </el-form-item>
       <el-form-item style="margin-bottom: 0px;" label="角色">
-        <el-select v-model="roleIds" style="width: 450px;" multiple placeholder="请选择">
+        <el-select v-model="roleIds" style="width: 184px;" multiple placeholder="请选择">
           <el-option
             v-for="(item, index) in roles"
             :disabled="level !== 1 && item.level <= level"
@@ -48,7 +39,6 @@
 import { add, edit } from '@/api/user'
 import { getDepts } from '@/api/dept'
 import { getAll, getLevel } from '@/api/role'
-import { getAllJob } from '@/api/job'
 import Treeselect from '@riophae/vue-treeselect'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 export default {
@@ -74,8 +64,8 @@ export default {
       }
     }
     return {
-      dialog: false, loading: false, form: { username: '', email: '', enabled: 'false', roles: [], job: { id: '' }, dept: { id: '' }, phone: null },
-      roleIds: [], roles: [], depts: [], deptId: null, jobId: null, jobs: [], level: 3,
+      dialog: false, loading: false, form: { username: '', email: '', enabled: 'false', roles: [], dept: { id: '' }, phone: null },
+      roleIds: [], roles: [], depts: [], deptId: null, level: 3,
       rules: {
         username: [
           { required: true, message: '请输入用户名', trigger: 'blur' },
@@ -100,17 +90,11 @@ export default {
     },
     doSubmit() {
       this.form.dept.id = this.deptId
-      this.form.job.id = this.jobId
       this.$refs['form'].validate((valid) => {
         if (valid) {
           if (this.deptId === null || this.deptId === undefined) {
             this.$message({
               message: '组织不能为空',
-              type: 'warning'
-            })
-          } else if (this.jobId === null) {
-            this.$message({
-              message: '岗位不能为空',
               type: 'warning'
             })
           } else if (this.roleIds.length === 0) {
@@ -148,7 +132,6 @@ export default {
         this.$parent.init()
       }).catch(err => {
         this.loading = false
-        console.log(err.response.data.message)
       })
     },
     doEdit() {
@@ -163,29 +146,19 @@ export default {
         this.$parent.init()
       }).catch(err => {
         this.loading = false
-        console.log(err.response.data.message)
       })
     },
     resetForm() {
       this.dialog = false
       this.$refs['form'].resetFields()
       this.deptId = null
-      this.jobId = null
       this.roleIds = []
-      this.form = { username: '', email: '', enabled: 'false', roles: [], job: { id: '' }, dept: { id: '' }, phone: null }
+      this.form = { username: '', email: '', enabled: 'false', roles: [], dept: { id: '' }, phone: null }
     },
     getRoles() {
       getAll().then(res => {
         this.roles = res
       }).catch(err => {
-        console.log(err.response.data.message)
-      })
-    },
-    getJobs(id) {
-      getAllJob(id).then(res => {
-        this.jobs = res.content
-      }).catch(err => {
-        console.log(err.response.data.message)
       })
     },
     getDepts() {
@@ -197,14 +170,10 @@ export default {
       const reg = /^1[3|4|5|7|8][0-9]\d{8}$/
       return reg.test(str)
     },
-    selectFun(node, instanceId) {
-      this.getJobs(node.id)
-    },
     getRoleLevel() {
       getLevel().then(res => {
         this.level = res.level
       }).catch(err => {
-        console.log(err.response.data.message)
       })
     }
   }

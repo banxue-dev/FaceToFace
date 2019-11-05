@@ -7,11 +7,6 @@
       <el-form-item v-if="form.pid !== 0" label="状态" prop="enabled">
         <el-radio v-for="item in dicts" :key="item.id" v-model="form.enabled" :label="item.value">{{ item.label }}</el-radio>
       </el-form-item>
-      <el-form-item v-if="form.pid !== 0" label="负责人">
-        <el-select v-model="query.enabled" clearable placeholder="选择组织负责人" class="filter-item" style="width: 90px" @change="toQuery">
-          <el-option v-for="item in enabledTypeOptions" :key="item.key" :label="item.display_name" :value="item.key"/>
-        </el-select>
-      </el-form-item>
       <el-form-item v-if="form.pid !== 0" label="上级组织">
         <treeselect v-model="form.pid" :options="depts" style="width: 350px;" placeholder="选择上级组织" />
       </el-form-item>
@@ -54,7 +49,8 @@ export default {
         pid: 1,
         enabled: 'true',
         enterpriseCode: '',
-        maxPersonNumber: ''
+        maxPersonNumber: '',
+        user: { id: null }
       },
       rules: {
         name: [
@@ -96,7 +92,6 @@ export default {
         this.$parent.init()
       }).catch(err => {
         this.loading = false
-        console.log(err.response.data.message)
       })
     },
     doEdit() {
@@ -111,7 +106,6 @@ export default {
         this.$parent.init()
       }).catch(err => {
         this.loading = false
-        console.log(err.response.data.message)
       })
     },
     resetForm() {
@@ -127,11 +121,7 @@ export default {
     getDepts() {
       getDepts({ enabled: true }).then(res => {
         this.depts = res.content
-        console.log(JSON.stringify(res.content))
       })
-    },
-    getUsers() {
-
     }
   }
 }

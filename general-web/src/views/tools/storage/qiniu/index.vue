@@ -160,7 +160,6 @@ export default {
       }).catch(err => {
         this.delLoading = false
         this.$refs[id].doClose()
-        console.log(err.response.data.message)
       })
     },
     download(id) {
@@ -172,7 +171,6 @@ export default {
         this.url = res.url
       }).catch(err => {
         this.downloadLoading = false
-        console.log(err.response.data.message)
       })
     },
     handleSuccess(response, file, fileList) {
@@ -225,7 +223,6 @@ export default {
       }).catch(err => {
         this.icon = 'el-icon-refresh'
         this.buttonName = '同步数据'
-        console.log(err.response.data.message)
       })
     },
     doDelete() {
@@ -246,7 +243,6 @@ export default {
         })
       }).catch(err => {
         this.delAllLoading = false
-        console.log(err.response.data.message)
       })
     },
     open() {

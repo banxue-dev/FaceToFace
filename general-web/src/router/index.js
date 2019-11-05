@@ -27,7 +27,6 @@ router.beforeEach((to, from, next) => {
           // 动态路由，拉取菜单
           loadMenus(next, to)
         }).catch((err) => {
-          console.log(err)
           store.dispatch('LogOut').then(() => {
             location.reload() // 为了重新实例化vue-router对象 避免bug
           })

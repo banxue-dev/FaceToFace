@@ -77,7 +77,6 @@ export default {
         this.$parent.init()
       }).catch(err => {
         this.loading = false
-        console.log(err.response.data.message)
       })
     },
     resetForm() {

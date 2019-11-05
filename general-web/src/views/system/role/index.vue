@@ -184,7 +184,6 @@ export default {
       }).catch(err => {
         this.delLoading = false
         this.$refs[id].doClose()
-        console.log(err.response.data.message)
       })
     },
     getPermissions() {
@@ -246,7 +245,6 @@ export default {
         this.update()
       }).catch(err => {
         this.permissionLoading = false
-        console.log(err.response.data.message)
       })
     },
     saveMenu() {
@@ -272,7 +270,6 @@ export default {
         this.update()
       }).catch(err => {
         this.menuLoading = false
-        console.log(err.response.data.message)
       })
     },
     update() {

@@ -82,7 +82,6 @@ export default {
             this.dialog = false
           }).catch(err => {
             this.loading = false
-            console.log(err.response.data.message)
           })
         } else {
           return false

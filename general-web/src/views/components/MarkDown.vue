@@ -49,7 +49,6 @@ export default {
 
         this.images[this.data.data[0]] = this.data
       }).catch((error) => {
-        console.log('image upload error', error)
         this.$refs.md.$refs.toolbar_left.$imgDel(pos)
       })
     },
@@ -58,7 +57,6 @@ export default {
       if (image) {
         del(image.id).then(res => {
         }).catch(err => {
-          console.log(err.response.data.message)
         })
       }
     }
