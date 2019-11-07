@@ -32,7 +32,7 @@ public class DeptController {
 
     private static final String ENTITY_NAME = "dept";
 
-    @Log("查询部门")
+    @Log("查询组织")
     @GetMapping(value = "/dept")
     @PreAuthorize("hasAnyRole('ADMIN','USER_ALL','USER_SELECT','DEPT_ALL','DEPT_SELECT')")
     public ResponseEntity getDepts(DeptQueryCriteria criteria){
@@ -42,17 +42,17 @@ public class DeptController {
         return new ResponseEntity(deptService.buildTree(deptDTOS),HttpStatus.OK);
     }
 
-    @Log("新增部门")
+    @Log("新增组织")
     @PostMapping(value = "/dept")
     @PreAuthorize("hasAnyRole('ADMIN','DEPT_ALL','DEPT_CREATE')")
     public ResponseEntity create(@Validated @RequestBody Dept resources){
         if (resources.getId() != null) {
-            throw new BadRequestException("新的部门 "+ ENTITY_NAME +" 存在部门ID");
+            throw new BadRequestException("新的组织 "+ ENTITY_NAME +" 存在组织ID");
         }
         return new ResponseEntity(deptService.create(resources),HttpStatus.CREATED);
     }
 
-    @Log("修改部门")
+    @Log("修改组织")
     @PutMapping(value = "/dept")
     @PreAuthorize("hasAnyRole('ADMIN','DEPT_ALL','DEPT_EDIT')")
     public ResponseEntity update(@Validated(Dept.Update.class) @RequestBody Dept resources){
@@ -60,14 +60,14 @@ public class DeptController {
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
-    @Log("删除部门")
+    @Log("删除组织")
     @DeleteMapping(value = "/dept/{id}")
     @PreAuthorize("hasAnyRole('ADMIN','DEPT_ALL','DEPT_DELETE')")
     public ResponseEntity delete(@PathVariable Long id){
         try {
             deptService.delete(id);
         }catch (Throwable e){
-            ThrowableUtil.throwForeignKeyException(e, "该部门存在岗位或者角色关联，请取消关联后再试");
+            ThrowableUtil.throwForeignKeyException(e, "该组织存在岗位或者角色关联，请取消关联后再试");
         }
         return new ResponseEntity(HttpStatus.OK);
     }

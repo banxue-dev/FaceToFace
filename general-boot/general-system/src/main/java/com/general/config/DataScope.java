@@ -37,7 +37,7 @@ public class DataScope {
 
         UserDTO user = userService.findByName(SecurityUtils.getUsername());
 
-        // 用于存储部门id
+        // 用于存储组织id
         Set<Long> deptIds = new HashSet<>();
 
         // 查询用户角色

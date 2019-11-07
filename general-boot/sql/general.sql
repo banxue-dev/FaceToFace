@@ -48,7 +48,7 @@ DROP TABLE IF EXISTS `dept`;
 CREATE TABLE `dept`  (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '名称',
-  `pid` bigint(20) NOT NULL COMMENT '上级部门',
+  `pid` bigint(20) NOT NULL COMMENT '上级组织',
   `create_time` datetime NULL DEFAULT NULL,
   `enabled` bit(1) NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
@@ -83,7 +83,7 @@ CREATE TABLE `dict`  (
 -- Records of dict
 -- ----------------------------
 INSERT INTO `dict` VALUES (1, 'user_status', '用户状态');
-INSERT INTO `dict` VALUES (4, 'dept_status', '部门状态');
+INSERT INTO `dict` VALUES (4, 'dept_status', '组织状态');
 INSERT INTO `dict` VALUES (5, 'job_status', '岗位状态');
 
 -- ----------------------------
@@ -260,7 +260,7 @@ INSERT INTO `menu` VALUES (30, '2019-01-11 15:45:55', b'0', '代码生成', 'gen
 INSERT INTO `menu` VALUES (32, '2019-01-13 13:49:03', b'0', '异常日志', 'monitor/log/errorLog', 6, 12, 'error', 'errorLog', b'0', b'0', 'ErrorLog');
 INSERT INTO `menu` VALUES (33, '2019-03-08 13:46:44', b'0', 'Markdown', 'components/MarkDown', 10, 53, 'markdown', 'markdown', b'0', b'0', 'Markdown');
 INSERT INTO `menu` VALUES (34, '2019-03-08 15:49:40', b'0', 'Yaml编辑器', 'components/YamlEdit', 10, 54, 'dev', 'yaml', b'0', b'0', 'YamlEdit');
-INSERT INTO `menu` VALUES (35, '2019-03-25 09:46:00', b'0', '部门管理', 'system/dept/index', 1, 6, 'dept', 'dept', b'0', b'0', 'Dept');
+INSERT INTO `menu` VALUES (35, '2019-03-25 09:46:00', b'0', '组织管理', 'system/dept/index', 1, 6, 'dept', 'dept', b'0', b'0', 'Dept');
 INSERT INTO `menu` VALUES (36, '2019-03-29 10:57:35', b'0', '系统工具', '', 0, 20, 'sys-tools', 'sys-tools', b'0', b'0', NULL);
 INSERT INTO `menu` VALUES (37, '2019-03-29 13:51:18', b'0', '岗位管理', 'system/job/index', 1, 7, 'Steve-Jobs', 'job', b'0', b'0', 'Job');
 INSERT INTO `menu` VALUES (38, '2019-03-29 19:57:53', b'0', '接口文档', 'tools/swagger/index', 36, 26, 'swagger', 'swagger2', b'0', b'0', 'Swagger');
@@ -315,11 +315,11 @@ INSERT INTO `permission` VALUES (36, '任务查询', '2019-01-08 15:00:09', 'JOB
 INSERT INTO `permission` VALUES (37, '任务创建', '2019-01-08 15:00:20', 'JOB_CREATE', 35);
 INSERT INTO `permission` VALUES (38, '任务编辑', '2019-01-08 15:00:33', 'JOB_EDIT', 35);
 INSERT INTO `permission` VALUES (39, '任务删除', '2019-01-08 15:01:13', 'JOB_DELETE', 35);
-INSERT INTO `permission` VALUES (40, '部门管理', '2019-03-29 17:06:55', 'DEPT_ALL', 0);
-INSERT INTO `permission` VALUES (41, '部门查询', '2019-03-29 17:07:09', 'DEPT_SELECT', 40);
-INSERT INTO `permission` VALUES (42, '部门创建', '2019-03-29 17:07:29', 'DEPT_CREATE', 40);
-INSERT INTO `permission` VALUES (43, '部门编辑', '2019-03-29 17:07:52', 'DEPT_EDIT', 40);
-INSERT INTO `permission` VALUES (44, '部门删除', '2019-03-29 17:08:14', 'DEPT_DELETE', 40);
+INSERT INTO `permission` VALUES (40, '组织管理', '2019-03-29 17:06:55', 'DEPT_ALL', 0);
+INSERT INTO `permission` VALUES (41, '组织查询', '2019-03-29 17:07:09', 'DEPT_SELECT', 40);
+INSERT INTO `permission` VALUES (42, '组织创建', '2019-03-29 17:07:29', 'DEPT_CREATE', 40);
+INSERT INTO `permission` VALUES (43, '组织编辑', '2019-03-29 17:07:52', 'DEPT_EDIT', 40);
+INSERT INTO `permission` VALUES (44, '组织删除', '2019-03-29 17:08:14', 'DEPT_DELETE', 40);
 INSERT INTO `permission` VALUES (45, '岗位管理', '2019-03-29 17:08:52', 'USERJOB_ALL', 0);
 INSERT INTO `permission` VALUES (46, '岗位查询', '2019-03-29 17:10:27', 'USERJOB_SELECT', 45);
 INSERT INTO `permission` VALUES (47, '岗位创建', '2019-03-29 17:10:55', 'USERJOB_CREATE', 45);

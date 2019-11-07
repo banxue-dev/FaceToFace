@@ -29,7 +29,7 @@ public class DeptDTO implements Serializable {
     private Boolean enabled;
 
     /**
-     * 上级部门
+     * 上级组织
      */
     private Long pid;
 

@@ -84,8 +84,6 @@ public class UserServiceImpl implements UserService {
         //查询组织信息
         DeptDTO dept = deptService.findById(deptId);
         //查询组织下的人数
-
-
         if(userRepository.findByUsername(resources.getUsername())!=null){
             throw new EntityExistException(User.class,"username",resources.getUsername());
         }
@@ -95,7 +93,11 @@ public class UserServiceImpl implements UserService {
         }
 
         // 默认密码 123456，此密码是加密后的字符
-        resources.setPassword("e10adc3949ba59abbe56e057f20f883e");
+        if(StringUtils.isNotEmpty(resources.getPassword())){
+            resources.setPassword(EncryptUtils.encryptPassword(resources.getPassword()));
+        }else {
+            resources.setPassword(EncryptUtils.encryptPassword("123456"));
+        }
         return userMapper.toDto(userRepository.save(resources));
     }
 
@@ -210,7 +212,7 @@ public class UserServiceImpl implements UserService {
             map.put("状态", userDTO.getEnabled() ? "启用" : "禁用");
             map.put("手机号码", userDTO.getPhone());
             map.put("角色", roles);
-            map.put("部门", userDTO.getDept().getName());
+            map.put("组织", userDTO.getDept().getName());
             map.put("最后修改密码的时间", userDTO.getLastPasswordResetTime());
             map.put("创建日期", userDTO.getCreateTime());
             list.add(map);

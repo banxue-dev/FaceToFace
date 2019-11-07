@@ -43,7 +43,7 @@ public class Dept implements Serializable {
     private Boolean enabled;
 
     /**
-     * 上级部门
+     * 上级组织
      */
     @Column(name = "pid", nullable = false)
     @NotNull

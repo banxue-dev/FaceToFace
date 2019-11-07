@@ -123,6 +123,13 @@ public class User implements Serializable {
     @Column(name = "update_user", columnDefinition = "bigint(20) COMMENT '修改用户'")
     private Long updateUser;
 
+    @OneToOne
+    @JoinColumn(name = "default_channels_id", columnDefinition = "bigint(20) COMMENT '默认频道ID'")
+    private ChannelsInfo defaultChannelsId;
+
+    @ManyToMany
+    @JoinTable(name = "user_chanenls", joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")}, inverseJoinColumns = {@JoinColumn(name = "channels_id", referencedColumnName = "id")})
+    private List<ChannelsInfo> channelsTags;
 
     public @interface Update {
     }
