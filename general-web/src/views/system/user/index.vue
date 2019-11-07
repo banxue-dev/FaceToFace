@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <!--form 组件-->
-    <eForm ref="form" :is-add="isAdd" :dicts="dicts"/>
+    <eForm ref="form" :is-add="isAdd" :dictMap="dictMap"/>
     <el-row :gutter="20">
       <!--组织数据-->
       <el-col :xs="9" :sm="6" :md="4" :lg="4" :xl="4">
@@ -53,7 +53,7 @@
           </el-table-column>
           <el-table-column label="状态" align="center">
             <template slot-scope="scope">
-              <div v-for="item in dicts" :key="item.id">
+              <div v-for="item in dictMap.user_status" :key="item.id">
                 <el-tag v-if="scope.row.enabled.toString() === item.value" :type="scope.row.enabled ? '' : 'info'">{{ item.label }}</el-tag>
               </div>
             </template>
@@ -126,7 +126,7 @@ export default {
     this.$nextTick(() => {
       this.init()
       // 加载数据字典
-      this.getDict('user_status')
+      this.getDictMap('user_status,user_video_switch,user_location_switch')
     })
   },
   mounted: function() {
@@ -217,8 +217,23 @@ export default {
       _this.getRoles()
       _this.getDepts()
       _this.getRoleLevel()
+      _this.selectDeptByDeptId(data.dept.id)
       _this.roleIds = []
-      _this.form = { id: data.id, username: data.username, phone: data.phone, email: data.email, enabled: data.enabled.toString(), roles: [], dept: { id: data.dept.id }}
+
+      //     channelsTags: []
+      _this.form = {
+        id: data.id,
+        username: data.username,
+        name: data.name,
+        enabled: data.enabled.toString(),
+        roles: [],
+        dept: { id: data.dept.id },
+        defaultChannelsId: data.defaultChannelsId,
+        serviceTime: data.serviceTime,
+        enterpriseCode: data.enterpriseCode,
+        level: data.level,
+        locationSwitch: data.locationSwitch
+      }
       data.roles.forEach(function(data, index) {
         _this.roleIds.push(data.id)
       })

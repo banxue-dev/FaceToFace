@@ -1,43 +1,100 @@
 <template>
-  <el-dialog :visible.sync="dialog" :close-on-click-modal="false" :before-close="cancel" :title="isAdd ? '新增用户' : '编辑用户'" append-to-body width="570px">
-    <el-form ref="form" :inline="true" :model="form" :rules="rules" size="small" label-width="66px">
-      <el-form-item label="用户名" prop="username">
-        <el-input v-model="form.username"/>
-      </el-form-item>
-      <el-form-item label="状态" prop="enabled">
-        <el-radio v-for="item in dicts" :key="item.id" v-model="form.enabled" :label="item.value">{{ item.label }}</el-radio>
-      </el-form-item>
-      <el-form-item label="电话" prop="phone">
-        <el-input v-model.number="form.phone" />
-      </el-form-item>
-      <el-form-item label="邮箱" prop="email">
-        <el-input v-model="form.email" />
-      </el-form-item>
-      <el-form-item label="组织">
-        <treeselect v-model="deptId" :options="depts" style="width: 184px" placeholder="选择组织" />
-      </el-form-item>
-      <el-form-item style="margin-bottom: 0px;" label="角色">
-        <el-select v-model="roleIds" style="width: 184px;" multiple placeholder="请选择">
-          <el-option
-            v-for="(item, index) in roles"
-            :disabled="level !== 1 && item.level <= level"
-            :key="item.name + index"
-            :label="item.name"
-            :value="item.id"/>
-        </el-select>
-      </el-form-item>
-    </el-form>
-    <div slot="footer" class="dialog-footer">
-      <el-button type="text" @click="cancel">取消</el-button>
-      <el-button :loading="loading" type="primary" @click="doSubmit">确认</el-button>
-    </div>
-  </el-dialog>
+  <div>
+    <el-dialog :visible.sync="dialog" :close-on-click-modal="false" :before-close="cancel" :title="isAdd ? '新增用户' : '编辑用户'" append-to-body width="550px">
+      <el-form ref="form" :inline="true" :model="form" :rules="rules" size="small" label-width="100px">
+        <el-form-item label="登录名" prop="username">
+          <el-input v-model="form.username" style="width: 350px;" placeholder="请输入登录名"/>
+        </el-form-item>
+        <el-form-item label="用户名" prop="name">
+          <el-input v-model="form.name" style="width: 350px;" placeholder="请输入用户名"/>
+        </el-form-item>
+        <el-form-item label="状态" prop="enabled">
+          <el-radio-group v-model="form.enabled">
+            <el-radio v-for="item in dictMap.user_status" :key="item.id" :label="item.value">{{ item.label }}</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="组织">
+          <treeselect v-model="deptId" :options="depts" style="width: 350px" placeholder="请选择组织" @select="selectDept"/>
+        </el-form-item>
+        <el-form-item label="角色">
+          <el-select v-model="roleIds" style="width: 350px;" multiple placeholder="请选择角色">
+            <el-option
+              v-for="(item, index) in roles"
+              :disabled="level !== 1 && item.level <= level"
+              :key="item.name + index"
+              :label="item.name"
+              :value="item.id"/>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="等级" prop="level">
+          <el-input-number v-model.number="form.level" style="width: 350px;" controls-position="right" placeholder="请输入等级"/>
+        </el-form-item>
+        <el-form-item label="企业识别码" prop="enterpriseCode">
+          <el-input v-model="form.enterpriseCode" style="width: 350px;" disabled placeholder="请输入企业识别码"/>
+        </el-form-item>
+        <el-form-item label="定位开关" prop="locationSwitch">
+          <el-radio-group v-model="form.locationSwitch">
+            <el-radio v-for="item in dictMap.user_location_switch" :key="item.id" :label="item.value">{{ item.label }}</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="定位间隔" prop="locationInterval">
+          <el-input-number v-model.number="form.locationInterval" style="width: 350px;" controls-position="right" placeholder="请输入定位间隔"/>
+        </el-form-item>
+        <el-form-item label="视频开关" prop="videoSwitch">
+          <el-radio-group v-model="form.videoSwitch">
+            <el-radio v-for="item in dictMap.user_video_switch" :key="item.id" :label="item.value">{{ item.label }}</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="服务期限" prop="serviceTime">
+          <el-input v-model="form.serviceTime" style="width: 350px;" placeholder="请输入服务期限"/>
+        </el-form-item>
+        <el-form-item label="默认频道">
+          <el-select v-model="form.defaultChannelsId" filterable style="width: 350px;" placeholder="请选择默认频道" @change="defaultChanneChange">
+            <el-option
+              v-for="item in channels"
+              :key="item.id"
+              :label="item.channelsName"
+              :value="item.id"/>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="频道">
+          <el-card class="box-card" style="width: 350px;">
+            <el-tag
+              v-for="tag in form.channelsTags"
+              :key="tag.id"
+              closable
+              color="#FFFFFF"
+              @close="handleClose(tag)">
+              {{ tag.channelsName }}
+            </el-tag>
+            <el-tag color="#FFFFFF" class="add_btn" @click="selectChannelsDialog()">
+              <i class="el-icon-plus"/>
+            </el-tag>
+          </el-card>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="text" @click="cancel">取消</el-button>
+        <el-button :loading="loading" type="primary" @click="doSubmit">确认</el-button>
+      </div>
+    </el-dialog>
+    <el-dialog :append-to-body="true" :close-on-click-modal="false" :before-close="channelsDialogClose" :visible.sync="channelsDialog" title="选择频道" width="300px">
+      <el-select v-model="channelsId" filterable placeholder="请选择频道">
+        <el-option v-for="item in channels" :key="item.id" :label="item.channelsName" :value="item.id"/>
+      </el-select>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="text" @click="channelsDialogClose">取消</el-button>
+        <el-button :loading="loading" type="primary" @click="channelsDialogConfirm">确认</el-button>
+      </div>
+    </el-dialog>
+  </div>
 </template>
 
 <script>
 
 import { add, edit } from '@/api/user'
 import { getDepts } from '@/api/dept'
+import { listChannelsInfosByDeptId } from '@/api/channelsInfo'
 import { getAll, getLevel } from '@/api/role'
 import Treeselect from '@riophae/vue-treeselect'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
@@ -48,38 +105,39 @@ export default {
       type: Boolean,
       required: true
     },
-    dicts: {
-      type: Array,
+    dictMap: {
+      type: Object,
       required: true
     }
   },
   data() {
-    const validPhone = (rule, value, callback) => {
-      if (!value) {
-        callback(new Error('请输入电话号码'))
-      } else if (!this.isvalidPhone(value)) {
-        callback(new Error('请输入正确的11位手机号码'))
-      } else {
-        callback()
-      }
-    }
     return {
-      dialog: false, loading: false, form: { username: '', email: '', enabled: 'false', roles: [], dept: { id: '' }, phone: null },
-      roleIds: [], roles: [], depts: [], deptId: null, level: 3,
+      dialog: false, loading: false,
+      roleIds: [], roles: [], depts: [], deptId: null, level: 3, channelsDialog: false, channelsId: [], channels: [],
+      form: {
+        username: '',
+        name: '',
+        enterpriseCode: '',
+        enabled: null,
+        roles: [],
+        dept: { id: '' },
+        level: null,
+        locationSwitch: null,
+        serviceTime: '',
+        defaultChannelsId: '',
+        channelsTags: []
+      },
       rules: {
         username: [
+          { required: true, message: '请输入登录名', trigger: 'blur' },
+          { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur' }
+        ],
+        name: [
           { required: true, message: '请输入用户名', trigger: 'blur' },
           { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur' }
         ],
-        email: [
-          { required: true, message: '请输入邮箱地址', trigger: 'blur' },
-          { type: 'email', message: '请输入正确的邮箱地址', trigger: 'blur' }
-        ],
-        phone: [
-          { required: true, trigger: 'blur', validator: validPhone }
-        ],
         enabled: [
-          { required: true, message: '状态不能为空', trigger: 'blur' }
+          { required: true, message: '状态不能为空' }
         ]
       }
     }
@@ -111,7 +169,8 @@ export default {
               _this.form.roles.push(role)
             })
             if (this.isAdd) {
-              this.doAdd()
+                console.log(this.form)
+              // this.doAdd()
             } else this.doEdit()
           }
         } else {
@@ -153,7 +212,21 @@ export default {
       this.$refs['form'].resetFields()
       this.deptId = null
       this.roleIds = []
-      this.form = { username: '', email: '', enabled: 'false', roles: [], dept: { id: '' }, phone: null }
+      this.channelsId = []
+      this.channels = []
+      this.form = {
+        username: '',
+        name: '',
+        enterpriseCode: '',
+        enabled: null,
+        roles: [],
+        dept: { id: '' },
+        level: null,
+        locationSwitch: null,
+        serviceTime: '',
+        defaultChannelsId: '',
+        channelsTags: []
+      }
     },
     getRoles() {
       getAll().then(res => {
@@ -166,20 +239,84 @@ export default {
         this.depts = res.content
       })
     },
-    isvalidPhone(str) {
-      const reg = /^1[3|4|5|7|8][0-9]\d{8}$/
-      return reg.test(str)
-    },
     getRoleLevel() {
       getLevel().then(res => {
         this.level = res.level
       }).catch(err => {
       })
+    },
+    selectDept(node, instanceId) {
+      this.form.enterpriseCode = node.enterpriseCode
+      listChannelsInfosByDeptId({ deptId: node.id }).then(res => {
+        this.channels = res
+      })
+    },
+    selectDeptByDeptId(deptId) {
+      listChannelsInfosByDeptId({ deptId: deptId }).then(res => {
+        this.channels = res
+      })
+    },
+    selectChannelsDialog() {
+      this.channelsDialog = true
+    },
+    handleClose(tag) {
+      this.form.channelsTags.splice(this.form.channelsTags.indexOf(tag), 1)
+    },
+    channelsDialogClose() {
+      this.channelsDialog = false
+    },
+    channelsDialogConfirm() {
+      if (this.form.defaultChannelsId === this.channelsId) {
+        this.$notify({
+          title: '该频道已经被选为默认频道',
+          type: 'warning',
+          duration: 2500
+        })
+        return
+      }
+      const arry = this.channels
+      for (let i = 0; i < arry.length; i++) {
+        if (arry[i].id === this.channelsId) {
+          const tags = this.form.channelsTags
+          for (let j = 0; j < tags.length; j++) {
+            if (this.channelsId === tags[j].id) {
+              this.$notify({
+                title: '该用户已经存在列表中',
+                type: 'warning',
+                duration: 2500
+              })
+              return
+            }
+          }
+          const obj = {}
+          obj.id = arry[i].id
+          obj.channelsName = arry[i].channelsName
+          this.form.channelsTags.push(obj)
+          this.channelsDialog = false
+        }
+      }
+    },
+    defaultChanneChange() {
+      const tags = this.form.channelsTags
+      for (let j = 0; j < tags.length; j++) {
+        if (this.form.defaultChannelsId === tags[j].id) {
+          this.handleClose(tags[j])
+        }
+      }
     }
+
   }
 }
 </script>
 
-<style scoped>
-
+<style rel="stylesheet/scss" lang="scss" scoped>
+  /deep/ .el-input-number .el-input__inner {
+    text-align: left;
+  }
+  .el-tag {
+    margin-left: 10px;
+  }
+  .add_btn {
+    cursor:pointer;
+  }
 </style>

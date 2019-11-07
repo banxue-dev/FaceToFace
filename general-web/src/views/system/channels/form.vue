@@ -35,8 +35,8 @@
         <el-form-item label="管理员" >
           <el-card class="box-card" style="width: 370px;">
             <el-tag
-              :key="tag.username"
-              v-for="tag in users"
+              :key="tag.key"
+              v-for="tag in adminTags"
               closable
               color="#FFFFFF"
               @close="handleClose(tag)">
@@ -50,8 +50,8 @@
         <el-form-item label="人员" >
           <el-card class="box-card" style="width: 370px;">
             <el-tag
-              :key="tag.username"
-              v-for="tag in users"
+              :key="tag.key"
+              v-for="tag in userTags"
               closable
               color="#FFFFFF"
               @close="handleClose(tag)">
@@ -68,13 +68,13 @@
         <el-button :loading="loading" type="primary" @click="doSubmit">确认</el-button>
       </div>
     </el-dialog>
-    <el-dialog :append-to-body="true" :close-on-click-modal="false" :before-close="userDialogClose" :visible.sync="userDialog" :title="userTitle" width="300px">
-      <el-select v-model="userId" filterable placeholder="请选择用户" @change="selectUser">
+    <el-dialog :append-to-body="true" :close-on-click-modal="false" :before-close="userDialogClose" :visible.sync="userDialog" :title="userTitle" width="500px">
+      <el-select v-model="selectUsers" filterable placeholder="请选择用户">
         <el-option v-for="item in users" :key="item.id" :label="item.username" :value="item"/>
       </el-select>
       <div slot="footer" class="dialog-footer">
         <el-button type="text" @click="userDialogClose">取消</el-button>
-        <el-button :loading="loading" type="primary" @click="userDialogClose">确认</el-button>
+        <el-button :loading="loading" type="primary" @click="userDialogConfirm">确认</el-button>
       </div>
     </el-dialog>
   </div>
@@ -100,8 +100,7 @@ export default {
   },
   data() {
     return {
-      loading: false, dialog: false, userDialog: false, depts: [], deptId: null, users: [], tags: [], userTitle: '',
-      userId: null,
+      loading: false, dialog: false, userDialog: false, depts: [], deptId: null, users: [], adminTags: [], userTags: [], userTitle: '', selectType: null,
       form: {
         id: '',
         attr: '',
@@ -115,6 +114,7 @@ export default {
         updateUser: '',
         deptId: ''
       },
+      selectUsers: [],
       rules: {
         channelsName: [
           { required: true, message: '请输入频道名称', trigger: 'blur' }
@@ -191,20 +191,37 @@ export default {
       })
     },
     selectUserDialog(type) {
-      if (type === 0) {
-        // 选择管理员
-        this.userTitle = '请选择管理员'
+      if (this.users.length === 0) {
+        this.$notify({
+          title: '请选择组织',
+          type: 'warning',
+          duration: 2500
+        })
       } else {
-        // 选择人员
-        this.userTitle = '请选择人员'
+        if (type === 0) {
+          // 选择管理员
+          this.userTitle = '请选择管理员'
+        } else {
+          // 选择人员
+          this.userTitle = '请选择人员'
+        }
+        this.selectType = type
+        this.userDialog = true
       }
-      this.userDialog = true
     },
     userDialogClose() {
       this.userDialog = false
     },
-    selectUser() {
-        console.log(this.userId)
+    userDialogConfirm() {
+      // var userArry = {}
+      // if(this.selectType === 0) {
+      //     userArry.key()
+      //     userArry.name
+      // } else {
+      //
+      // }
+      console.log(this.selectUsers)
+      this.userDialog = false
     }
   }
 }

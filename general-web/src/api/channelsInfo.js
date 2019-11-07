@@ -22,3 +22,12 @@ export function edit(data) {
     data
   })
 }
+
+// 根据组织ID集合查询频道
+export function listChannelsInfosByDeptId(params) {
+  return request({
+    url: 'api/listChannelsInfosByDeptId',
+    method: 'get',
+    params
+  })
+}
