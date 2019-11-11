@@ -1,16 +1,18 @@
 package com.general.modules.system.service.dto;
 
+import com.general.modules.system.domain.Dept;
 import com.general.modules.system.domain.User;
 import lombok.Data;
+
 import java.sql.Timestamp;
 import java.io.Serializable;
-import java.util.List;
+import java.util.Set;
 
 
 /**
-* @author L
-* @date 2019-10-24
-*/
+ * @author L
+ * @date 2019-10-24
+ */
 @Data
 public class ChannelsInfoDTO implements Serializable {
 
@@ -34,8 +36,8 @@ public class ChannelsInfoDTO implements Serializable {
     // 频道名
     private String channelsName;
 
-    // 频道录音开关(0开，1关)
-    private Integer recordSwitch;
+    // 频道录音开关(1开，0关)
+    private Boolean recordSwitch;
 
     // 修改时间
     private Timestamp updateTime;
@@ -44,14 +46,11 @@ public class ChannelsInfoDTO implements Serializable {
     private Long updateUser;
 
     // 组织ID
-    private Long deptId;
+    private Dept dept;
 
-    // 用户ID
-    private Long userId;
-
-    //普通用户
-    private List<User> users;
+    // 普通用户
+    private Set<User> userSet;
 
     //管理员用户
-    private List<User> adminUsers;
+    private Set<User> userAdmin;
 }

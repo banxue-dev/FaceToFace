@@ -1,6 +1,5 @@
 package com.general.modules.system.controller;
 
-import cn.hutool.core.bean.BeanUtil;
 import com.general.aop.log.Log;
 import com.general.domain.VerificationCode;
 import com.general.modules.system.domain.User;
@@ -8,8 +7,6 @@ import com.general.modules.system.domain.vo.UserPassVo;
 import com.general.modules.system.service.DeptService;
 import com.general.modules.system.service.RoleService;
 import com.general.modules.system.service.UserService;
-import com.general.modules.system.service.dto.UserDTO;
-import com.general.service.PictureService;
 import com.general.service.VerificationCodeService;
 import com.general.utils.ElAdminConstant;
 import com.general.utils.EncryptUtils;
@@ -20,8 +17,6 @@ import com.general.exception.BadRequestException;
 import com.general.modules.system.service.dto.RoleSmallDTO;
 import com.general.modules.system.service.dto.UserQueryCriteria;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;

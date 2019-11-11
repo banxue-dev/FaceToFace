@@ -19,4 +19,8 @@ public class ChannelsInfoQueryCriteria{
     @Query(propName = "id", type = Query.Type.IN, joinName = "dept")
     private Set<Long> deptIds;
 
+    // 多字段模糊
+    @Query(blurry = "channelsName")
+    private String blurry;
+
 }

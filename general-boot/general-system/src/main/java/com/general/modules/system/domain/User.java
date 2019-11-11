@@ -1,5 +1,6 @@
 package com.general.modules.system.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
@@ -11,7 +12,6 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -59,7 +59,7 @@ public class User implements Serializable {
      * 启停开关（激活账号或停用账号）
      */
     @NotNull
-    @Column(name = "enabled", columnDefinition = "varchar(20) COMMENT '启停开关（激活账号或停用账号）状态：1启用、0禁用'")
+    @Column(name = "enabled", columnDefinition = "varchar(2) COMMENT '启停开关（激活账号或停用账号）状态：1启用、0禁用'")
     private Boolean enabled;
 
     @Column(name = "last_password_reset_time", columnDefinition = "varchar(20) COMMENT '最后修改密码的日期")
@@ -88,20 +88,20 @@ public class User implements Serializable {
     /**
      * 定位开关
      */
-    @JoinColumn(name = "location_switch", columnDefinition = "int(2) COMMENT '定位开关(0开，1关)'")
-    private Integer locationSwitch;
+    @Column(name = "location_switch", columnDefinition = "varchar(2) COMMENT '定位开关(1开，0关)'")
+    private Boolean locationSwitch;
 
     /**
      * 定位间隔
      */
-    @Column(name = "location_interval", columnDefinition = "int(5) COMMENT '定位间隔(单位分钟)'")
-    private Integer locationInterval;
+    @Column(name = "location_interval", columnDefinition = "varchar(5) COMMENT '定位间隔(单位分钟)'")
+    private String locationInterval;
 
     /**
      * 视频功能开关
      */
-    @Column(name = "video_switch", columnDefinition = "int(2) COMMENT '视频功能开关(0开，1关)'")
-    private Integer videoSwitch;
+    @Column(name = "video_switch", columnDefinition = "varchar(2) COMMENT '视频功能开关(1开，0关)'")
+    private Boolean videoSwitch;
 
     /**
      * 服务期限
@@ -123,13 +123,27 @@ public class User implements Serializable {
     @Column(name = "update_user", columnDefinition = "bigint(20) COMMENT '修改用户'")
     private Long updateUser;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.PERSIST)
+    @PrimaryKeyJoinColumn
     @JoinColumn(name = "default_channels_id", columnDefinition = "bigint(20) COMMENT '默认频道ID'")
-    private ChannelsInfo defaultChannelsId;
+    private ChannelsInfo channels;
 
-    @ManyToMany
+
+    /**
+     * 普通用户
+     */
+    @JsonIgnore
+    @OneToMany
     @JoinTable(name = "user_chanenls", joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")}, inverseJoinColumns = {@JoinColumn(name = "channels_id", referencedColumnName = "id")})
-    private List<ChannelsInfo> channelsTags;
+    private Set<ChannelsInfo> channelsSet;
+
+    /**
+     * 管理员用户
+     */
+    @JsonIgnore
+    @OneToMany
+    @JoinTable(name = "chanenls_admin", joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")}, inverseJoinColumns = {@JoinColumn(name = "channels_id", referencedColumnName = "id")})
+    private Set<ChannelsInfo> chanenlsAdmin;
 
     public @interface Update {
     }

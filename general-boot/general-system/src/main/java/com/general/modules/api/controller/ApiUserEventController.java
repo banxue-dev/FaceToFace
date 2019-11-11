@@ -16,7 +16,7 @@ import io.swagger.annotations.*;
  * @author L
  * @date 2019-10-28
  */
-@Api(tags = "账号事件接口")
+@Api(tags = "外部接口-账号事件接口")
 @RestController
 @RequestMapping("pass")
 public class ApiUserEventController {
@@ -32,9 +32,9 @@ public class ApiUserEventController {
         return new ResponseEntity(userEventService.queryAll(criteria, pageable), HttpStatus.OK);
     }
 
-    @Log("新增账号事件")
-    @ApiOperation(value = "新增账号事件")
-    @PostMapping(value = "/userEvent")
+    @Log("状态管理器-新增账号事件")
+    @ApiOperation(value = "状态管理器-新增账号事件")
+    @PostMapping(value = "/addUserEvent")
 //    @PreAuthorize("hasAnyRole('ADMIN','USEREVENT_ALL','USEREVENT_CREATE')")
     public ResponseEntity create(@Validated @RequestBody UserEvent resources) {
         return new ResponseEntity(userEventService.create(resources), HttpStatus.CREATED);

@@ -1,5 +1,6 @@
 package com.general.modules.system.service.impl;
 
+import com.general.exception.EntityExistException;
 import com.general.modules.system.domain.ChannelsInfo;
 import com.general.modules.system.service.ChannelsInfoService;
 import com.general.modules.system.service.mapper.ChannelsInfoMapper;
@@ -54,6 +55,12 @@ public class ChannelsInfoServiceImpl implements ChannelsInfoService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public ChannelsInfoDTO create(ChannelsInfo resources) {
+        //验证频道是否存在
+        if(channelsInfoRepository.findByChannelsName(resources.getChannelsName()) != null){
+            throw new EntityExistException(ChannelsInfo.class,"channelsName",resources.getChannelsName());
+        }
+        //验证频道内最大人数
+
         return channelsInfoMapper.toDto(channelsInfoRepository.save(resources));
     }
 

@@ -9,4 +9,12 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 * @date 2019-10-24
 */
 public interface ChannelsInfoRepository extends JpaRepository<ChannelsInfo, Long>, JpaSpecificationExecutor {
+
+    /**
+      * @Description: 根据频道名查询
+      * @Author LuoJing
+      * @Date 2019/11/11 13:33
+      */
+    ChannelsInfo findByChannelsName(String channelsName);
+
 }

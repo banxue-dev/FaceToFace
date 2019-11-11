@@ -8,10 +8,9 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.sql.Timestamp;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
+import java.util.Set;
 
 /**
  * @author L
@@ -63,8 +62,8 @@ public class ChannelsInfo implements Serializable {
     /**
      * 频道录音开关
      */
-    @Column(name = "record_switch", columnDefinition = "int(2) COMMENT '频道录音开关(0开，1关)'")
-    private Integer recordSwitch;
+    @Column(name = "record_switch", columnDefinition = "int(2) COMMENT '频道录音开关(1开，0关)'")
+    private Boolean recordSwitch;
 
     @CreationTimestamp
     @Column(name = "create_time", columnDefinition = "datetime COMMENT '创建时间'")
@@ -79,6 +78,20 @@ public class ChannelsInfo implements Serializable {
 
     @Column(name = "update_user", columnDefinition = "bigint(20) COMMENT '修改用户'")
     private Long updateUser;
+
+    /**
+     * 管理员用户
+     */
+    @OneToMany
+    @JoinTable(name = "user_chanenls", joinColumns = {@JoinColumn(name = "channels_id", referencedColumnName = "id")}, inverseJoinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")})
+    private Set<User> userSet;
+
+    /**
+     * 管理员用户
+     */
+    @OneToMany
+    @JoinTable(name = "chanenls_admin", joinColumns = {@JoinColumn(name = "channels_id", referencedColumnName = "id")}, inverseJoinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")})
+    private Set<User> userAdmin;
 
     public @interface Update {
     }

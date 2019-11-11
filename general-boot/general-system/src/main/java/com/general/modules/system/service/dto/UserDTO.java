@@ -4,17 +4,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.general.modules.system.domain.*;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Date;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -62,14 +55,14 @@ public class UserDTO implements Serializable {
     private Integer level;
 
     /**
-     * 频道信息
-     */
-    private List<ChannelsInfo> channelsList;
-
-    /**
      * 默认频道
      */
-    private Long defaultChannelsId;
+    private ChannelsInfo channels;
+
+    /**
+     * 频道信息
+     */
+    private Set<ChannelsInfo> channelsSet;
 
     /**
      * 企业识别码
@@ -79,17 +72,17 @@ public class UserDTO implements Serializable {
     /**
      * 定位开关
      */
-    private Integer locationSwitch;
+    private Boolean locationSwitch;
 
     /**
      * 定位间隔
      */
-    private Integer locationInterval;
+    private String locationInterval;
 
     /**
      * 视频功能开关
      */
-    private Integer videoSwitch;
+    private Boolean videoSwitch;
 
     /**
      * 服务期限

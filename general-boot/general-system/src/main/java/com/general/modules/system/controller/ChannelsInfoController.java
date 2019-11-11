@@ -40,6 +40,18 @@ public class ChannelsInfoController {
     @GetMapping(value = "/channelsInfo")
     @PreAuthorize("hasAnyRole('ADMIN','CHANNELSINFO_ALL','CHANNELSINFO_SELECT')")
     public ResponseEntity getChannelsInfos(ChannelsInfoQueryCriteria criteria, Pageable pageable) {
+        Set<Long> deptSet = new HashSet<>();
+        Set<Long> result = new HashSet<>();
+        if (!ObjectUtils.isEmpty(criteria.getDeptId())) {
+            deptSet.add(criteria.getDeptId());
+            deptSet.addAll(dataScope.getDeptChildren(deptService.findByPid(criteria.getDeptId())));
+        }
+        // 数据权限
+        Set<Long> deptIds = dataScope.getDeptIds();
+        // 查询条件不为空并且数据权限不为空则取交集
+        result.addAll(deptSet);
+        result.addAll(deptIds);
+        criteria.setDeptIds(result);
         return new ResponseEntity(channelsInfoService.queryAll(criteria, pageable), HttpStatus.OK);
     }
 
