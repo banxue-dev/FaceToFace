@@ -49,9 +49,9 @@
           <el-input v-model="form.serviceTime" style="width: 350px;" placeholder="请输入服务期限"/>
         </el-form-item>
         <el-form-item label="默认频道">
-          <el-select v-model="form.defaultChannelsId" filterable style="width: 350px;" placeholder="请选择默认频道" @change="defaultChanneChange">
+          <el-select v-model="form.channels.id" filterable style="width: 350px;" placeholder="请选择默认频道" @change="defaultChanneChange">
             <el-option
-              v-for="item in channels"
+              v-for="item in channelsList"
               :key="item.id"
               :label="item.channelsName"
               :value="item.id"/>
@@ -60,7 +60,7 @@
         <el-form-item label="频道">
           <el-card class="box-card" style="width: 350px;">
             <el-tag
-              v-for="tag in form.channelsTags"
+              v-for="tag in channelsTags"
               :key="tag.id"
               closable
               color="#FFFFFF"
@@ -80,7 +80,7 @@
     </el-dialog>
     <el-dialog :append-to-body="true" :close-on-click-modal="false" :before-close="channelsDialogClose" :visible.sync="channelsDialog" title="选择频道" width="300px">
       <el-select v-model="channelsId" filterable placeholder="请选择频道">
-        <el-option v-for="item in channels" :key="item.id" :label="item.channelsName" :value="item.id"/>
+        <el-option v-for="item in channelsList" :key="item.id" :label="item.channelsName" :value="item.id"/>
       </el-select>
       <div slot="footer" class="dialog-footer">
         <el-button type="text" @click="channelsDialogClose">取消</el-button>
@@ -113,7 +113,7 @@ export default {
   data() {
     return {
       dialog: false, loading: false,
-      roleIds: [], roles: [], depts: [], deptId: null, level: 3, channelsDialog: false, channelsId: [], channels: [],
+      roleIds: [], roles: [], depts: [], deptId: null, level: 3, channelsDialog: false, channelsList: [], channelsTags: [], channelsId: null,
       form: {
         username: '',
         name: '',
@@ -123,9 +123,11 @@ export default {
         dept: { id: '' },
         level: null,
         locationSwitch: null,
+        locationInterval: null,
         serviceTime: '',
-        defaultChannelsId: '',
-        channelsTags: []
+        channels: { id: '' },
+        channelsSet: [],
+        videoSwitch: null
       },
       rules: {
         username: [
@@ -169,8 +171,7 @@ export default {
               _this.form.roles.push(role)
             })
             if (this.isAdd) {
-                console.log(this.form)
-              // this.doAdd()
+              this.doAdd()
             } else this.doEdit()
           }
         } else {
@@ -212,8 +213,8 @@ export default {
       this.$refs['form'].resetFields()
       this.deptId = null
       this.roleIds = []
-      this.channelsId = []
-      this.channels = []
+      this.channelsList = []
+      this.channelsTags = []
       this.form = {
         username: '',
         name: '',
@@ -223,9 +224,11 @@ export default {
         dept: { id: '' },
         level: null,
         locationSwitch: null,
+        locationInterval: null,
         serviceTime: '',
-        defaultChannelsId: '',
-        channelsTags: []
+        channels: { id: '' },
+        channelsSet: [],
+        videoSwitch: null
       }
     },
     getRoles() {
@@ -248,25 +251,34 @@ export default {
     selectDept(node, instanceId) {
       this.form.enterpriseCode = node.enterpriseCode
       listChannelsInfosByDeptId({ deptId: node.id }).then(res => {
-        this.channels = res
+        this.channelsList = res
       })
     },
     selectDeptByDeptId(deptId) {
       listChannelsInfosByDeptId({ deptId: deptId }).then(res => {
-        this.channels = res
+        this.channelsList = res
       })
     },
     selectChannelsDialog() {
+      if (this.channelsList === null) {
+        this.$notify({
+          title: '请选择组织',
+          type: 'warning',
+          duration: 2500
+        })
+        return
+      }
       this.channelsDialog = true
     },
     handleClose(tag) {
-      this.form.channelsTags.splice(this.form.channelsTags.indexOf(tag), 1)
+      this.channelsTags.splice(this.channelsTags.indexOf(tag), 1)
+      this.form.channelsSet.splice(this.form.channelsSet.indexOf(tag.id), 1)
     },
     channelsDialogClose() {
       this.channelsDialog = false
     },
     channelsDialogConfirm() {
-      if (this.form.defaultChannelsId === this.channelsId) {
+      if (this.form.channels.id === this.channelsId) {
         this.$notify({
           title: '该频道已经被选为默认频道',
           type: 'warning',
@@ -274,14 +286,14 @@ export default {
         })
         return
       }
-      const arry = this.channels
+      const arry = this.channelsList
       for (let i = 0; i < arry.length; i++) {
         if (arry[i].id === this.channelsId) {
-          const tags = this.form.channelsTags
+          const tags = this.channelsTags
           for (let j = 0; j < tags.length; j++) {
             if (this.channelsId === tags[j].id) {
               this.$notify({
-                title: '该用户已经存在列表中',
+                title: '该频道已经存在列表中',
                 type: 'warning',
                 duration: 2500
               })
@@ -291,15 +303,16 @@ export default {
           const obj = {}
           obj.id = arry[i].id
           obj.channelsName = arry[i].channelsName
-          this.form.channelsTags.push(obj)
+          this.channelsTags.push(obj)
+          this.form.channelsSet.push({ 'id': arry[i].id })
           this.channelsDialog = false
         }
       }
     },
     defaultChanneChange() {
-      const tags = this.form.channelsTags
+      const tags = this.channelsTags
       for (let j = 0; j < tags.length; j++) {
-        if (this.form.defaultChannelsId === tags[j].id) {
+        if (this.form.channels.id === tags[j].id) {
           this.handleClose(tags[j])
         }
       }

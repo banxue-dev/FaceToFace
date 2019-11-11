@@ -44,11 +44,9 @@
         <!--表格渲染-->
         <el-table v-loading="loading" :data="data" size="small" style="width: 100%;">
           <el-table-column prop="username" label="用户名"/>
-          <el-table-column prop="phone" label="电话"/>
-          <el-table-column :show-overflow-tooltip="true" prop="email" label="邮箱"/>
-          <el-table-column label="组织">
+          <el-table-column label="组织 / 角色">
             <template slot-scope="scope">
-              <div>{{ scope.row.dept.name }}</div>
+              <div>{{ scope.row.dept.name }} / {{ scope.row.roles[0].name }}</div>
             </template>
           </el-table-column>
           <el-table-column label="状态" align="center">
@@ -219,24 +217,33 @@ export default {
       _this.getRoleLevel()
       _this.selectDeptByDeptId(data.dept.id)
       _this.roleIds = []
-
-      //     channelsTags: []
       _this.form = {
         id: data.id,
         username: data.username,
         name: data.name,
+        enterpriseCode: data.enterpriseCode,
         enabled: data.enabled.toString(),
         roles: [],
         dept: { id: data.dept.id },
-        defaultChannelsId: data.defaultChannelsId,
-        serviceTime: data.serviceTime,
-        enterpriseCode: data.enterpriseCode,
         level: data.level,
-        locationSwitch: data.locationSwitch
+        locationSwitch: data.locationSwitch === null ? '' : data.locationSwitch.toString(),
+        locationInterval: data.locationInterval,
+        serviceTime: data.serviceTime,
+        channels: data.channels === null ? {} : { id: data.channels.id },
+        channelsSet: data.channelsSet === null ? [] : data.channelsSet,
+        videoSwitch: data.videoSwitch === null ? '' : data.videoSwitch.toString()
       }
       data.roles.forEach(function(data, index) {
         _this.roleIds.push(data.id)
       })
+      if (data.channelsSet != null) {
+        data.channelsSet.forEach(function(data, index) {
+          const obj = {}
+          obj.id = data.id
+          obj.channelsName = data.channelsName
+          _this.channelsTags.push(obj)
+        })
+      }
       _this.deptId = data.dept.id
       _this.dialog = true
     }

@@ -8,7 +8,7 @@
         <el-radio v-for="item in dicts" :key="item.id" v-model="form.enabled" :label="item.value">{{ item.label }}</el-radio>
       </el-form-item>
       <el-form-item v-if="form.pid !== 0" label="上级组织">
-        <treeselect v-model="form.pid" :options="depts" style="width: 350px;" placeholder="选择上级组织" />
+        <treeselect v-model="form.pid" :options="depts" style="width: 350px;" :disabled="isAdd ? false : true" placeholder="选择上级组织" />
       </el-form-item>
       <el-form-item label="账号上限" prop="maxPersonNumber">
         <el-input-number v-model.number="form.maxPersonNumber" :min="0" controls-position="right" style="width: 350px;"/>

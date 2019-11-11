@@ -18,7 +18,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="频道模式" >
-          <el-select v-model="form.channels_mode" style="width: 370px" placeholder="请选择频道模式">
+          <el-select v-model="form.mode" style="width: 370px" placeholder="请选择频道模式">
             <el-option
               v-for="item in dictMap.channels_mode"
               :key="item.id"
@@ -30,17 +30,17 @@
           <el-input-number v-model.number="form.maxPersonNumber" :min="0" controls-position="right" style="width: 370px;"/>
         </el-form-item>
         <el-form-item label="录音开关" >
-          <el-radio v-for="item in dictMap.channels_record_switch" :key="item.id" v-model="form.channels_record_switch" :label="item.value">{{ item.label }}</el-radio>
+          <el-radio v-for="item in dictMap.channels_record_switch" :key="item.id" v-model="form.recordSwitch" :label="item.value">{{ item.label }}</el-radio>
         </el-form-item>
         <el-form-item label="管理员" >
           <el-card class="box-card" style="width: 370px;">
             <el-tag
-              :key="tag.key"
               v-for="tag in adminTags"
+              :key="tag.key"
               closable
               color="#FFFFFF"
-              @close="handleClose(tag)">
-              {{ tag.username }}
+              @close="handleClose(tag,0)">
+              {{ tag.name }}
             </el-tag>
             <el-tag color="#FFFFFF" class="add_btn" @click="selectUserDialog(0)">
               <i class="el-icon-plus"/>
@@ -50,12 +50,12 @@
         <el-form-item label="人员" >
           <el-card class="box-card" style="width: 370px;">
             <el-tag
-              :key="tag.key"
               v-for="tag in userTags"
+              :key="tag.key"
               closable
               color="#FFFFFF"
-              @close="handleClose(tag)">
-              {{ tag.username }}
+              @close="handleClose(tag,1)">
+              {{ tag.name }}
             </el-tag>
             <el-tag color="#FFFFFF" class="add_btn" @click="selectUserDialog(1)">
               <i class="el-icon-plus"/>
@@ -68,9 +68,9 @@
         <el-button :loading="loading" type="primary" @click="doSubmit">确认</el-button>
       </div>
     </el-dialog>
-    <el-dialog :append-to-body="true" :close-on-click-modal="false" :before-close="userDialogClose" :visible.sync="userDialog" :title="userTitle" width="500px">
-      <el-select v-model="selectUsers" filterable placeholder="请选择用户">
-        <el-option v-for="item in users" :key="item.id" :label="item.username" :value="item"/>
+    <el-dialog :append-to-body="true" :close-on-click-modal="false" :before-close="userDialogClose" :visible.sync="userDialog" :title="userTitle" width="300px">
+      <el-select v-model="selUsersId" filterable placeholder="请选择用户">
+        <el-option v-for="item in usersList" :key="item.id" :label="item.username" :value="item.id"/>
       </el-select>
       <div slot="footer" class="dialog-footer">
         <el-button type="text" @click="userDialogClose">取消</el-button>
@@ -100,21 +100,18 @@ export default {
   },
   data() {
     return {
-      loading: false, dialog: false, userDialog: false, depts: [], deptId: null, users: [], adminTags: [], userTags: [], userTitle: '', selectType: null,
+      loading: false, dialog: false, userDialog: false, depts: [], deptId: null, usersList: [], adminTags: [], userTags: [], userTitle: '',
+      selUsersId: null,
       form: {
-        id: '',
         attr: '',
         channelsName: '',
-        createTime: '',
-        createUser: '',
         maxPersonNumber: '',
         mode: '',
         recordSwitch: '',
-        updateTime: '',
-        updateUser: '',
-        deptId: ''
+        dept: { id: '' },
+        userSet: [],
+        userAdmin: []
       },
-      selectUsers: [],
       rules: {
         channelsName: [
           { required: true, message: '请输入频道名称', trigger: 'blur' }
@@ -123,19 +120,40 @@ export default {
     }
   },
   methods: {
-    handleClose(tag) {
-      this.users.splice(this.users.indexOf(tag), 1)
+    handleClose(tag, type) {
+      if (type === 0) {
+        this.adminTags.splice(this.adminTags.indexOf(tag), 1)
+        this.form.userAdmin.splice(this.form.userAdmin.indexOf(tag.id), 1)
+      } else {
+        this.userTags.splice(this.userTags.indexOf(tag), 1)
+        this.form.userSet.splice(this.form.userSet.indexOf(tag.id), 1)
+      }
     },
     cancel() {
       this.resetForm()
     },
     doSubmit() {
-      this.loading = true
-      if (this.isAdd) {
-        this.doAdd()
-      } else this.doEdit()
+      this.form.dept.id = this.deptId
+      this.$refs['form'].validate((valid) => {
+        if (valid) {
+          if (this.deptId === null || this.deptId === undefined) {
+            this.$message({
+              message: '组织不能为空',
+              type: 'warning'
+            })
+          } else {
+            this.loading = true
+            if (this.isAdd) {
+              this.doAdd()
+            } else this.doEdit()
+          }
+        } else {
+          return false
+        }
+      })
     },
     doAdd() {
+      console.log(this.form)
       add(this.form).then(res => {
         this.resetForm()
         this.$notify({
@@ -166,18 +184,20 @@ export default {
     resetForm() {
       this.dialog = false
       this.$refs['form'].resetFields()
+      this.deptId = null
+      this.depts = []
+      this.usersList = []
+      this.adminTags = []
+      this.userTags = []
       this.form = {
-        id: '',
         attr: '',
         channelsName: '',
-        createTime: '',
-        createUser: '',
         maxPersonNumber: '',
         mode: '',
         recordSwitch: '',
-        updateTime: '',
-        updateUser: '',
-        deptId: ''
+        dept: { id: '' },
+        userSet: [],
+        userAdmin: []
       }
     },
     getDepts() {
@@ -187,11 +207,16 @@ export default {
     },
     selectDept(node, instanceId) {
       getUsers({ deptId: node.id }).then(res => {
-        this.users = res
+        this.usersList = res
+      })
+    },
+    selectUserByDeptId(deptId) {
+      getUsers({ deptId: deptId }).then(res => {
+        this.usersList = res
       })
     },
     selectUserDialog(type) {
-      if (this.users.length === 0) {
+      if (this.usersList.length === 0) {
         this.$notify({
           title: '请选择组织',
           type: 'warning',
@@ -213,14 +238,45 @@ export default {
       this.userDialog = false
     },
     userDialogConfirm() {
-      // var userArry = {}
-      // if(this.selectType === 0) {
-      //     userArry.key()
-      //     userArry.name
-      // } else {
-      //
-      // }
-      console.log(this.selectUsers)
+      // 判断
+      const adminTags = this.adminTags
+      for (let j = 0; j < adminTags.length; j++) {
+        if (this.selUsersId === adminTags[j].id) {
+          this.$notify({
+            title: '该用户已经存在管理员列表中',
+            type: 'warning',
+            duration: 2500
+          })
+          return
+        }
+      }
+      const userTags = this.userTags
+      for (let j = 0; j < userTags.length; j++) {
+        if (this.selUsersId === userTags[j].id) {
+          this.$notify({
+            title: '该用户已经存在人员列表中',
+            type: 'warning',
+            duration: 2500
+          })
+          return
+        }
+      }
+      const arry = this.usersList
+      for (let i = 0; i < arry.length; i++) {
+        if (arry[i].id === this.selUsersId) {
+          const obj = {}
+          obj.id = arry[i].id
+          obj.name = arry[i].name
+          if (this.selectType === 0) {
+            // 管理员
+            this.adminTags.push(obj)
+            this.form.userAdmin.push({ id: arry[i].id })
+          } else {
+            this.userTags.push(obj)
+            this.form.userSet.push({ id: arry[i].id })
+          }
+        }
+      }
       this.userDialog = false
     }
   }
