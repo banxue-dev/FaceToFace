@@ -51,6 +51,7 @@ public class SiteServiceImpl implements ISiteService {
 			p1.setCreateTime(TimeUtils.getCurrentTime());
 			p1.setSid(snowflakeIdWorker.nextId() + "");
 			String collectionName = TimeUtils.getCurrentTime("yyyy-MM-dd");
+			FileLog.debugLog("添加的用户ID:"+p1.getUserId()+"位置信息："+p1.getSiteJson());
 			if(mongoTemplate.collectionExists(collectionName)) {
 				mongoTemplate.insert(p1,collectionName );
 			}else {
@@ -95,7 +96,6 @@ public class SiteServiceImpl implements ISiteService {
 		if (StringUtils.isNull(userId)) {
 			return R.error("用户id不能为空");
 		}
-
 		/*
 		 * 后面会根据这个相差天数来获取数据，
 		 * d=1 表示当天
@@ -107,7 +107,6 @@ public class SiteServiceImpl implements ISiteService {
 			 * 也作为当前时间
 			 */
 			String curentime = TimeUtils.getCurrentTime("yyyy-MM-dd");
-
 			/*
 			 * 构造条件
 			 */
@@ -127,7 +126,7 @@ public class SiteServiceImpl implements ISiteService {
 						/*
 						 * 超过了3天则不查询
 						 */
-						return R.error("只能查询最近"+(lastDay+1)+"天的数据");
+						return R.error("只能查询相距"+(lastDay+1)+"天的数据");
 					}else {
 						/*
 						 * 这里17号和15号之前的差值这里是2，因为要算上当天，而且下面的for循环是从0开始的，所以这里加个1
@@ -201,8 +200,8 @@ public class SiteServiceImpl implements ISiteService {
 					}
 				}
 			}
+			FileLog.debugLog("已获取到用户"+userId+"的数据");
 			page.setDatas(lst);
-			FileLog.debugLog("test日志");
 			return R.okdata(page);
 		} catch (Exception e) {
 			FileLog.errorLog(e,"通过userid和时间区间获取数据出现异常");

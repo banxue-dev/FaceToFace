@@ -25,3 +25,7 @@ talkbacksite/talk-back-parent/talk-bakc-service/.project
 talkbacksite/talk-back-parent/talk-bakc-service/.settings/org.eclipse.core.resources.prefs
 talkbacksite/talk-back-parent/talk-bakc-service/.settings/org.eclipse.jdt.core.prefs
 talkbacksite/talk-back-parent/talk-bakc-service/.settings/org.eclipse.m2e.core.prefs
+*.project
+*.prefs
+*.classpath
+*.gitignore
