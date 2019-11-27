@@ -52,6 +52,7 @@ public class DataScope {
         for (RoleSmallDTO role : roleSet) {
 
             if (scopeType[0].equals(role.getDataScope())) {
+            	
                 return new HashSet<>() ;
             }
 
@@ -98,7 +99,13 @@ public class DataScope {
         for (RoleSmallDTO role : roleSet) {
 
             if (scopeType[0].equals(role.getDataScope())) {
-                return new HashSet<>() ;
+            	DeptQueryCriteria criteria=new DeptQueryCriteria();
+                List<DeptDTO> depts = deptService.queryAll(criteria);
+                for (DeptDTO dept : depts) {
+                	this.getDeptChildrenBy(dept);
+                	deptDTOS.add(dept);
+                }
+                return deptDTOS ;
             }
 
             // 存储本级的数据权限
