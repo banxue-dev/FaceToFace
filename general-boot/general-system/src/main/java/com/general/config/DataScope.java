@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * 数据权限配置
@@ -61,7 +63,12 @@ public class DataScope {
                     deptIds.add(dept.getId());
                     List<Dept> deptChildren = deptService.findByPid(dept.getId());
                     if (deptChildren != null && deptChildren.size() != 0) {
-                        getDeptChildren(deptChildren,deptIds);
+                    	List<Long> list=getDeptChildren(deptChildren);
+                    	for(Long l:list) {
+                    		if(!deptIds.contains(l)) {
+                    			deptIds.add(l);
+                    		}
+                    	}
                     }
                 }
             }
@@ -70,22 +77,36 @@ public class DataScope {
     }
 
 
-    public void getDeptChildren(List<Dept> deptList,Set<Long> haves) {
+    public List<Long> getDeptChildren(List<Dept> deptList) {
+        List<Long> list = new ArrayList<>();
         deptList.forEach(dept -> {
                     if (dept!=null && dept.getEnabled()){
                         List<Dept> depts = deptService.findByPid(dept.getId());
                         if(deptList!=null && deptList.size()!=0){
-                            getDeptChildren(depts,haves);
+                        	List<Long> temp=getDeptChildren(depts);
+                        	for(Long l:temp) {
+                        		if(!list.contains(l)) {
+                        			list.add(l);
+                        		}
+                        	}
                         }
-                        if(!haves.contains(dept.getId())) {
-                        	/**
-                        	 * 不存在才加入
-                        	 */
-                        	haves.add(dept.getId());
-                        }
+                        if(!list.contains(dept.getId())) {
+                			list.add(dept.getId());
+                		}
                     }
                 }
         );
-//        return list;
+        return list;
     }
+
+    public static void main(String[] args) {
+    	Pattern p = Pattern.compile("([0-9A-Za-z]*-([S]?|[0-9]){3,4}-[0-9]{2,3})");// 匹配票据编号正则表达式
+    	String result=" {800CW00191100244-003-01,Picture recognize failed!}";
+    	Matcher m = p.matcher(result);
+		if (m.find()) {
+			System.out.println(m.group());
+		}else {
+			System.out.println("没得");
+		}
+	}
 }

@@ -53,30 +53,20 @@ public class DeptServiceImpl implements DeptService {
         return deptRepository.findByRoles_Id(id);
     }
 
+    List<Long> haveIds=new ArrayList<Long>();
+
     @Override
     public Object buildTree(List<DeptDTO> deptDTOS) {
         Set<DeptDTO> trees = new LinkedHashSet<>();
         Set<DeptDTO> depts= new LinkedHashSet<>();
-        List<String> deptNames = deptDTOS.stream().map(DeptDTO::getName).collect(Collectors.toList());
-        Boolean isChild;
+        DeptDTO maxDept=null;
+        haveIds=new ArrayList<Long>();
         for (DeptDTO deptDTO : deptDTOS) {
-            isChild = false;
-            if ("0".equals(deptDTO.getPid().toString())) {
-                trees.add(deptDTO);
-            }
-            for (DeptDTO it : deptDTOS) {
-                if (it.getPid().equals(deptDTO.getId())) {
-                    isChild = true;
-                    if (deptDTO.getChildren() == null) {
-                        deptDTO.setChildren(new ArrayList<DeptDTO>());
-                    }
-                    deptDTO.getChildren().add(it);
-                }
-            }
-            if(isChild)
-                depts.add(deptDTO);
-            else if(!deptNames.contains(deptRepository.findNameById(deptDTO.getPid())))
-                depts.add(deptDTO);
+        	System.out.println("我来试试这个是什么,如果这个id已经是别人的一个子级了,这里就不管他了");
+        	if(!haveIds.contains(deptDTO.getId())) {
+        		this.buildTrees(maxDept, deptDTOS);
+        		depts.add(maxDept);
+        	}
         }
 
         if (CollectionUtils.isEmpty(trees)) {
@@ -89,6 +79,58 @@ public class DeptServiceImpl implements DeptService {
         map.put("totalElements",totalElements);
         map.put("content",CollectionUtils.isEmpty(trees)?deptDTOS:trees);
         return map;
+    }
+    
+    public void buildTrees(DeptDTO dept,List<DeptDTO> deptDTOS){
+        for (DeptDTO it : deptDTOS) {
+            if (it.getPid().equals(dept.getId())) {
+                if (dept.getChildren() == null) {
+                	dept.setChildren(new ArrayList<DeptDTO>());
+                }
+                it.setName(it.getName()+"111");
+                buildTrees(it,deptDTOS);
+                dept.getChildren().add(it);
+                haveIds.add(it.getId());
+            }
+        }
+    }
+    public Object buildTree1(List<DeptDTO> deptDTOS) {
+    	Set<DeptDTO> trees = new LinkedHashSet<>();
+    	Set<DeptDTO> depts= new LinkedHashSet<>();
+    	List<String> deptNames = deptDTOS.stream().map(DeptDTO::getName).collect(Collectors.toList());
+    	Boolean isChild;
+    	for (DeptDTO deptDTO : deptDTOS) {
+    		isChild = false;
+    		if ("0".equals(deptDTO.getPid().toString())) {
+    			trees.add(deptDTO);
+    		}
+    		for (DeptDTO it : deptDTOS) {
+    			if (it.getPid().equals(deptDTO.getId())) {
+    				isChild = true;
+    				if (deptDTO.getChildren() == null) {
+    					deptDTO.setChildren(new ArrayList<DeptDTO>());
+    				}
+    				deptDTO.getChildren().add(it);
+    			}
+    		}
+    		if(isChild)
+    			if(!depts.contains(deptDTO)) {
+    				depts.add(deptDTO);
+    			}
+    			else if(!deptNames.contains(deptRepository.findNameById(deptDTO.getPid())))
+    				depts.add(deptDTO);
+    	}
+    	
+    	if (CollectionUtils.isEmpty(trees)) {
+    		trees = depts;
+    	}
+    	
+    	Integer totalElements = deptDTOS!=null?deptDTOS.size():0;
+    	
+    	Map map = new HashMap();
+    	map.put("totalElements",totalElements);
+    	map.put("content",CollectionUtils.isEmpty(trees)?deptDTOS:trees);
+    	return map;
     }
 
     @Override
