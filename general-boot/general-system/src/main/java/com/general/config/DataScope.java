@@ -61,7 +61,7 @@ public class DataScope {
                     deptIds.add(dept.getId());
                     List<Dept> deptChildren = deptService.findByPid(dept.getId());
                     if (deptChildren != null && deptChildren.size() != 0) {
-                        deptIds.addAll(getDeptChildren(deptChildren));
+                        getDeptChildren(deptChildren,deptIds);
                     }
                 }
             }
@@ -70,18 +70,22 @@ public class DataScope {
     }
 
 
-    public List<Long> getDeptChildren(List<Dept> deptList) {
-        List<Long> list = new ArrayList<>();
+    public void getDeptChildren(List<Dept> deptList,Set<Long> haves) {
         deptList.forEach(dept -> {
                     if (dept!=null && dept.getEnabled()){
                         List<Dept> depts = deptService.findByPid(dept.getId());
                         if(deptList!=null && deptList.size()!=0){
-                            list.addAll(getDeptChildren(depts));
+                            getDeptChildren(depts,haves);
                         }
-                        list.add(dept.getId());
+                        if(!haves.contains(dept.getId())) {
+                        	/**
+                        	 * 不存在才加入
+                        	 */
+                        	haves.add(dept.getId());
+                        }
                     }
                 }
         );
-        return list;
+//        return list;
     }
 }
