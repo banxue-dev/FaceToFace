@@ -57,44 +57,6 @@ public class DeptServiceImpl implements DeptService {
 
     @Override
     public Object buildTree(List<DeptDTO> deptDTOS) {
-        Set<DeptDTO> trees = new LinkedHashSet<>();
-        Set<DeptDTO> depts= new LinkedHashSet<>();
-        DeptDTO maxDept=null;
-        haveIds=new ArrayList<Long>();
-        for (DeptDTO deptDTO : deptDTOS) {
-        	System.out.println("我来试试这个是什么,如果这个id已经是别人的一个子级了,这里就不管他了");
-        	if(!haveIds.contains(deptDTO.getId())) {
-        		this.buildTrees(maxDept, deptDTOS);
-        		depts.add(maxDept);
-        	}
-        }
-
-        if (CollectionUtils.isEmpty(trees)) {
-            trees = depts;
-        }
-
-        Integer totalElements = deptDTOS!=null?deptDTOS.size():0;
-
-        Map map = new HashMap();
-        map.put("totalElements",totalElements);
-        map.put("content",CollectionUtils.isEmpty(trees)?deptDTOS:trees);
-        return map;
-    }
-    
-    public void buildTrees(DeptDTO dept,List<DeptDTO> deptDTOS){
-        for (DeptDTO it : deptDTOS) {
-            if (it.getPid().equals(dept.getId())) {
-                if (dept.getChildren() == null) {
-                	dept.setChildren(new ArrayList<DeptDTO>());
-                }
-                it.setName(it.getName()+"111");
-                buildTrees(it,deptDTOS);
-                dept.getChildren().add(it);
-                haveIds.add(it.getId());
-            }
-        }
-    }
-    public Object buildTree1(List<DeptDTO> deptDTOS) {
     	Set<DeptDTO> trees = new LinkedHashSet<>();
     	Set<DeptDTO> depts= new LinkedHashSet<>();
     	List<String> deptNames = deptDTOS.stream().map(DeptDTO::getName).collect(Collectors.toList());

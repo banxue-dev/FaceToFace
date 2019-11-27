@@ -12,9 +12,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.CollectionUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
 * @author L
@@ -37,9 +42,14 @@ public class DeptController {
     @PreAuthorize("hasAnyRole('ADMIN','USER_ALL','USER_SELECT','DEPT_ALL','DEPT_SELECT')")
     public ResponseEntity getDepts(DeptQueryCriteria criteria){
         // 数据权限
-        criteria.setIds(dataScope.getDeptIds());
-        List<DeptDTO> deptDTOS = deptService.queryAll(criteria);
-        return new ResponseEntity(deptService.buildTree(deptDTOS),HttpStatus.OK);
+//        criteria.setIds(dataScope.getDeptIds());
+//        List<DeptDTO> deptDTOS = deptService.queryAll(criteria);
+//        return new ResponseEntity(deptService.buildTree(deptDTOS),HttpStatus.OK);
+    	Set<DeptDTO> s=dataScope.getDeptDTOS();
+    	Map map = new HashMap();
+    	map.put("totalElements",s==null?0:s.size());
+    	map.put("content",s);
+        return new ResponseEntity(map,HttpStatus.OK);
     }
 
     @Log("新增组织")
