@@ -1,23 +1,14 @@
 package com.general.modules.system.controller;
 
-import com.general.aop.log.Log;
-import com.general.domain.VerificationCode;
-import com.general.modules.system.domain.User;
-import com.general.modules.system.domain.vo.UserPassVo;
-import com.general.modules.system.service.DeptService;
-import com.general.modules.system.service.RoleService;
-import com.general.modules.system.service.UserService;
-import com.general.service.VerificationCodeService;
-import com.general.utils.ElAdminConstant;
-import com.general.utils.EncryptUtils;
-import com.general.utils.PageUtil;
-import com.general.utils.SecurityUtils;
-import com.general.config.DataScope;
-import com.general.exception.BadRequestException;
-import com.general.modules.system.service.dto.RoleSmallDTO;
-import com.general.modules.system.service.dto.UserQueryCriteria;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -27,13 +18,38 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.*;
-import java.util.stream.Collectors;
+import com.general.aop.log.Log;
+import com.general.config.DataScope;
+import com.general.domain.VerificationCode;
+import com.general.exception.BadRequestException;
+import com.general.modules.system.domain.User;
+import com.general.modules.system.domain.vo.UserPassVo;
+import com.general.modules.system.service.DeptService;
+import com.general.modules.system.service.RoleService;
+import com.general.modules.system.service.UserService;
+import com.general.modules.system.service.dto.DeptDTO;
+import com.general.modules.system.service.dto.RoleSmallDTO;
+import com.general.modules.system.service.dto.UserDTO;
+import com.general.modules.system.service.dto.UserQueryCriteria;
+import com.general.service.VerificationCodeService;
+import com.general.utils.ElAdminConstant;
+import com.general.utils.EncryptUtils;
+import com.general.utils.PageUtil;
+import com.general.utils.SecurityUtils;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
 /**
  * @author L
@@ -142,6 +158,15 @@ public class UserController {
     @PreAuthorize("hasAnyRole('ADMIN','USER_ALL','USER_CREATE')")
     public ResponseEntity create(@Validated @RequestBody User resources) {
         checkLevel(resources);
+        UserQueryCriteria criteria=new UserQueryCriteria();
+        criteria.setDeptId(resources.getDept().getId());
+        DeptDTO dept=deptService.findById(resources.getId());
+        List<UserDTO> deptUsers=userService.queryAll(criteria);
+        if(deptUsers!=null && deptUsers.size()>0) {
+        	if(deptUsers.size()>=dept.getMaxPersonNumber()) {
+        		throw new BadRequestException("当前组织机构下用户已达到账号上限");
+        	}
+        }
         return new ResponseEntity(userService.create(resources), HttpStatus.CREATED);
     }
 
