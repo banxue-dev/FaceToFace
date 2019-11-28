@@ -166,6 +166,7 @@ export default {
         enabled: data.enabled.toString(),
         enterpriseCode: data.enterpriseCode,
         maxPersonNumber: data.maxPersonNumber,
+        childMaxPersonNumber: data.childMaxPersonNumber,
       }
       _this.dialog = true
     }
