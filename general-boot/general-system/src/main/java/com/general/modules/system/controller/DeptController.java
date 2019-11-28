@@ -1,7 +1,6 @@
 package com.general.modules.system.controller;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -25,8 +24,11 @@ import com.general.config.DataScope;
 import com.general.exception.BadRequestException;
 import com.general.modules.system.domain.Dept;
 import com.general.modules.system.service.DeptService;
+import com.general.modules.system.service.UserService;
 import com.general.modules.system.service.dto.DeptDTO;
 import com.general.modules.system.service.dto.DeptQueryCriteria;
+import com.general.modules.system.service.dto.UserDTO;
+import com.general.modules.system.service.dto.UserQueryCriteria;
 import com.general.utils.ThrowableUtil;
 
 /**
@@ -42,6 +44,9 @@ public class DeptController {
 
     @Autowired
     private DataScope dataScope;
+    
+    @Autowired
+    private UserService userService;
 
     private static final String ENTITY_NAME = "dept";
 
@@ -122,6 +127,14 @@ public class DeptController {
         sumCount-=old.getMaxPersonNumber();
         if(sumCount+resources.getMaxPersonNumber()>parentDept.getMaxPersonNumber()) {
         	throw new BadRequestException("账号上限超过父节点设置数据,目前还剩余:"+(parentDept.getMaxPersonNumber()-sumCount));
+        }
+        UserQueryCriteria criteria1=new UserQueryCriteria();
+        criteria1.setDeptId(resources.getId());
+        List<UserDTO> deptUsers=userService.queryAll(criteria1);
+        if(deptUsers!=null && deptUsers.size()>0) {
+        	if(deptUsers.size()>resources.getMaxPersonNumber()) {
+        		throw new BadRequestException("当前组织机构下已有"+deptUsers.size()+"个用户,请将账号上限大于此人数");
+        	}
         }
         deptService.update(resources);
         return new ResponseEntity(HttpStatus.NO_CONTENT);

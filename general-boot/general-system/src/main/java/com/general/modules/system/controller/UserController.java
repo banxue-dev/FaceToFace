@@ -164,7 +164,7 @@ public class UserController {
         List<UserDTO> deptUsers=userService.queryAll(criteria);
         if(deptUsers!=null && deptUsers.size()>0) {
         	if(deptUsers.size()>=dept.getMaxPersonNumber()) {
-        		throw new BadRequestException("当前组织机构下用户已达到账号上限");
+        		throw new BadRequestException("当前组织机构下用户数["+deptUsers.size()+"]已达到账号上限["+dept.getMaxPersonNumber()+"]");
         	}
         }
         return new ResponseEntity(userService.create(resources), HttpStatus.CREATED);
