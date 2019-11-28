@@ -56,10 +56,10 @@ public class Dept implements Serializable {
     private Integer maxPersonNumber;
     
     /**
-     * 子信组织内最大人数
+     * 子集组织内最大人数
      */
-//    @Column(name = "child_max_person_number")
-//    private Integer childMaxPersonNumber;
+    @Column(name = "child_max_person_number")
+    private Integer childMaxPersonNumber;
 
     /**
      * 企业识别码

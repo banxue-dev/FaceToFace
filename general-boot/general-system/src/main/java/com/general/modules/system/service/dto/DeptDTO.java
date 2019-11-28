@@ -45,12 +45,16 @@ public class DeptDTO implements Serializable {
     /**
      * 子组织内最大人数
      */
-//    private Integer childMaxPersonNumber;
+    private Integer childMaxPersonNumber;
 
     /**
      * 企业识别码
      */
     private String enterpriseCode;
+    /**
+     * 是否是这个用户的最顶级节点
+     */
+    private boolean ifTop=false;
 
     public String getLabel() {
         return name;

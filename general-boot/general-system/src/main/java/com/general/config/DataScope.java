@@ -100,13 +100,13 @@ public class DataScope {
     	DeptQueryCriteria criteria1=new DeptQueryCriteria();
         List<DeptDTO> allDepts = deptService.queryAll(criteria1);
         for (RoleSmallDTO role : roleSet) {
-
             if (scopeType[0].equals(role.getDataScope())) {
             	DeptQueryCriteria criteria2=new DeptQueryCriteria();
             	criteria2.setPid(0L);
                 List<DeptDTO> depts = deptService.queryAll(criteria2);
                 for (DeptDTO dept : depts) {
                 	this.getDeptChildrenBy(dept,allDepts);
+                	dept.setIfTop(true);
                 	deptDTOS.add(dept);
                 }
                 return deptDTOS ;
@@ -126,6 +126,7 @@ public class DataScope {
                 for (Dept dept : depts) {
                 	BeanUtils.copyProperties(dept, n);
                 	this.getDeptChildrenBy(n,allDepts);
+                	n.setIfTop(true);
                 	deptDTOS.add(n);
                 }
             }
