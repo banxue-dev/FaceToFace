@@ -162,7 +162,7 @@ public class DeptController {
              * 排除掉老的
              */
             sumCount-=old.getMaxPersonNumber();
-            if(sumCount+resources.getMaxPersonNumber()>parentDept.getMaxPersonNumber()) {
+            if(sumCount+resources.getMaxPersonNumber()>parentDept.getChildMaxPersonNumber()) {
             	throw new BadRequestException("账号上限超过父节点设置数据,目前还剩余:"+(parentDept.getMaxPersonNumber()-sumCount));
             }
             UserQueryCriteria criteria1=new UserQueryCriteria();
