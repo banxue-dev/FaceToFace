@@ -36,9 +36,14 @@
           <span>{{ scope.row.enterpriseCode }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="maxPersonNumber" label="账号上限">
+      <el-table-column prop="maxPersonNumber" label="本级账号上限">
         <template slot-scope="scope">
           <span>{{ scope.row.maxPersonNumber }}</span>
+        </template>
+      </el-table-column>
+	  <el-table-column prop="maxPersonNumber" label="子集账号上限">
+        <template slot-scope="scope">
+          <span>{{ scope.row.childMaxPersonNumber }}</span>
         </template>
       </el-table-column>
       <el-table-column label="状态" align="center">

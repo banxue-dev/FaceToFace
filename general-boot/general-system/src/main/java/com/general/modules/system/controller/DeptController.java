@@ -142,7 +142,7 @@ public class DeptController {
             		sumCount+=temp.getMaxPersonNumber();
             	}
             }
-            if(sumCount>resources.getMaxPersonNumber()) {
+            if(sumCount>resources.getChildMaxPersonNumber()) {
             	throw new BadRequestException("账号上限不足子节点人数总合,目前总共有:"+(sumCount));
             }
         }else {
@@ -175,7 +175,7 @@ public class DeptController {
             			sum++;
             		}
             	}
-            	if(sum>resources.getMaxPersonNumber()) {
+            	if(sum>resources.getChildMaxPersonNumber()) {
             		throw new BadRequestException("当前组织机构下已有"+sum+"个用户,请将账号上限大于此人数");
             	}
             }
