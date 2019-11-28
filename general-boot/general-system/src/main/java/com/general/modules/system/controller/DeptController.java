@@ -75,25 +75,44 @@ public class DeptController {
         if (resources.getMaxPersonNumber() == null || resources.getMaxPersonNumber()<1) {
         	throw new BadRequestException("账号人数 不能为空,且至少为1人");
         }
-        /**
-    	 * 拿到这个父级节点和他的子节点
-    	 */
-    	DeptQueryCriteria criteria=new DeptQueryCriteria();
-    	criteria.setPid(resources.getPid());
-        List<DeptDTO> allChildren = deptService.queryAll(criteria);
+
         /**
          * 拿到父节点
          */
         DeptDTO parentDept=deptService.findById(resources.getPid());
+    	DeptQueryCriteria criteria=new DeptQueryCriteria();
         Integer sumCount=0;
-        if(allChildren!=null && allChildren.size()>0) {
-        	for(DeptDTO temp:allChildren) {
-        		sumCount+=temp.getMaxPersonNumber();
-        	}
+        if(parentDept.getPid()==0) {
+        	/**
+        	 * 自己已经是根节点了
+        	 * 拿到自己的所有子节点
+        	 */
+        	criteria.setPid(resources.getId());
+            List<DeptDTO> allChildren = deptService.queryAll(criteria);
+            if(allChildren!=null && allChildren.size()>0) {
+            	for(DeptDTO temp:allChildren) {
+            		sumCount+=temp.getMaxPersonNumber();
+            	}
+            }
+            if(sumCount>resources.getMaxPersonNumber()) {
+            	throw new BadRequestException("账号上限不足子节点人数总合,目前总共有:"+(sumCount));
+            }
+        }else {
+        	/**
+        	 * 拿到这个父级节点和他的子节点
+        	 */
+        	criteria.setPid(resources.getPid());
+            List<DeptDTO> allChildren = deptService.queryAll(criteria);
+            if(allChildren!=null && allChildren.size()>0) {
+            	for(DeptDTO temp:allChildren) {
+            		sumCount+=temp.getMaxPersonNumber();
+            	}
+            }
+            if(sumCount+resources.getMaxPersonNumber()>parentDept.getMaxPersonNumber()) {
+            	throw new BadRequestException("账号上限超过父节点设置数据,目前还剩余:"+(parentDept.getMaxPersonNumber()-sumCount));
+            }
         }
-        if(sumCount+resources.getMaxPersonNumber()>parentDept.getMaxPersonNumber()) {
-        	throw new BadRequestException("账号上限超过父节点设置数据,目前还剩余:"+(parentDept.getMaxPersonNumber()-sumCount));
-        }
+        
         return new ResponseEntity(deptService.create(resources),HttpStatus.CREATED);
     }
 
@@ -108,34 +127,60 @@ public class DeptController {
     	 * 拿到这个父级节点和他的子节点
     	 */
     	DeptQueryCriteria criteria=new DeptQueryCriteria();
-    	criteria.setPid(resources.getPid());
-        List<DeptDTO> allChildren = deptService.queryAll(criteria);
-        /**
-         * 拿到父节点
-         */
-        DeptDTO old=deptService.findById(resources.getId());
-        DeptDTO parentDept=deptService.findById(resources.getPid());
+
         Integer sumCount=0;
-        if(allChildren!=null && allChildren.size()>0) {
-        	for(DeptDTO temp:allChildren) {
-        		sumCount+=temp.getMaxPersonNumber();
-        	}
+        DeptDTO parentDept=deptService.findById(resources.getPid());
+        if(parentDept.getPid()==0) {
+        	/**
+        	 * 自己已经是根节点了
+        	 * 拿到自己的所有子节点
+        	 */
+        	criteria.setPid(resources.getId());
+            List<DeptDTO> allChildren = deptService.queryAll(criteria);
+            if(allChildren!=null && allChildren.size()>0) {
+            	for(DeptDTO temp:allChildren) {
+            		sumCount+=temp.getMaxPersonNumber();
+            	}
+            }
+            if(sumCount>resources.getMaxPersonNumber()) {
+            	throw new BadRequestException("账号上限不足子节点人数总合,目前总共有:"+(sumCount));
+            }
+        }else {
+
+        	criteria.setPid(resources.getPid());
+            List<DeptDTO> allChildren = deptService.queryAll(criteria);
+        	 /**
+             * 拿到父节点
+             */
+            DeptDTO old=deptService.findById(resources.getId());
+            if(allChildren!=null && allChildren.size()>0) {
+            	for(DeptDTO temp:allChildren) {
+            		sumCount+=temp.getMaxPersonNumber();
+            	}
+            }
+            /**
+             * 排除掉老的
+             */
+            sumCount-=old.getMaxPersonNumber();
+            if(sumCount+resources.getMaxPersonNumber()>parentDept.getMaxPersonNumber()) {
+            	throw new BadRequestException("账号上限超过父节点设置数据,目前还剩余:"+(parentDept.getMaxPersonNumber()-sumCount));
+            }
+            UserQueryCriteria criteria1=new UserQueryCriteria();
+            criteria1.setDeptId(resources.getId());
+            List<UserDTO> deptUsers=userService.queryAll(criteria1);
+            if(deptUsers!=null && deptUsers.size()>0) {
+            	int sum=0;
+            	for(UserDTO t:deptUsers) {
+            		if(t.getDept()!=null && ( t.getDept().getId().equals(resources.getId()) || t.getDeptId()==resources.getId() )) {
+            			sum++;
+            		}
+            	}
+            	if(sum>resources.getMaxPersonNumber()) {
+            		throw new BadRequestException("当前组织机构下已有"+sum+"个用户,请将账号上限大于此人数");
+            	}
+            }
         }
-        /**
-         * 排除掉老的
-         */
-        sumCount-=old.getMaxPersonNumber();
-        if(sumCount+resources.getMaxPersonNumber()>parentDept.getMaxPersonNumber()) {
-        	throw new BadRequestException("账号上限超过父节点设置数据,目前还剩余:"+(parentDept.getMaxPersonNumber()-sumCount));
-        }
-        UserQueryCriteria criteria1=new UserQueryCriteria();
-        criteria1.setDeptId(resources.getId());
-        List<UserDTO> deptUsers=userService.queryAll(criteria1);
-        if(deptUsers!=null && deptUsers.size()>0) {
-        	if(deptUsers.size()>resources.getMaxPersonNumber()) {
-        		throw new BadRequestException("当前组织机构下已有"+deptUsers.size()+"个用户,请将账号上限大于此人数");
-        	}
-        }
+       
         deptService.update(resources);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }

@@ -39,9 +39,13 @@ public class DeptDTO implements Serializable {
     private Timestamp createTime;
 
     /**
-     * 组织内最大人数
+     * 当前组织内最大人数
      */
     private Integer maxPersonNumber;
+    /**
+     * 子组织内最大人数
+     */
+//    private Integer childMaxPersonNumber;
 
     /**
      * 企业识别码

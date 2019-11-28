@@ -163,8 +163,14 @@ public class UserController {
         DeptDTO dept=deptService.findById(resources.getDept().getId());
         List<UserDTO> deptUsers=userService.queryAll(criteria);
         if(deptUsers!=null && deptUsers.size()>0) {
-        	if(deptUsers.size()>=dept.getMaxPersonNumber()) {
-        		throw new BadRequestException("当前组织机构下用户数["+deptUsers.size()+"]已达到账号上限["+dept.getMaxPersonNumber()+"]");
+        	int sum=0;
+        	for(UserDTO t:deptUsers) {
+        		if(t.getDept()!=null &&( t.getDept().getId().equals(resources.getDept().getId()) || t.getDeptId()==resources.getDept().getId() )) {
+        			sum++;
+        		}
+        	}
+        	if(sum>=dept.getMaxPersonNumber()) {
+        		throw new BadRequestException("当前组织机构下用户数["+sum+"]已达到账号上限["+dept.getMaxPersonNumber()+"]");
         	}
         }
         return new ResponseEntity(userService.create(resources), HttpStatus.CREATED);
