@@ -20,7 +20,7 @@
           <el-select v-model="roleIds" style="width: 350px;" multiple placeholder="请选择角色">
             <el-option
               v-for="(item, index) in roles"
-              :disabled="level !== 1 && item.level <= level"
+              :disabled="level !== 1 && item.level < level"
               :key="item.name + index"
               :label="item.name"
               :value="item.id"/>

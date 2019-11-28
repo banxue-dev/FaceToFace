@@ -160,7 +160,7 @@ public class UserController {
         checkLevel(resources);
         UserQueryCriteria criteria=new UserQueryCriteria();
         criteria.setDeptId(resources.getDept().getId());
-        DeptDTO dept=deptService.findById(resources.getId());
+        DeptDTO dept=deptService.findById(resources.getDept().getId());
         List<UserDTO> deptUsers=userService.queryAll(criteria);
         if(deptUsers!=null && deptUsers.size()>0) {
         	if(deptUsers.size()>=dept.getMaxPersonNumber()) {
