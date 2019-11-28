@@ -98,6 +98,13 @@ public class DeptServiceImpl implements DeptService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public DeptDTO create(Dept resources) {
+    	/**
+    	 * 拿到这个父级节点和他的子节点
+    	 */
+    	DeptQueryCriteria criteria2=new DeptQueryCriteria();
+    	criteria2.setPid(resources.getPid());
+        List<DeptDTO> allChildre = this.queryAll(criteria2);
+    	
         return deptMapper.toDto(deptRepository.save(resources));
     }
 

@@ -96,13 +96,17 @@ public class DataScope {
         // 查询用户角色
         List<RoleSmallDTO> roleSet = roleService.findByUsers_Id(user.getId());
 
+
+    	DeptQueryCriteria criteria1=new DeptQueryCriteria();
+        List<DeptDTO> allDepts = deptService.queryAll(criteria1);
         for (RoleSmallDTO role : roleSet) {
 
             if (scopeType[0].equals(role.getDataScope())) {
-            	DeptQueryCriteria criteria=new DeptQueryCriteria();
-                List<DeptDTO> depts = deptService.queryAll(criteria);
+            	DeptQueryCriteria criteria2=new DeptQueryCriteria();
+            	criteria2.setPid(0L);
+                List<DeptDTO> depts = deptService.queryAll(criteria2);
                 for (DeptDTO dept : depts) {
-                	this.getDeptChildrenBy(dept);
+                	this.getDeptChildrenBy(dept,allDepts);
                 	deptDTOS.add(dept);
                 }
                 return deptDTOS ;
@@ -121,7 +125,7 @@ public class DataScope {
                 DeptDTO n=new DeptDTO();
                 for (Dept dept : depts) {
                 	BeanUtils.copyProperties(dept, n);
-                	this.getDeptChildrenBy(n);
+                	this.getDeptChildrenBy(n,allDepts);
                 	deptDTOS.add(n);
                 }
             }
@@ -135,19 +139,41 @@ public class DataScope {
      * 2019年11月27日
      * fengchaseyou
      */
-    public void getDeptChildrenBy(DeptDTO dept) {
-    	DeptQueryCriteria criteria=new DeptQueryCriteria();
-    	criteria.setPid(dept.getId());
-        List<DeptDTO> deptChildren = deptService.queryAll(criteria);
+    public void getDeptChildrenBy(DeptDTO dept,List<DeptDTO> allDepts) {
+//    	DeptQueryCriteria criteria=new DeptQueryCriteria();
+//    	criteria.setPid(dept.getId());
+//        List<DeptDTO> deptChildren = deptService.queryAll(criteria);
+        List<DeptDTO> deptChildren = this.getChildrenToAllDepts(dept.getId(), allDepts);
+    	
         if(deptChildren!=null && deptChildren.size()>0) {
         	/**
         	 * 如果有下级,就去看看下级是不是还有下级
         	 */
         	for(DeptDTO c:deptChildren) {
-        		this.getDeptChildrenBy(c);
+        		this.getDeptChildrenBy(c,allDepts);
         	}
         	dept.setChildren(deptChildren);
         }
+    }
+    /**
+     * 根据pid去总集合里拿到子集,这样是为了减少与数据库的交互
+     * @param pid
+     * @param allDepts
+     * @return
+     * 2019年11月28日
+     * fengchaseyou
+     */
+    public List<DeptDTO> getChildrenToAllDepts(Long pid,List<DeptDTO> allDepts){
+    	List<DeptDTO> children=new ArrayList<DeptDTO>();
+    	if(allDepts!=null && allDepts.size()>0) {
+    		for(DeptDTO t:allDepts) {
+    			if(t.getPid().equals(pid) || t.getPid()==pid) {
+    				children.add(t);
+    			}
+    		}
+    	}
+    	allDepts.removeAll(children);
+    	return children;
     }
 
 
