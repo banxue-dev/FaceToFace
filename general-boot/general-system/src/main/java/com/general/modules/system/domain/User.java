@@ -123,6 +123,7 @@ public class User implements Serializable {
     @Column(name = "update_user", columnDefinition = "bigint(20) COMMENT '修改用户'")
     private Long updateUser;
 
+    @JsonIgnore
     @OneToOne(cascade = CascadeType.PERSIST)
     @PrimaryKeyJoinColumn
     @JoinColumn(name = "default_channels_id", columnDefinition = "bigint(20) COMMENT '默认频道ID'")
