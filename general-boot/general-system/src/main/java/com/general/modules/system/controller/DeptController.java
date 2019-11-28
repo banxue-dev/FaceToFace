@@ -150,7 +150,7 @@ public class DeptController {
         	criteria.setPid(resources.getPid());
             List<DeptDTO> allChildren = deptService.queryAll(criteria);
         	 /**
-             * 拿到父节点
+             * 拿到旧节点
              */
             DeptDTO old=deptService.findById(resources.getId());
             if(allChildren!=null && allChildren.size()>0) {
