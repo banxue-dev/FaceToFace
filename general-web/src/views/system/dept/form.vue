@@ -11,7 +11,7 @@
         <treeselect v-model="form.pid" :options="depts" style="width: 350px;" :disabled="isAdd ? false : true" placeholder="请选择上级组织" />
       </el-form-item>
 	  <el-form-item v-if="isAdd " label="上级组织">
-        <treeselect :options="depts" style="width: 350px;" :disabled="isAdd ? false : true" placeholder="请选择上级组织" />
+        <treeselect  :options="depts" style="width: 350px;" :disabled="isAdd ? false : true" placeholder="请选择上级组织(默认当前)" />
       </el-form-item>
       <el-form-item label="本级账号上限" prop="maxPersonNumber">
         <el-input-number v-model.number="form.maxPersonNumber" :min="0" controls-position="right" style="width: 350px;"/>

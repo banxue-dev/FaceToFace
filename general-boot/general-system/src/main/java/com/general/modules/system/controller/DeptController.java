@@ -29,6 +29,7 @@ import com.general.modules.system.service.dto.DeptDTO;
 import com.general.modules.system.service.dto.DeptQueryCriteria;
 import com.general.modules.system.service.dto.UserDTO;
 import com.general.modules.system.service.dto.UserQueryCriteria;
+import com.general.utils.SecurityUtils;
 import com.general.utils.ThrowableUtil;
 
 /**
@@ -75,7 +76,15 @@ public class DeptController {
         if (resources.getMaxPersonNumber() == null || resources.getMaxPersonNumber()<1) {
         	throw new BadRequestException("账号人数不能为空,且必须大于等于0");
         }
-
+        if(resources.getPid()==-1) {
+        	/*
+        	 * 
+        	 * -1表示没选择,就用当前用户的id
+        	 * 表示是自己下面的,因为用户添加只能添加自己的下级
+        	 */
+        	UserDTO user = userService.findByName(SecurityUtils.getUsername());
+        	resources.setPid(user.getDept().getId());
+        }
         /**
          * 拿到父节点
          */
@@ -94,7 +103,7 @@ public class DeptController {
             		sumCount+=temp.getMaxPersonNumber();
             	}
             }
-            if(sumCount>resources.getMaxPersonNumber()) {
+            if(sumCount>resources.getChildMaxPersonNumber()) {
             	throw new BadRequestException("账号上限不足子节点人数总合,目前总共有:"+(sumCount));
             }
         }else {
@@ -108,7 +117,7 @@ public class DeptController {
             		sumCount+=temp.getMaxPersonNumber();
             	}
             }
-            if(sumCount+resources.getMaxPersonNumber()>parentDept.getMaxPersonNumber()) {
+            if(sumCount+resources.getMaxPersonNumber()>parentDept.getChildMaxPersonNumber()) {
             	throw new BadRequestException("账号上限超过父节点设置数据,目前还剩余:"+(parentDept.getChildMaxPersonNumber()-sumCount));
             }
         }

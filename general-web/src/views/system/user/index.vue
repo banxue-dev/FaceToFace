@@ -43,7 +43,7 @@
         </div>
         <!--表格渲染-->
         <el-table v-loading="loading" :data="data" size="small" style="width: 100%;">
-          <el-table-column prop="username" label="用户名"/>
+          <el-table-column prop="name" label="用户名"/>
           <el-table-column label="组织 / 角色">
             <template slot-scope="scope">
               <div>{{ scope.row.dept.name }} / {{ scope.row.roles[0].name }}</div>

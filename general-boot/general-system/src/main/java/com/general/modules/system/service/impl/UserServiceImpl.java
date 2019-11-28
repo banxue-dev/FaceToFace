@@ -122,6 +122,7 @@ public class UserServiceImpl implements UserService {
             key = "role::findByUsers_Id:" + user.getId();
             redisService.delete(key);
         }
+        user.setName(resources.getName());
         user.setUsername(resources.getUsername());
 //        user.setEmail(resources.getEmail());
         user.setEnabled(resources.getEnabled());
