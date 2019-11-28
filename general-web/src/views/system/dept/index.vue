@@ -161,6 +161,7 @@ export default {
         id: data.id,
         name: data.name,
         pid: data.pid,
+		ifTop:data.ifTop,
         createTime: data.createTime,
         enabled: data.enabled.toString(),
         enterpriseCode: data.enterpriseCode,

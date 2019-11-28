@@ -73,7 +73,7 @@ public class DeptController {
             throw new BadRequestException("新的组织 "+ ENTITY_NAME +" 存在组织ID");
         }
         if (resources.getMaxPersonNumber() == null || resources.getMaxPersonNumber()<1) {
-        	throw new BadRequestException("账号人数 不能为空,且至少为1人");
+        	throw new BadRequestException("账号人数不能为空,且必须大于等于0");
         }
 
         /**
@@ -109,7 +109,7 @@ public class DeptController {
             	}
             }
             if(sumCount+resources.getMaxPersonNumber()>parentDept.getMaxPersonNumber()) {
-            	throw new BadRequestException("账号上限超过父节点设置数据,目前还剩余:"+(parentDept.getMaxPersonNumber()-sumCount));
+            	throw new BadRequestException("账号上限超过父节点设置数据,目前还剩余:"+(parentDept.getChildMaxPersonNumber()-sumCount));
             }
         }
         
@@ -120,8 +120,8 @@ public class DeptController {
     @PutMapping(value = "/dept")
     @PreAuthorize("hasAnyRole('ADMIN','DEPT_ALL','DEPT_EDIT')")
     public ResponseEntity update(@Validated(Dept.Update.class) @RequestBody Dept resources){
-    	if (resources.getMaxPersonNumber() == null || resources.getMaxPersonNumber()<1) {
-        	throw new BadRequestException("账号人数 不能为空,且至少为1人");
+    	if (resources.getMaxPersonNumber() == null || resources.getMaxPersonNumber()<0) {
+        	throw new BadRequestException("账号人数不能为空,且必须大于等于0");
         }
         /**
     	 * 拿到这个父级节点和他的子节点
@@ -163,7 +163,7 @@ public class DeptController {
              */
             sumCount-=old.getMaxPersonNumber();
             if(sumCount+resources.getMaxPersonNumber()>parentDept.getChildMaxPersonNumber()) {
-            	throw new BadRequestException("账号上限超过父节点设置数据,目前还剩余:"+(parentDept.getMaxPersonNumber()-sumCount));
+            	throw new BadRequestException("账号上限超过父节点设置数据,目前还剩余:"+(parentDept.getChildMaxPersonNumber()-sumCount));
             }
             UserQueryCriteria criteria1=new UserQueryCriteria();
             criteria1.setDeptId(resources.getId());

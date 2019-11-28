@@ -13,8 +13,11 @@
 	  <el-form-item v-if="isAdd " label="上级组织">
         <treeselect :options="depts" style="width: 350px;" :disabled="isAdd ? false : true" placeholder="请选择上级组织" />
       </el-form-item>
-      <el-form-item label="账号上限" prop="maxPersonNumber">
+      <el-form-item label="本级账号上限" prop="maxPersonNumber">
         <el-input-number v-model.number="form.maxPersonNumber" :min="0" controls-position="right" style="width: 350px;"/>
+      </el-form-item>
+	  <el-form-item label="子集账号上限" prop="maxPersonNumber">
+        <el-input-number v-model.number="form.childMaxPersonNumber" :min="0" controls-position="right" style="width: 350px;"/>
       </el-form-item>
       <el-form-item label="企业识别码" prop="enterpriseCode">
         <el-input v-model="form.enterpriseCode" style="width: 350px;"/>
@@ -54,6 +57,7 @@ export default {
         enabled: 'true',
         enterpriseCode: '',
         maxPersonNumber: '',
+        childMaxPersonNumber: '',
         user: { id: null }
       },
       rules: {
