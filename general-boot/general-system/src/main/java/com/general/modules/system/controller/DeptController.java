@@ -185,8 +185,8 @@ public class DeptController {
             			sum++;
             		}
             	}
-            	if(sum>resources.getChildMaxPersonNumber()) {
-            		throw new BadRequestException("当前组织机构下已有"+sum+"个用户,请将账号上限大于此人数");
+            	if(sum>resources.getMaxPersonNumber()) {
+            		throw new BadRequestException("当前组织机构下已有"+sum+"个用户,请将本级账号上限大于此人数");
             	}
             }
         }
