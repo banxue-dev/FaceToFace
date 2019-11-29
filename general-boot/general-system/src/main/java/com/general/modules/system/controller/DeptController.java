@@ -77,13 +77,14 @@ public class DeptController {
         	throw new BadRequestException("账号人数不能为空,且必须大于等于0");
         }
         if(resources.getPid()==-1) {
+        	throw new BadRequestException("上级组织机构必选");
         	/*
         	 * 
         	 * -1表示没选择,就用当前用户的id
         	 * 表示是自己下面的,因为用户添加只能添加自己的下级
         	 */
-        	UserDTO user = userService.findByName(SecurityUtils.getUsername());
-        	resources.setPid(user.getDept().getId());
+//        	UserDTO user = userService.findByName(SecurityUtils.getUsername());
+//        	resources.setPid(user.getDept().getId());
         }
         /**
          * 拿到父节点

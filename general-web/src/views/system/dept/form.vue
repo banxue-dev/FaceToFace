@@ -10,8 +10,8 @@
       <el-form-item v-if="!isAdd && !form.ifTop" label="上级组织">
         <treeselect v-model="form.pid" :options="depts" style="width: 350px;" :disabled="isAdd ? false : true" placeholder="请选择上级组织" />
       </el-form-item>
-	  <el-form-item v-if="isAdd " label="上级组织">
-        <treeselect  :options="depts" style="width: 350px;" :disabled="isAdd ? false : true" placeholder="请选择上级组织(默认当前)" />
+	  <el-form-item v-if="isAdd " label="上级组织" >
+        <treeselect v-model="form.pid"  :options="depts" style="width: 350px;" :disabled="isAdd ? false : true" placeholder="请选择上级组织(默认当前)" />
       </el-form-item>
       <el-form-item label="本级账号上限" prop="maxPersonNumber">
         <el-input-number v-model.number="form.maxPersonNumber" :min="0" controls-position="right" style="width: 350px;"/>
@@ -74,7 +74,7 @@ export default {
     doSubmit() {
       this.$refs['form'].validate((valid) => {
         if (valid) {
-          if (this.form.pid !== undefined) {
+          if (this.form.pid !== -1) {
             this.loading = true
             if (this.isAdd) {
               this.doAdd()
@@ -128,6 +128,9 @@ export default {
     },
     getDepts() {
       getDepts({ enabled: true }).then(res => {
+		if(this.isAdd){
+			this.form.pid=res.content[0].id;
+		}
         this.depts = res.content
       })
     }
