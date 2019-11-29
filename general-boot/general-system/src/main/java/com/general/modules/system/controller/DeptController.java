@@ -101,11 +101,11 @@ public class DeptController {
             List<DeptDTO> allChildren = deptService.queryAll(criteria);
             if(allChildren!=null && allChildren.size()>0) {
             	for(DeptDTO temp:allChildren) {
-            		sumCount+=temp.getMaxPersonNumber();
+            		sumCount+=temp.getMaxPersonNumber()+temp.getChildMaxPersonNumber();
             	}
             }
             if(sumCount>resources.getChildMaxPersonNumber()) {
-            	throw new BadRequestException("账号上限不足子节点人数总合,目前总共有:"+(sumCount));
+            	throw new BadRequestException("子集账号上限不足子节点人数总合,目前总共有:"+(sumCount));
             }
         }else {
         	/**
@@ -115,11 +115,11 @@ public class DeptController {
             List<DeptDTO> allChildren = deptService.queryAll(criteria);
             if(allChildren!=null && allChildren.size()>0) {
             	for(DeptDTO temp:allChildren) {
-            		sumCount+=temp.getMaxPersonNumber();
+            		sumCount+=temp.getMaxPersonNumber()+temp.getChildMaxPersonNumber();
             	}
             }
-            if(sumCount+resources.getMaxPersonNumber()>parentDept.getChildMaxPersonNumber()) {
-            	throw new BadRequestException("账号上限超过父节点设置数据,目前还剩余:"+(parentDept.getChildMaxPersonNumber()-sumCount));
+            if(sumCount+resources.getMaxPersonNumber()+resources.getChildMaxPersonNumber()>parentDept.getChildMaxPersonNumber()) {
+            	throw new BadRequestException("本级和子集账号上限超过父节点设置数据,目前还剩余:"+(parentDept.getChildMaxPersonNumber()-sumCount));
             }
         }
         
@@ -149,31 +149,47 @@ public class DeptController {
             List<DeptDTO> allChildren = deptService.queryAll(criteria);
             if(allChildren!=null && allChildren.size()>0) {
             	for(DeptDTO temp:allChildren) {
-            		sumCount+=temp.getMaxPersonNumber();
+            		sumCount+=temp.getMaxPersonNumber()+temp.getChildMaxPersonNumber();
             	}
             }
             if(sumCount>resources.getChildMaxPersonNumber()) {
-            	throw new BadRequestException("账号上限不足子节点人数总合,目前总共有:"+(sumCount));
+            	throw new BadRequestException("子集账号上限不足子节点人数总合,目前总共有:"+(sumCount));
             }
         }else {
 
         	criteria.setPid(resources.getPid());
             List<DeptDTO> allChildren = deptService.queryAll(criteria);
         	 /**
-             * 拿到旧节点
+             * 1拿到旧节点
              */
             DeptDTO old=deptService.findById(resources.getId());
             if(allChildren!=null && allChildren.size()>0) {
             	for(DeptDTO temp:allChildren) {
-            		sumCount+=temp.getMaxPersonNumber();
+            		sumCount+=temp.getMaxPersonNumber()+temp.getChildMaxPersonNumber();
             	}
             }
             /**
-             * 排除掉老的
+             * 1排除掉老的
              */
-            sumCount-=old.getMaxPersonNumber();
-            if(sumCount+resources.getMaxPersonNumber()>parentDept.getChildMaxPersonNumber()) {
-            	throw new BadRequestException("账号上限超过父节点设置数据,目前还剩余:"+(parentDept.getChildMaxPersonNumber()-sumCount));
+            sumCount-=(old.getMaxPersonNumber()+old.getChildMaxPersonNumber());
+            if(sumCount+resources.getMaxPersonNumber()+resources.getChildMaxPersonNumber()>parentDept.getChildMaxPersonNumber()) {
+            	throw new BadRequestException("本级和子集账号上限总和超过父节点设置数据,目前还剩余:"+(parentDept.getChildMaxPersonNumber()-sumCount-(old.getMaxPersonNumber()+old.getChildMaxPersonNumber())));
+            }
+            
+            /**
+             * 1判断当前节点的子节点是多少
+             */
+            DeptQueryCriteria nowChildCriteria=new DeptQueryCriteria();
+            nowChildCriteria.setPid(resources.getId());
+            int nowChildCount=0;
+            List<DeptDTO> nowChildrens = deptService.queryAll(nowChildCriteria);
+            if(nowChildrens!=null && nowChildrens.size()>0) {
+            	for(DeptDTO temp:nowChildrens) {
+            		nowChildCount+=temp.getMaxPersonNumber()+temp.getChildMaxPersonNumber();
+            	}
+            }
+            if(nowChildCount>resources.getChildMaxPersonNumber()) {
+            	throw new BadRequestException("当前组织机构下已用:了"+nowChildCount+",请将子级账号上限大于此人数");
             }
             UserQueryCriteria criteria1=new UserQueryCriteria();
             criteria1.setDeptId(resources.getId());
