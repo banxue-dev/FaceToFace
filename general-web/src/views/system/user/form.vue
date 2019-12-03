@@ -114,7 +114,26 @@ export default {
     }
   },
   data() {
-	startTime: {
+	
+    return {
+      dialog: false, loading: false,
+      roleIds: [], roles: [], depts: [], deptId: null, level: 3, channelsDialog: false, channelsList: [], channelsTags: [], channelsId: null,
+      form: {
+        username: '',
+        name: '',
+        enterpriseCode: '',
+        enabled: null,
+        roles: [],
+        dept: { id: '' },
+        level: null,
+        locationSwitch: null,
+        locationInterval: null,
+        serviceTime: '',
+        channels: { id: '' },
+        channelsSet: [],
+        videoSwitch: null
+      },
+	  serviceTime: {
 		time: ''
 	},
 	option: {
@@ -162,24 +181,6 @@ export default {
 		return [];
 	  }
 	}],
-    return {
-      dialog: false, loading: false,
-      roleIds: [], roles: [], depts: [], deptId: null, level: 3, channelsDialog: false, channelsList: [], channelsTags: [], channelsId: null,
-      form: {
-        username: '',
-        name: '',
-        enterpriseCode: '',
-        enabled: null,
-        roles: [],
-        dept: { id: '' },
-        level: null,
-        locationSwitch: null,
-        locationInterval: null,
-        serviceTime: '',
-        channels: { id: '' },
-        channelsSet: [],
-        videoSwitch: null
-      },
       rules: {
         username: [
           { required: true, message: '请输入登录名', trigger: 'blur' },

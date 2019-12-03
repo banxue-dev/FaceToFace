@@ -88,13 +88,12 @@ public class RoleController {
     @PreAuthorize("hasAnyRole('ADMIN','ROLES_ALL','ROLES_SELECT')")
     public ResponseEntity getRoles(RoleQueryCriteria criteria, Pageable pageable){
     	Page<RoleDTO> page= roleService.queryAll(criteria,pageable);
-//    	List<RoleDTO> lst=page.getContent();
-//    	List<RoleDTO> nlst=new ArrayList<RoleDTO>();
-//    	for(RoleDTO r:lst) {
-//    		if(r.getId()!=1) {
-//    			nlst.add(r);
-//    		}
-//    	}
+    	List<RoleDTO> lst=page.getContent();
+    	for(RoleDTO r:lst) {
+    		if(r.getId()!=1) {
+    			lst.remove(r);
+    		}
+    	}
         return new ResponseEntity(page,HttpStatus.OK);
     }
 
