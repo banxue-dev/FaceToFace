@@ -1,15 +1,12 @@
 package com.general.modules.system.controller;
 
-import cn.hutool.core.lang.Dict;
-import com.general.aop.log.Log;
-import com.general.exception.BadRequestException;
-import com.general.modules.system.domain.Role;
-import com.general.modules.system.service.RoleService;
-import com.general.modules.system.service.dto.RoleQueryCriteria;
-import com.general.modules.system.service.dto.RoleSmallDTO;
-import com.general.utils.SecurityUtils;
-import com.general.utils.ThrowableUtil;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -17,10 +14,26 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.general.aop.log.Log;
+import com.general.exception.BadRequestException;
+import com.general.modules.system.domain.Role;
+import com.general.modules.system.service.RoleService;
+import com.general.modules.system.service.dto.RoleDTO;
+import com.general.modules.system.service.dto.RoleQueryCriteria;
+import com.general.modules.system.service.dto.RoleSmallDTO;
+import com.general.utils.SecurityUtils;
+import com.general.utils.ThrowableUtil;
+
+import cn.hutool.core.lang.Dict;
 
 /**
  * @author L
@@ -53,14 +66,36 @@ public class RoleController {
     @GetMapping(value = "/roles/all")
     @PreAuthorize("hasAnyRole('ADMIN','ROLES_ALL','USER_ALL','USER_CREATE','USER_EDIT')")
     public ResponseEntity getAll(@PageableDefault(value = 2000, sort = {"level"}, direction = Sort.Direction.ASC) Pageable pageable){
-        return new ResponseEntity(roleService.queryAll(pageable),HttpStatus.OK);
+    	List<RoleDTO> lst=roleService.queryAll(pageable);
+    	List<RoleDTO> nlst=new ArrayList<RoleDTO>();
+    	for(RoleDTO r:lst) {
+    		if(r.getId()!=1) {
+    			nlst.add(r);
+    		}
+    	}
+    	return new ResponseEntity(nlst,HttpStatus.OK);
     }
-
-    @Log("查询角色")
+    /**
+     * 列表数据
+     * @param criteria
+     * @param pageable
+     * @return
+     * 2019年12月3日
+     * fengchaseyou
+     */
+    @Log("查询角色|列表")
     @GetMapping(value = "/roles")
     @PreAuthorize("hasAnyRole('ADMIN','ROLES_ALL','ROLES_SELECT')")
     public ResponseEntity getRoles(RoleQueryCriteria criteria, Pageable pageable){
-        return new ResponseEntity(roleService.queryAll(criteria,pageable),HttpStatus.OK);
+    	Page<RoleDTO> page= roleService.queryAll(criteria,pageable);
+//    	List<RoleDTO> lst=page.getContent();
+//    	List<RoleDTO> nlst=new ArrayList<RoleDTO>();
+//    	for(RoleDTO r:lst) {
+//    		if(r.getId()!=1) {
+//    			nlst.add(r);
+//    		}
+//    	}
+        return new ResponseEntity(page,HttpStatus.OK);
     }
 
     @GetMapping(value = "/roles/level")

@@ -39,7 +39,7 @@ public class RoleServiceImpl implements RoleService {
     private RoleSmallMapper roleSmallMapper;
 
     @Override
-    public Object queryAll(Pageable pageable) {
+    public List<RoleDTO> queryAll(Pageable pageable) {
         return roleMapper.toDto(roleRepository.findAll(pageable).getContent());
     }
 
@@ -49,9 +49,10 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public Object queryAll(RoleQueryCriteria criteria, Pageable pageable) {
+    public Page<RoleDTO>  queryAll(RoleQueryCriteria criteria, Pageable pageable) {
         Page<Role> page = roleRepository.findAll((root, criteriaQuery, criteriaBuilder) -> QueryHelp.getPredicate(root,criteria,criteriaBuilder),pageable);
-        return PageUtil.toPage(page.map(roleMapper::toDto));
+//        return PageUtil.toPage(page.map(roleMapper::toDto));
+        return page.map(roleMapper::toDto);
     }
 
     @Override

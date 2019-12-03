@@ -7,6 +7,7 @@ import com.general.modules.system.service.dto.RoleSmallDTO;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -86,7 +87,7 @@ public interface RoleService {
      * @return
      */
     @Cacheable
-    Object queryAll(Pageable pageable);
+    List<RoleDTO> queryAll(Pageable pageable);
 
     /**
      * queryAll
@@ -95,7 +96,7 @@ public interface RoleService {
      * @return
      */
     @Cacheable
-    Object queryAll(RoleQueryCriteria criteria, Pageable pageable);
+    Page<RoleDTO> queryAll(RoleQueryCriteria criteria, Pageable pageable);
 
     /**
      * queryAll
