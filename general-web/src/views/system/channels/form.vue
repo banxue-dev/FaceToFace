@@ -70,7 +70,7 @@
     </el-dialog>
     <el-dialog :append-to-body="true" :close-on-click-modal="false" :before-close="userDialogClose" :visible.sync="userDialog" :title="userTitle" width="300px">
       <el-select v-model="selUsersId" filterable placeholder="请选择用户">
-        <el-option v-for="item in usersList" :key="item.id" :label="item.username" :value="item.id"/>
+        <el-option v-for="item in usersList" :key="item.id" :label="item.name" :value="item.id"/>
       </el-select>
       <div slot="footer" class="dialog-footer">
         <el-button type="text" @click="userDialogClose">取消</el-button>
