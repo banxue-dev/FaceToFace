@@ -71,6 +71,9 @@ public class AuthenticationController {
         }
         final JwtUser jwtUser = (JwtUser) userDetailsService.loadUserByUsername(authorizationUser.getUsername());
 
+        if(jwtUser.getUserType()==0) {
+        	throw new AccountExpiredException("普通用户暂时无法当前系统");
+        }
         if(!jwtUser.getPassword().equals(EncryptUtils.encryptPassword(authorizationUser.getPassword()))){
             throw new AccountExpiredException("密码错误");
         }

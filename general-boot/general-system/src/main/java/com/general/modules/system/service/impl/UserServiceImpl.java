@@ -126,6 +126,7 @@ public class UserServiceImpl implements UserService {
         user.setUsername(resources.getUsername());
 //        user.setEmail(resources.getEmail());
         user.setEnabled(resources.getEnabled());
+        user.setUserType(resources.getUserType());
         user.setRoles(resources.getRoles());
         user.setDept(resources.getDept());
         user.setChannels(resources.getChannels());
