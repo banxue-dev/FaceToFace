@@ -13,7 +13,7 @@
             <el-radio v-for="item in dictMap.user_status" :key="item.id" :label="item.value">{{ item.label }}</el-radio>
           </el-radio-group>
         </el-form-item>
-		<el-form-item label="用户类型" prop="enabled">
+		<el-form-item label="用户类型" prop="userType">
           <el-radio-group v-model="form.userType">
             <el-radio v-for="item in dictMap.user_types" :key="item.id" :label="item.value">{{ item.label }}</el-radio>
           </el-radio-group>
