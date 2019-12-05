@@ -29,6 +29,11 @@ public class UserDTO implements Serializable {
     private String phone;
 
     private Boolean enabled;
+    
+    /**
+     * 用户类型0:普通用户,1:管理用户
+     */
+    private Integer  userType;
 
     @JsonIgnore
     private String password;

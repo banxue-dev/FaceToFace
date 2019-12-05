@@ -33,6 +33,7 @@ public class JwtUser implements UserDetails {
     private final String phone;
 
     private final String dept;
+    private final Integer userType;
 
     @JsonIgnore
     private final Collection<GrantedAuthority> authorities;

@@ -111,6 +111,9 @@ public class ApiUserController {
     @PostMapping(value = "/login")
     public ResponseEntity login(@Validated @RequestBody UserLoginVo authorizationUser) {
         final JwtUser jwtUser = (JwtUser) userDetailsService.loadUserByUsername(authorizationUser.getUsername());
+        if(jwtUser.getUserType()==0) {
+        	 throw new AccountExpiredException("普通用户无法使用本系统");
+        }
         if (!jwtUser.getPassword().equals(EncryptUtils.encryptPassword(authorizationUser.getPassword()))) {
             throw new AccountExpiredException("密码错误");
         }

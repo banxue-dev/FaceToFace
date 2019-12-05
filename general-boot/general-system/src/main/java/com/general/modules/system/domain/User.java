@@ -78,6 +78,8 @@ public class User implements Serializable {
      */
     @Column(name = "level", columnDefinition = "int(10) COMMENT '等级'")
     private Integer level;
+    @Column(name = "user_type", columnDefinition = "int(2) COMMENT '0:普通用户,1:管理员'")
+    private Integer userType;
 
     /**
      * 企业识别码

@@ -49,7 +49,14 @@
               <div>{{ scope.row.dept.name }} / {{ scope.row.roles[0].name }}</div>
             </template>
           </el-table-column>
-          <el-table-column label="状态" align="center">
+          <el-table-column label="用户类型" align="center">
+            <template slot-scope="scope">
+              <div v-for="item in dictMap.user_types" :key="item.id">
+                <el-tag v-if="scope.row.userType.toString() === item.value" :type="scope.row.userType ? '' : 'info'">{{ item.label }}</el-tag>
+              </div>
+            </template>
+          </el-table-column>
+		  <el-table-column label="状态" align="center">
             <template slot-scope="scope">
               <div v-for="item in dictMap.user_status" :key="item.id">
                 <el-tag v-if="scope.row.enabled.toString() === item.value" :type="scope.row.enabled ? '' : 'info'">{{ item.label }}</el-tag>
@@ -124,7 +131,7 @@ export default {
     this.$nextTick(() => {
       this.init()
       // 加载数据字典
-      this.getDictMap('user_status,user_video_switch,user_location_switch')
+      this.getDictMap('user_status,user_video_switch,user_location_switch,user_types')
     })
   },
   mounted: function() {
@@ -221,6 +228,7 @@ export default {
         id: data.id,
         username: data.username,
         name: data.name,
+		userType:data.userType.toString(),
         enterpriseCode: data.enterpriseCode,
         enabled: data.enabled.toString(),
         roles: [],

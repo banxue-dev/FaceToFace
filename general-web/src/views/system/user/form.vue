@@ -13,6 +13,11 @@
             <el-radio v-for="item in dictMap.user_status" :key="item.id" :label="item.value">{{ item.label }}</el-radio>
           </el-radio-group>
         </el-form-item>
+		<el-form-item label="用户类型" prop="enabled">
+          <el-radio-group v-model="form.userType">
+            <el-radio v-for="item in dictMap.user_types" :key="item.id" :label="item.value">{{ item.label }}</el-radio>
+          </el-radio-group>
+        </el-form-item>
         <el-form-item label="组织">
           <treeselect v-model="deptId" :options="depts" style="width: 350px" placeholder="请选择组织" @select="selectDept"/>
         </el-form-item>
@@ -280,6 +285,7 @@ export default {
         serviceTime: '',
         channels: { id: '' },
         channelsSet: [],
+		userType:0,
         videoSwitch: null
       }
     },
