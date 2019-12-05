@@ -87,13 +87,19 @@ public class RoleController {
     @GetMapping(value = "/roles")
     @PreAuthorize("hasAnyRole('ADMIN','ROLES_ALL','ROLES_SELECT')")
     public ResponseEntity getRoles(RoleQueryCriteria criteria, Pageable pageable){
+    	criteria.setNotEq(2);
     	Page<RoleDTO> page= roleService.queryAll(criteria,pageable);
-    	List<RoleDTO> lst=page.getContent();
-    	for(RoleDTO r:lst) {
-    		if(r.getId()!=1) {
-    			lst.remove(r);
-    		}
-    	}
+//    	List<RoleDTO> lst=page.getContent();
+//    	List<RoleDTO> rs=new ArrayList<RoleDTO>();
+//    	for(RoleDTO r:lst) {
+//    		if(r.getId()==1) {
+//    			rs.add(r);
+//    		}
+//    	}
+//    	if(rs.size()>0) {
+//    		
+//    		lst.removeAll(rs);
+//    	}
         return new ResponseEntity(page,HttpStatus.OK);
     }
 

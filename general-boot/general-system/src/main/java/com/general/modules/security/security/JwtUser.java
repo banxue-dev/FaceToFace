@@ -21,6 +21,7 @@ public class JwtUser implements UserDetails {
     @JsonIgnore
     private final Long id;
 
+    private final Integer userType;
     private final String username;
 
     @JsonIgnore
@@ -33,7 +34,7 @@ public class JwtUser implements UserDetails {
     private final String phone;
 
     private final String dept;
-    private final Integer userType;
+    
 
     @JsonIgnore
     private final Collection<GrantedAuthority> authorities;
