@@ -5,7 +5,10 @@
         <el-form-item label="登录名" prop="username">
           <el-input v-model="form.username" style="width: 350px;" placeholder="请输入登录名"/>
         </el-form-item>
-        <el-form-item label="用户名" prop="name">
+        <el-form-item label="用户密码" prop="password">
+          <el-input v-model="form.password" style="width: 350px;" placeholder="请输入用户密码"/>
+        </el-form-item>
+		<el-form-item label="用户名" prop="name">
           <el-input v-model="form.name" style="width: 350px;" placeholder="请输入用户名"/>
         </el-form-item>
         <el-form-item label="状态" prop="enabled">
@@ -126,6 +129,7 @@ export default {
       form: {
         username: '',
         name: '',
+		password:'',
         enterpriseCode: '',
         enabled: null,
         roles: [],
@@ -275,6 +279,7 @@ export default {
       this.form = {
         username: '',
         name: '',
+        password: '',
         enterpriseCode: '',
         enabled: null,
         roles: [],
