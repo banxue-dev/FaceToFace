@@ -54,7 +54,13 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="服务期限" prop="serviceTime">
-		 <date-picker :date="form.serviceTime" :option="option" :limit="limit"></date-picker>
+		<el-date-picker
+            v-model="form.serviceTime"
+            type="datetime"
+            format="yyyy-MM-dd hh:mm:ss"
+            value-format="yyyy-MM-dd hh:mm:ss"
+            placeholder="选择日期时间">
+    </el-date-picker>
         </el-form-item>
         <el-form-item label="默认频道">
           <el-select v-model="form.channels.id" filterable style="width: 350px;" placeholder="请选择默认频道" @change="defaultChanneChange">
@@ -106,11 +112,9 @@ import { listChannelsInfosByDeptId } from '@/api/channelsInfo'
 import { getAll, getLevel } from '@/api/role'
 import Treeselect from '@riophae/vue-treeselect'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
-import myDatepicker from 'vue-datepicker/vue-datepicker-1.vue'
-import Datepicker from 'vue-datepicker/vue-datepicker-es6.vue'
 
 export default {
-  components: { Treeselect,Datepicker },
+  components: { Treeselect },
   props: {
     isAdd: {
       type: Boolean,
@@ -145,51 +149,6 @@ export default {
 	  serviceTime: {
 		time: ''
 	},
-	option: {
-		type: 'day',
-		week: ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'],
-		month: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-		format: 'YYYY-MM-DD',
-		placeholder: 'when?',
-		inputStyle: {
-			'display': 'inline-block',
-			'padding': '6px',
-			'line-height': '22px',
-			'font-size': '16px',
-			'border': '2px solid #fff',
-			'box-shadow': '0 1px 3px 0 rgba(0, 0, 0, 0.2)',
-			'border-radius': '2px',
-			'color': '#5F5F5F'
-		},
-		color: {
-			header: '#ccc',
-			headerText: '#f00'
-		},
-		buttons: {
-			ok: 'Ok',
-			cancel: 'Cancel'
-		},
-		overlayOpacity: 0.5, // 0.5 as default
-		dismissible: true // as true as default
-	},
-	timeoption: {
-		type: 'min',
-		week: ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'],
-		month: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-		format: 'YYYY-MM-DD HH:mm'
-	},
-	multiOption: {
-		type: 'multi-day',
-		week: ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'],
-		month: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-		format: "YYYY-MM-DD HH:mm"
-	},
-	limit: [{
-	  type: Array,
-	  default:function _default(){
-		return [];
-	  }
-	}],
       rules: {
         username: [
           { required: true, message: '请输入登录名', trigger: 'blur' },
