@@ -20,7 +20,7 @@
         <el-input-number v-model.number="form.childMaxPersonNumber" :min="0" controls-position="right" style="width: 350px;"/>
       </el-form-item>
       <el-form-item label="企业识别码" prop="enterpriseCode">
-        <el-input v-model="form.enterpriseCode" style="width: 350px;"/>
+        <el-input v-model="form.enterpriseCode" :disabled="(!isAdd && form.pid!=0) || form.isHideEncode" style="width: 350px;"/>
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
@@ -56,6 +56,7 @@ export default {
 		ifTop:false,
         enabled: 'true',
         enterpriseCode: '',
+		isHideEncode:false,
         maxPersonNumber: '',
         childMaxPersonNumber: '',
         user: { id: null }
@@ -89,7 +90,10 @@ export default {
       })
     },selectDept(node, instanceId) {
 	  if(node.pid!=0){
+		this.form.isHideEncode=true;
 		this.form.enterpriseCode = node.enterpriseCode;
+	  }else{
+		this.form.isHideEncode=false;
 	  }
 
     },
