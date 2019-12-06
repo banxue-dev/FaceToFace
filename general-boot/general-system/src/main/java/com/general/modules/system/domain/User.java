@@ -109,7 +109,7 @@ public class User implements Serializable {
     /**
      * 服务期限
      */
-    @Column(name = "service_time", columnDefinition = "varchar(20) COMMENT '服务期限'")
+    @Column(name = "service_time", columnDefinition = "varchar(50) COMMENT '服务期限'")
     private String serviceTime;
 
     @CreationTimestamp

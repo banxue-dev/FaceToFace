@@ -122,11 +122,16 @@ public class UserServiceImpl implements UserService {
             key = "role::findByUsers_Id:" + user.getId();
             redisService.delete(key);
         }
+        
+        if(StringUtils.isNotEmpty(resources.getPassword())){
+        	user.setPassword(EncryptUtils.encryptPassword(resources.getPassword()));
+        }
         user.setName(resources.getName());
         user.setUsername(resources.getUsername());
 //        user.setEmail(resources.getEmail());
         user.setEnabled(resources.getEnabled());
         user.setUserType(resources.getUserType());
+        user.setServiceTime(resources.getServiceTime());
         user.setRoles(resources.getRoles());
         user.setDept(resources.getDept());
         user.setChannels(resources.getChannels());

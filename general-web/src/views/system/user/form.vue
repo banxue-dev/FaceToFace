@@ -5,8 +5,11 @@
         <el-form-item label="登录名" prop="username">
           <el-input v-model="form.username" style="width: 350px;" placeholder="请输入登录名"/>
         </el-form-item>
-        <el-form-item label="用户密码" prop="password">
-          <el-input v-model="form.password" style="width: 350px;" placeholder="请输入用户密码"/>
+        <el-form-item v-if="isAdd" label="用户密码" prop="password">
+          <el-input v-model="form.password" style="width: 350px;" placeholder="不填默认123456"/>
+        </el-form-item>
+		<el-form-item label="用户密码" v-if="!isAdd" prop="password">
+          <el-input v-model="form.password" style="width: 350px;" placeholder="不填表示不更改"/>
         </el-form-item>
 		<el-form-item label="用户名" prop="name">
           <el-input v-model="form.name" style="width: 350px;" placeholder="请输入用户名"/>
@@ -57,8 +60,8 @@
 		<el-date-picker
             v-model="form.serviceTime"
             type="datetime"
-            format="yyyy-MM-dd hh:mm:ss"
-            value-format="yyyy-MM-dd hh:mm:ss"
+            format="yyyy-MM-dd"
+            value-format="yyyy-MM-dd"
             placeholder="选择日期时间">
     </el-date-picker>
         </el-form-item>
@@ -146,9 +149,6 @@ export default {
         channelsSet: [],
         videoSwitch: null
       },
-	  serviceTime: {
-		time: ''
-	},
       rules: {
         username: [
           { required: true, message: '请输入登录名', trigger: 'blur' },
