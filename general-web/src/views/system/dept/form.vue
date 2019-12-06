@@ -8,10 +8,10 @@
         <el-radio v-for="item in dicts" :key="item.id" v-model="form.enabled" :label="item.value">{{ item.label }}</el-radio>
       </el-form-item>
       <el-form-item v-if="!isAdd && !form.ifTop" label="上级组织">
-        <treeselect v-model="form.pid" :options="depts" style="width: 350px;" :disabled="isAdd ? false : true" placeholder="请选择上级组织" />
+        <treeselect v-model="form.pid" :options="depts" style="width: 350px;" :disabled="isAdd ? false : true" @select="selectDept" placeholder="请选择上级组织" />
       </el-form-item>
 	  <el-form-item v-if="isAdd " label="上级组织" >
-        <treeselect v-model="form.pid"  :options="depts" style="width: 350px;" :disabled="isAdd ? false : true" placeholder="请选择上级组织(默认当前)" />
+        <treeselect v-model="form.pid"  :options="depts" style="width: 350px;" :disabled="isAdd ? false : true" @select="selectDept" placeholder="请选择上级组织(默认当前)" />
       </el-form-item>
       <el-form-item label="本级账号上限" prop="maxPersonNumber">
         <el-input-number v-model.number="form.maxPersonNumber" :min="0" controls-position="right" style="width: 350px;"/>
@@ -87,6 +87,11 @@ export default {
           }
         }
       })
+    },selectDept(node, instanceId) {
+	  if(node.pid!=0){
+		this.form.enterpriseCode = node.enterpriseCode;
+	  }
+
     },
     doAdd() {
       add(this.form).then(res => {
