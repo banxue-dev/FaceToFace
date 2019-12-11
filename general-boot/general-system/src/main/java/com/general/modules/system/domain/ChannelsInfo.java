@@ -81,19 +81,21 @@ public class ChannelsInfo implements Serializable {
     private Long updateUser;
 
     /**
-     * 管理员用户
+     * 普通用户
      */
-    @JsonIgnore
-    @OneToMany
-    @JoinTable(name = "user_chanenls", joinColumns = {@JoinColumn(name = "channels_id", referencedColumnName = "id")}, inverseJoinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")})
+//    @JsonIgnore
+//    @OneToMany
+//    @JoinTable(name = "user_chanenls", joinColumns = {@JoinColumn(name = "channels_id", referencedColumnName = "id")}, inverseJoinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")})
+    @Transient
     private Set<User> userSet;
 
     /**
      * 管理员用户
      */
-    @JsonIgnore
-    @OneToMany
-    @JoinTable(name = "chanenls_admin", joinColumns = {@JoinColumn(name = "channels_id", referencedColumnName = "id")}, inverseJoinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")})
+//    @JsonIgnore
+//    @OneToMany
+//    @JoinTable(name = "chanenls_admin", joinColumns = {@JoinColumn(name = "channels_id", referencedColumnName = "id")}, inverseJoinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")})
+    @Transient
     private Set<User> userAdmin;
 
     public @interface Update {

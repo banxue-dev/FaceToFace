@@ -139,6 +139,10 @@ export default {
       getDepts({ enabled: true }).then(res => {
 		if(this.isAdd){
 			this.form.pid=res.content[0].id;
+			if(res.content[0].pid>1){
+				this.form.isHideEncode=true;
+				this.form.enterpriseCode = res.content[0].enterpriseCode;
+			}
 		}else{
 			if(this.form.isTop){
 				this.form.pid=this.form.id

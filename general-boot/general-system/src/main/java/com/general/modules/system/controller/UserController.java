@@ -2,14 +2,17 @@ package com.general.modules.system.controller;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +38,7 @@ import com.general.domain.VerificationCode;
 import com.general.exception.BadRequestException;
 import com.general.modules.system.domain.User;
 import com.general.modules.system.domain.vo.UserPassVo;
+import com.general.modules.system.service.ChannelsInfoService;
 import com.general.modules.system.service.DeptService;
 import com.general.modules.system.service.RoleService;
 import com.general.modules.system.service.UserService;
@@ -71,6 +75,9 @@ public class UserController {
 
     @Autowired
     private RoleService roleService;
+    
+    @Autowired
+    private ChannelsInfoService channelsInfoService;
 
     @Autowired
     private VerificationCodeService verificationCodeService;
@@ -111,7 +118,13 @@ public class UserController {
             result.addAll(deptSet);
             result.addAll(deptIds);
             criteria.setDeptIds(result);
-            return new ResponseEntity(userService.queryAll(criteria), HttpStatus.OK);
+            List<UserDTO> lst=userService.queryAll(criteria);
+            for(UserDTO t:lst) {
+            	if(t.getDefaultChannelsId()!=null) {
+            		t.setChannels(channelsInfoService.findByIdRe(t.getDefaultChannelsId()));
+            	}
+            }
+            return new ResponseEntity(lst, HttpStatus.OK);
         }
     }
 

@@ -7,12 +7,14 @@ import io.swagger.models.auth.In;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author L
@@ -107,7 +109,7 @@ public interface UserService {
     void updateEmail(String username, String email);
 
     @Cacheable
-    Object queryAll(UserQueryCriteria criteria, Pageable pageable);
+    Map<String,Object> queryAll(UserQueryCriteria criteria, Pageable pageable);
 
     @Cacheable
     List<UserDTO> queryAll(UserQueryCriteria criteria);

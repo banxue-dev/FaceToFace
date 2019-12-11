@@ -34,6 +34,13 @@ public interface ChannelsInfoService {
      */
     @Cacheable
     List<ChannelsInfoDTO> queryAll(ChannelsInfoQueryCriteria criteria);
+    /**
+     * 查询所有数据不分页
+     * @param criteria
+     * @return
+     */
+    @Cacheable
+    List<ChannelsInfo> queryAllRe(ChannelsInfoQueryCriteria criteria);
 
     /**
      * 根据ID查询
@@ -42,6 +49,13 @@ public interface ChannelsInfoService {
      */
     @Cacheable(key = "#p0")
     ChannelsInfoDTO findById(Long id);
+    /**
+     * 根据ID查询
+     * @param id
+     * @return
+     */
+    @Cacheable(key = "#p0")
+    ChannelsInfo findByIdRe(Long id);
 
     /**
      * 创建

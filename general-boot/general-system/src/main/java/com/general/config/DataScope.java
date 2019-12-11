@@ -84,10 +84,12 @@ public class DataScope {
      * 这个方法直接返回所有的组织父子对象
      * @return
      * 2019年11月27日
+     * 由于说要以用户的组织机构来,所以这个暂时不用
      * fengchaseyou
      */
-    public Set<DeptDTO> getDeptDTOS() {
+    public Set<DeptDTO> getDeptDTOS1() {
 
+    	
         UserDTO user = userService.findByName(SecurityUtils.getUsername());
 
         // 用于存储组织id
@@ -122,6 +124,7 @@ public class DataScope {
             // 存储自定义的数据权限
             if (scopeType[2].equals(role.getDataScope())) {
                 Set<Dept> depts = deptService.findByRoleIds(role.getId());
+                
                 DeptDTO n=new DeptDTO();
                 for (Dept dept : depts) {
                 	BeanUtils.copyProperties(dept, n);
@@ -133,6 +136,38 @@ public class DataScope {
         }
         return deptDTOS;
     }
+    /**
+     * 根据用户所属的组织机构来
+     * 这个方法直接返回所有的组织父子对象
+     * @return
+     * 2019年11月27日
+     * fengchaseyou
+     */
+    public Set<DeptDTO> getDeptDTOS() {
+
+        UserDTO user = userService.findByName(SecurityUtils.getUsername());
+
+        // 用于存储组织id
+        Set<DeptDTO> deptDTOS = new HashSet<DeptDTO>();
+
+        /**
+         * 获取所有组织机构
+         */
+    	DeptQueryCriteria criteria1=new DeptQueryCriteria();
+        List<DeptDTO> allDepts = deptService.queryAll(criteria1);
+        /**
+         * 获取当前组织机构
+         */
+        DeptDTO deptdto=deptService.findById(user.getDept().getId());
+    	this.getDeptChildrenBy(deptdto,allDepts);
+    	/*
+    	 * 肯定是根节点
+    	 */
+    	deptdto.setIfTop(true);
+    	deptDTOS.add(deptdto);
+    	
+        return deptDTOS;
+    }
 
     /**
      * 获取某个组织的所有下级,一直下钻到没有下级为止
@@ -141,9 +176,6 @@ public class DataScope {
      * fengchaseyou
      */
     public void getDeptChildrenBy(DeptDTO dept,List<DeptDTO> allDepts) {
-//    	DeptQueryCriteria criteria=new DeptQueryCriteria();
-//    	criteria.setPid(dept.getId());
-//        List<DeptDTO> deptChildren = deptService.queryAll(criteria);
         List<DeptDTO> deptChildren = this.getChildrenToAllDepts(dept.getId(), allDepts);
     	
         if(deptChildren!=null && deptChildren.size()>0) {

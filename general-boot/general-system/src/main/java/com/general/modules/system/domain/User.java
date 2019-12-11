@@ -126,27 +126,32 @@ public class User implements Serializable {
     @Column(name = "update_user", columnDefinition = "bigint(20) COMMENT '修改用户'")
     private Long updateUser;
 
-    @JsonIgnore
-    @OneToOne(cascade = CascadeType.PERSIST)
-    @PrimaryKeyJoinColumn
-    @JoinColumn(name = "default_channels_id", columnDefinition = "bigint(20) COMMENT '默认频道ID'")
+//    @JsonIgnore
+//    @OneToOne(cascade = CascadeType.PERSIST)
+//    @PrimaryKeyJoinColumn
+//    @JoinColumn(name = "default_channels_id", columnDefinition = "bigint(20) COMMENT '默认频道ID'")
+    @Transient
     private ChannelsInfo channels;
 
+    @Column(name = "default_channels_id", columnDefinition = "bigint(20) COMMENT '默认频道ID'")
+    private Long defaultChannelsId;
 
     /**
      * 普通用户
      */
-    @JsonIgnore
-    @OneToMany
-    @JoinTable(name = "user_chanenls", joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")}, inverseJoinColumns = {@JoinColumn(name = "channels_id", referencedColumnName = "id")})
+//    @JsonIgnore
+//    @OneToMany
+//    @JoinTable(name = "user_chanenls", joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")}, inverseJoinColumns = {@JoinColumn(name = "channels_id", referencedColumnName = "id")})
+    @Transient
     private Set<ChannelsInfo> channelsSet;
 
     /**
      * 管理员用户
      */
-    @JsonIgnore
-    @OneToMany
-    @JoinTable(name = "chanenls_admin", joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")}, inverseJoinColumns = {@JoinColumn(name = "channels_id", referencedColumnName = "id")})
+//    @JsonIgnore
+//    @OneToMany
+//    @JoinTable(name = "chanenls_admin", joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")}, inverseJoinColumns = {@JoinColumn(name = "channels_id", referencedColumnName = "id")})
+    @Transient
     private Set<ChannelsInfo> chanenlsAdmin;
 
     public @interface Update {

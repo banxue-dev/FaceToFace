@@ -1,20 +1,20 @@
 package com.general.modules.system.service.impl;
 
-import com.general.exception.EntityExistException;
-import com.general.exception.EntityNotFoundException;
-import com.general.modules.system.domain.User;
-import com.general.modules.system.domain.UserAvatar;
-import com.general.modules.system.service.DeptService;
-import com.general.modules.system.service.UserService;
-import com.general.modules.system.service.dto.DeptDTO;
-import com.general.modules.system.service.dto.RoleSmallDTO;
-import com.general.modules.system.service.dto.UserDTO;
-import com.general.modules.system.service.dto.UserQueryCriteria;
-import com.general.modules.system.service.mapper.UserMapper;
-import com.general.utils.*;
-import com.general.modules.monitor.service.RedisService;
-import com.general.modules.system.repository.UserAvatarRepository;
-import com.general.modules.system.repository.UserRepository;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -24,11 +24,34 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.IOException;
-import java.util.*;
-import java.util.stream.Collectors;
+import com.general.exception.EntityExistException;
+import com.general.exception.EntityNotFoundException;
+import com.general.modules.monitor.service.RedisService;
+import com.general.modules.system.domain.ChanenlsAdmin;
+import com.general.modules.system.domain.ChanenlsUser;
+import com.general.modules.system.domain.ChannelsInfo;
+import com.general.modules.system.domain.User;
+import com.general.modules.system.domain.UserAvatar;
+import com.general.modules.system.repository.ChannelsAdminRepository;
+import com.general.modules.system.repository.ChannelsInfoRepository;
+import com.general.modules.system.repository.ChannelsUserRepository;
+import com.general.modules.system.repository.UserAvatarRepository;
+import com.general.modules.system.repository.UserRepository;
+import com.general.modules.system.service.ChannelsInfoService;
+import com.general.modules.system.service.DeptService;
+import com.general.modules.system.service.UserService;
+import com.general.modules.system.service.dto.ChannelsInfoQueryCriteria;
+import com.general.modules.system.service.dto.DeptDTO;
+import com.general.modules.system.service.dto.RoleSmallDTO;
+import com.general.modules.system.service.dto.UserDTO;
+import com.general.modules.system.service.dto.UserQueryCriteria;
+import com.general.modules.system.service.mapper.UserMapper;
+import com.general.utils.EncryptUtils;
+import com.general.utils.FileUtil;
+import com.general.utils.QueryHelp;
+import com.general.utils.SecurityUtils;
+import com.general.utils.StringUtils;
+import com.general.utils.ValidationUtil;
 
 /**
  * @author L
@@ -49,6 +72,14 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserAvatarRepository userAvatarRepository;
+    @Autowired
+    private ChannelsInfoRepository channelsInfoRepository;
+    @Autowired
+    private ChannelsInfoService channelsInfoService;
+    @Autowired
+    private ChannelsUserRepository channelsUserRepository;
+    @Autowired
+    private ChannelsAdminRepository channelsAdminRepository;
 
     @Autowired
     private DeptService deptService;
@@ -57,9 +88,35 @@ public class UserServiceImpl implements UserService {
     private String avatar;
 
     @Override
-    public Object queryAll(UserQueryCriteria criteria, Pageable pageable) {
+    public Map<String,Object>  queryAll(UserQueryCriteria criteria, Pageable pageable) {
         Page<User> page = userRepository.findAll((root, criteriaQuery, criteriaBuilder) -> QueryHelp.getPredicate(root,criteria,criteriaBuilder),pageable);
-        return PageUtil.toPage(page.map(userMapper::toDto));
+        List<UserDTO> lst=userMapper.toDto(page.getContent());
+        for(UserDTO t:lst) {
+        	if(t.getDefaultChannelsId()!=null) {
+        		t.setChannels(channelsInfoRepository.findById(t.getDefaultChannelsId()).get());
+        	}
+        	List<ChanenlsUser> lstcus=channelsUserRepository.findByUserId(t.getId());
+    		if(lstcus!=null && lstcus.size()>0) {
+    			Set<ChannelsInfo> cis=new HashSet<ChannelsInfo>();
+    			for(ChanenlsUser cu:lstcus) {
+    				ChannelsInfo ci=channelsInfoRepository.findById(cu.getChannelsId()).get();
+    				if(ci!=null) {
+    					ci.setUserSet(null);
+    					ci.setUserAdmin(null);
+    					ci.setDept(null);
+    					cis.add(ci);
+    				}
+    			}
+    			if(cis.size()>0) {
+    				t.setChannelsSet(new HashSet<ChannelsInfo>(cis));
+    			}
+    		}
+        }
+        Map<String,Object> map = new HashMap<String,Object>();
+    	map.put("totalElements",lst.size());
+    	map.put("content",lst);
+        return map;
+//        return PageUtil.toPage(page.map(userMapper::toDto));
     }
 
     @Override
@@ -91,14 +148,26 @@ public class UserServiceImpl implements UserService {
 //        if(userRepository.findByEmail(resources.getEmail())!=null){
 //            throw new EntityExistException(User.class,"email",resources.getEmail());
 //        }
-
+        
+        resources.setDefaultChannelsId(resources.getChannels().getId());
         // 默认密码 123456，此密码是加密后的字符
         if(StringUtils.isNotEmpty(resources.getPassword())){
             resources.setPassword(EncryptUtils.encryptPassword(resources.getPassword()));
         }else {
             resources.setPassword(EncryptUtils.encryptPassword("123456"));
         }
-        return userMapper.toDto(userRepository.save(resources));
+        UserDTO res= userMapper.toDto(userRepository.save(resources));
+        if(resources.getChannelsSet()!=null && resources.getChannelsSet().size()>0) {
+        	List<ChanenlsUser> lst=new ArrayList<ChanenlsUser>();
+        	for(ChannelsInfo t:resources.getChannelsSet()) {
+        		ChanenlsUser s=new ChanenlsUser();
+        		s.setUserId(res.getId());
+        		s.setChannelsId(t.getId());
+        		lst.add(s);
+        	}
+        	channelsUserRepository.saveAll(lst);
+        }
+        return res;
     }
 
     @Override
@@ -134,8 +203,19 @@ public class UserServiceImpl implements UserService {
         user.setServiceTime(resources.getServiceTime());
         user.setRoles(resources.getRoles());
         user.setDept(resources.getDept());
-        user.setChannels(resources.getChannels());
-        user.setChannelsSet(resources.getChannelsSet());
+        user.setDefaultChannelsId(resources.getChannels().getId());
+        
+        if(resources.getChannelsSet()!=null && resources.getChannelsSet().size()>0) {
+        	channelsUserRepository.deleteByUserId(resources.getId());
+        	List<ChanenlsUser> lst=new ArrayList<ChanenlsUser>();
+        	for(ChannelsInfo t:resources.getChannelsSet()) {
+        		ChanenlsUser s=new ChanenlsUser();
+        		s.setUserId(resources.getId());
+        		s.setChannelsId(t.getId());
+        		lst.add(s);
+        	}
+        	channelsUserRepository.saveAll(lst);
+        }
         user.setEnterpriseCode(resources.getEnterpriseCode());
         user.setLevel(resources.getLevel());
         user.setLocationInterval(resources.getLocationInterval());
