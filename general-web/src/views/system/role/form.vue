@@ -4,10 +4,10 @@
       <el-form-item label="角色名称" prop="name">
         <el-input v-model="form.name" style="width: 370px;"/>
       </el-form-item>
-      <el-form-item label="角色级别" prop="sort">
+      <el-form-item label="角色级别" v-if="false" prop="sort">
         <el-input-number v-model.number="form.level" :min="1" controls-position="right" style="width: 370px;"/>
       </el-form-item>
-      <el-form-item label="数据范围">
+      <el-form-item label="数据范围" v-if="false">
         <el-select v-model="form.dataScope" style="width: 370px" placeholder="请选择数据范围" @change="changeScope">
           <el-option
             v-for="item in dateScopes"

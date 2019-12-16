@@ -27,7 +27,7 @@
         <el-form-item label="组织">
           <treeselect v-model="deptId" :options="depts" style="width: 350px" placeholder="请选择组织" @select="selectDept"/>
         </el-form-item>
-        <el-form-item label="角色" v-if="true">
+        <el-form-item label="角色" v-if="false">
           <el-select v-model="roleIds" style="width: 350px;" multiple placeholder="请选择角色">
             <el-option
               v-for="(item, index) in roles"
@@ -37,7 +37,7 @@
               :value="item.id"/>
           </el-select>
         </el-form-item>
-        <el-form-item label="等级" prop="level">
+        <el-form-item label="等级"  v-if="false" prop="level">
           <el-input-number v-model.number="form.level" style="width: 350px;" controls-position="right" placeholder="请输入等级"/>
         </el-form-item>
         <el-form-item label="企业识别码" prop="enterpriseCode">

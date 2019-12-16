@@ -177,15 +177,11 @@ export default {
       if (this.deptName) { params['name'] = this.deptName }
       getDepts(params).then(res => {
         this.depts = res.content
-		if(res.content.length>0){
-			this.deptId=res.content[0].id;
-		}
       })
     },
     handleNodeClick(data) {
       if (data.pid === 0) {
-		// 上面默认是当前用户的组织机构id,所以如果没选,这里就不管
-       // this.deptId = null
+        this.deptId = null
       } else {
         this.deptId = data.id
       }

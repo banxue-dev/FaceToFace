@@ -134,35 +134,20 @@ public class UserController {
     @PreAuthorize("hasAnyRole('ADMIN','USER_ALL','USER_SELECT')")
     public ResponseEntity getUsers(UserQueryCriteria criteria, Pageable pageable) {
         Set<Long> deptSet = new HashSet<>();
-        Set<Long> result = new HashSet<>();
 
+        /**
+         * 如果传入了组织，就只当前组织及以下的。
+         * 如果没传入组织id，就获取当前用户所在组织下的所有
+         */
         if (!ObjectUtils.isEmpty(criteria.getDeptId())) {
             deptSet.add(criteria.getDeptId());
             deptSet.addAll(dataScope.getDeptChildren(deptService.findByPid(criteria.getDeptId())));
+            criteria.setDeptIds(deptSet);
+        }else {
+            Set<Long> deptIds = dataScope.getDeptIds();
+            criteria.setDeptIds(deptIds);
         }
-
-        // 数据权限
-        Set<Long> deptIds = dataScope.getDeptIds();
-
-        // 查询条件不为空并且数据权限不为空则取交集
-        if (!CollectionUtils.isEmpty(deptIds) && !CollectionUtils.isEmpty(deptSet)) {
-
-            // 取交集
-            result.addAll(deptSet);
-            result.retainAll(deptIds);
-
-            // 若无交集，则代表无数据权限
-            criteria.setDeptIds(result);
-            if (result.size() == 0) {
-                return new ResponseEntity(PageUtil.toPage(null, 0), HttpStatus.OK);
-            } else return new ResponseEntity(userService.queryAll(criteria, pageable), HttpStatus.OK);
-            // 否则取并集
-        } else {
-            result.addAll(deptSet);
-            result.addAll(deptIds);
-            criteria.setDeptIds(result);
-            return new ResponseEntity(userService.queryAll(criteria, pageable), HttpStatus.OK);
-        }
+        return new ResponseEntity(userService.queryAll(criteria, pageable), HttpStatus.OK);
     }
     
 

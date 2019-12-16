@@ -39,52 +39,81 @@ public class DataScope {
     @Autowired
     private DeptService deptService;
 
+    /**
+     * 1这个方法直接返回所有的组织父子对象
+     * @return
+     * 2019年11月27日
+     * 1 由于说要以用户的组织机构来
+     * fengchaseyou
+     */
     public Set<Long> getDeptIds() {
-
-        UserDTO user = userService.findByName(SecurityUtils.getUsername());
 
         // 用于存储组织id
         Set<Long> deptIds = new HashSet<>();
+        UserDTO user = userService.findByName(SecurityUtils.getUsername());
 
-        // 查询用户角色
-        List<RoleSmallDTO> roleSet = roleService.findByUsers_Id(user.getId());
-
-        for (RoleSmallDTO role : roleSet) {
-
-            if (scopeType[0].equals(role.getDataScope())) {
-            	
-                return new HashSet<>() ;
-            }
-
-            // 存储本级的数据权限
-            if (scopeType[1].equals(role.getDataScope())) {
-                deptIds.add(user.getDept().getId());
-            }
-
-            // 存储自定义的数据权限
-            if (scopeType[2].equals(role.getDataScope())) {
-                Set<Dept> depts = deptService.findByRoleIds(role.getId());
-                for (Dept dept : depts) {
-                    deptIds.add(dept.getId());
-                    List<Dept> deptChildren = deptService.findByPid(dept.getId());
-                    if (deptChildren != null && deptChildren.size() != 0) {
-                    	List<Long> list=getDeptChildren(deptChildren);
-                    	for(Long l:list) {
-                    		if(!deptIds.contains(l)) {
-                    			deptIds.add(l);
-                    		}
-                    	}
-                    }
-                }
+        Long deptId=user.getDept().getId();
+        Set<Dept> depts = deptService.findByRoleIds(deptId);
+        for (Dept dept : depts) {
+            deptIds.add(dept.getId());
+            List<Dept> deptChildren = deptService.findByPid(dept.getId());
+            if (deptChildren != null && deptChildren.size() != 0) {
+            	List<Long> list=getDeptChildren(deptChildren);
+            	for(Long l:list) {
+            		if(!deptIds.contains(l)) {
+            			deptIds.add(l);
+            		}
+            	}
             }
         }
         return deptIds;
     }
+    public Set<Long> getDeptIds1() {
+    	
+    	UserDTO user = userService.findByName(SecurityUtils.getUsername());
+    	
+    	// 用于存储组织id
+    	Set<Long> deptIds = new HashSet<>();
+    	
+    	// 查询用户角色
+    	List<RoleSmallDTO> roleSet = roleService.findByUsers_Id(user.getId());
+    	
+    	for (RoleSmallDTO role : roleSet) {
+    		
+    		if (scopeType[0].equals(role.getDataScope())) {
+    			
+    			return new HashSet<>() ;
+    		}
+    		
+    		// 存储本级的数据权限
+    		if (scopeType[1].equals(role.getDataScope())) {
+    			deptIds.add(user.getDept().getId());
+    		}
+    		
+    		// 存储自定义的数据权限
+    		if (scopeType[2].equals(role.getDataScope())) {
+    			Set<Dept> depts = deptService.findByRoleIds(role.getId());
+    			for (Dept dept : depts) {
+    				deptIds.add(dept.getId());
+    				List<Dept> deptChildren = deptService.findByPid(dept.getId());
+    				if (deptChildren != null && deptChildren.size() != 0) {
+    					List<Long> list=getDeptChildren(deptChildren);
+    					for(Long l:list) {
+    						if(!deptIds.contains(l)) {
+    							deptIds.add(l);
+    						}
+    					}
+    				}
+    			}
+    		}
+    	}
+    	return deptIds;
+    }
     /**
-     * 这个方法直接返回所有的组织父子对象
+     * 1这个方法直接返回所有的组织父子对象
      * @return
      * 2019年11月27日
-     * 由于说要以用户的组织机构来,所以这个暂时不用
+     *1 由于说要以用户的组织机构来,所以这个暂时不用
      * fengchaseyou
      */
     public Set<DeptDTO> getDeptDTOS1() {
@@ -189,7 +218,7 @@ public class DataScope {
         }
     }
     /**
-     * 根据pid去总集合里拿到子集,这样是为了减少与数据库的交互
+     * * 根据pid去总集合里拿到子集,这样是为了减少与数据库的交互
      * @param pid
      * @param allDepts
      * @return

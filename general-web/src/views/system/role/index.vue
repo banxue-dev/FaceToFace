@@ -32,8 +32,8 @@
           </div>
           <el-table v-loading="loading" :data="data" highlight-current-row size="small" style="width: 100%;" @current-change="handleCurrentChange">
             <el-table-column prop="name" label="名称"/>
-            <el-table-column prop="dataScope" label="数据权限"/>
-            <el-table-column prop="level" label="角色级别"/>
+            <el-table-column prop="dataScope" v-if="false" label="数据权限"/>
+            <el-table-column prop="level" v-if="false" label="角色级别"/>
             <el-table-column :show-overflow-tooltip="true" prop="remark" label="描述"/>
             <el-table-column :show-overflow-tooltip="true" prop="createTime" label="创建日期">
               <template slot-scope="scope">
