@@ -44,9 +44,9 @@
         <!--表格渲染-->
         <el-table v-loading="loading" :data="data" size="small" style="width: 100%;">
           <el-table-column prop="name" label="用户名"/>
-          <el-table-column label="组织 / 角色">
+          <el-table-column label="组织 ">
             <template slot-scope="scope">
-              <div>{{ scope.row.dept.name }} / {{ scope.row.roles[0].name }}</div>
+              <div>{{ scope.row.dept.name }} </div>
             </template>
           </el-table-column>
           <el-table-column label="用户类型" align="center">
@@ -177,11 +177,15 @@ export default {
       if (this.deptName) { params['name'] = this.deptName }
       getDepts(params).then(res => {
         this.depts = res.content
+		if(res.content.length>0){
+			this.deptId=res.content[0].id;
+		}
       })
     },
     handleNodeClick(data) {
       if (data.pid === 0) {
-        this.deptId = null
+		// 上面默认是当前用户的组织机构id,所以如果没选,这里就不管
+       // this.deptId = null
       } else {
         this.deptId = data.id
       }
