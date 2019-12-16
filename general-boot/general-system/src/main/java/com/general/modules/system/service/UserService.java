@@ -108,7 +108,7 @@ public interface UserService {
     @CacheEvict(allEntries = true)
     void updateEmail(String username, String email);
 
-    @Cacheable
+//    @Cacheable
     Map<String,Object> queryAll(UserQueryCriteria criteria, Pageable pageable);
 
     @Cacheable

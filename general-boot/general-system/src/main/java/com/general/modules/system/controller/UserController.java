@@ -164,6 +164,7 @@ public class UserController {
             return new ResponseEntity(userService.queryAll(criteria, pageable), HttpStatus.OK);
         }
     }
+    
 
     @Log("新增用户")
     @ApiOperation(value = "新增用户")

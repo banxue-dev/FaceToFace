@@ -139,7 +139,7 @@ public class UserServiceImpl implements UserService {
         //验证组织人员是否已满
         Long deptId = resources.getDept().getId();
         //查询组织信息
-        DeptDTO dept = deptService.findById(deptId);
+//        DeptDTO dept = deptService.findById(deptId);
         //查询组织下的人数
         if(userRepository.findByUsername(resources.getUsername())!=null){
             throw new EntityExistException(User.class,"username",resources.getUsername());
@@ -204,17 +204,19 @@ public class UserServiceImpl implements UserService {
         user.setRoles(resources.getRoles());
         user.setDept(resources.getDept());
         user.setDefaultChannelsId(resources.getChannels().getId());
+        List<ChanenlsUser> olst=channelsUserRepository.findByUserId(resources.getId());
         
-        if(resources.getChannelsSet()!=null && resources.getChannelsSet().size()>0) {
-        	channelsUserRepository.deleteByUserId(resources.getId());
-        	List<ChanenlsUser> lst=new ArrayList<ChanenlsUser>();
-        	for(ChannelsInfo t:resources.getChannelsSet()) {
-        		ChanenlsUser s=new ChanenlsUser();
-        		s.setUserId(resources.getId());
-        		s.setChannelsId(t.getId());
-        		lst.add(s);
-        	}
-        	channelsUserRepository.saveAll(lst);
+        if(resources.getChannelsSet()!=null && resources.getChannelsSet().size()>0 && olst.size()>0) {
+        
+    		channelsUserRepository.deleteByUserId(resources.getId());
+    		List<ChanenlsUser> lst=new ArrayList<ChanenlsUser>();
+    		for(ChannelsInfo t:resources.getChannelsSet()) {
+    			ChanenlsUser s=new ChanenlsUser();
+    			s.setUserId(resources.getId());
+    			s.setChannelsId(t.getId());
+    			lst.add(s);
+    		}
+    		channelsUserRepository.saveAll(lst);
         }
         user.setEnterpriseCode(resources.getEnterpriseCode());
         user.setLevel(resources.getLevel());

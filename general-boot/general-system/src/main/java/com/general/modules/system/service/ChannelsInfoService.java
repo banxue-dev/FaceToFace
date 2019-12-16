@@ -24,7 +24,7 @@ public interface ChannelsInfoService {
      * @param pageable
      * @return
      */
-    @Cacheable
+//    @Cacheable
     Map<String, Object> queryAll(ChannelsInfoQueryCriteria criteria, Pageable pageable);
 
     /**
