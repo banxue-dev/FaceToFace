@@ -53,18 +53,15 @@ public class DataScope {
         UserDTO user = userService.findByName(SecurityUtils.getUsername());
 
         Long deptId=user.getDept().getId();
-        Set<Dept> depts = deptService.findByRoleIds(deptId);
-        for (Dept dept : depts) {
-            deptIds.add(dept.getId());
-            List<Dept> deptChildren = deptService.findByPid(dept.getId());
-            if (deptChildren != null && deptChildren.size() != 0) {
-            	List<Long> list=getDeptChildren(deptChildren);
-            	for(Long l:list) {
-            		if(!deptIds.contains(l)) {
-            			deptIds.add(l);
-            		}
-            	}
-            }
+        deptIds.add(deptId);
+        List<Dept> deptChildren = deptService.findByPid(deptId);
+        if (deptChildren != null && deptChildren.size() != 0) {
+        	List<Long> list=getDeptChildren(deptChildren);
+        	for(Long l:list) {
+        		if(!deptIds.contains(l)) {
+        			deptIds.add(l);
+        		}
+        	}
         }
         return deptIds;
     }
