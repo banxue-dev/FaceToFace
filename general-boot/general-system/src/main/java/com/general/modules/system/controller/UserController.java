@@ -2,17 +2,14 @@ package com.general.modules.system.controller;
 
 import java.io.IOException;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -75,7 +72,7 @@ public class UserController {
 
     @Autowired
     private RoleService roleService;
-    
+
     @Autowired
     private ChannelsInfoService channelsInfoService;
 
@@ -112,17 +109,19 @@ public class UserController {
             criteria.setDeptIds(result);
             if (result.size() == 0) {
                 return new ResponseEntity(PageUtil.toPage(null, 0), HttpStatus.OK);
-            } else return new ResponseEntity(userService.queryAll(criteria), HttpStatus.OK);
+            } else {
+                return new ResponseEntity(userService.queryAll(criteria), HttpStatus.OK);
+            }
             // 否则取并集
         } else {
             result.addAll(deptSet);
             result.addAll(deptIds);
             criteria.setDeptIds(result);
-            List<UserDTO> lst=userService.queryAll(criteria);
-            for(UserDTO t:lst) {
-            	if(t.getDefaultChannelsId()!=null) {
-            		t.setChannels(channelsInfoService.findByIdRe(t.getDefaultChannelsId()));
-            	}
+            List<UserDTO> lst = userService.queryAll(criteria);
+            for (UserDTO t : lst) {
+                if (t.getDefaultChannelsId() != null) {
+                    t.setChannels(channelsInfoService.findByIdRe(t.getDefaultChannelsId()));
+                }
             }
             return new ResponseEntity(lst, HttpStatus.OK);
         }
@@ -143,13 +142,13 @@ public class UserController {
             deptSet.add(criteria.getDeptId());
             deptSet.addAll(dataScope.getDeptChildren(deptService.findByPid(criteria.getDeptId())));
             criteria.setDeptIds(deptSet);
-        }else {
+        } else {
             Set<Long> deptIds = dataScope.getDeptIds();
             criteria.setDeptIds(deptIds);
         }
         return new ResponseEntity(userService.queryAll(criteria, pageable), HttpStatus.OK);
     }
-    
+
 
     @Log("新增用户")
     @ApiOperation(value = "新增用户")
@@ -157,20 +156,20 @@ public class UserController {
     @PreAuthorize("hasAnyRole('ADMIN','USER_ALL','USER_CREATE')")
     public ResponseEntity create(@Validated @RequestBody User resources) {
         checkLevel(resources);
-        UserQueryCriteria criteria=new UserQueryCriteria();
+        UserQueryCriteria criteria = new UserQueryCriteria();
         criteria.setDeptId(resources.getDept().getId());
-        DeptDTO dept=deptService.findById(resources.getDept().getId());
-        List<UserDTO> deptUsers=userService.queryAll(criteria);
-        if(deptUsers!=null && deptUsers.size()>0) {
-        	int sum=0;
-        	for(UserDTO t:deptUsers) {
-        		if(t.getDept()!=null &&( t.getDept().getId().equals(resources.getDept().getId()) || t.getDeptId()==resources.getDept().getId() )) {
-        			sum++;
-        		}
-        	}
-        	if(sum>=dept.getMaxPersonNumber()) {
-        		throw new BadRequestException("当前组织机构下用户数["+sum+"]已达到账号上限["+dept.getMaxPersonNumber()+"]");
-        	}
+        DeptDTO dept = deptService.findById(resources.getDept().getId());
+        List<UserDTO> deptUsers = userService.queryAll(criteria);
+        if (deptUsers != null && deptUsers.size() > 0) {
+            int sum = 0;
+            for (UserDTO t : deptUsers) {
+                if (t.getDept() != null && (t.getDept().getId().equals(resources.getDept().getId()) || t.getDeptId() == resources.getDept().getId())) {
+                    sum++;
+                }
+            }
+            if (sum >= dept.getMaxPersonNumber()) {
+                throw new BadRequestException("当前组织机构下用户数[" + sum + "]已达到账号上限[" + dept.getMaxPersonNumber() + "]");
+            }
         }
         return new ResponseEntity(userService.create(resources), HttpStatus.CREATED);
     }
@@ -202,6 +201,7 @@ public class UserController {
 
     /**
      * 修改密码
+     *
      * @param user
      * @return
      */

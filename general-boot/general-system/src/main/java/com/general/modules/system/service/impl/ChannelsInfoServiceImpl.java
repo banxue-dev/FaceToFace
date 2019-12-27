@@ -1,13 +1,8 @@
 package com.general.modules.system.service.impl;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
+import com.general.utils.TimeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -177,6 +172,23 @@ public class ChannelsInfoServiceImpl implements ChannelsInfoService {
 	@Transactional(rollbackFor = Exception.class)
 	public void delete(Long id) {
 		channelsInfoRepository.deleteById(id);
+	}
+
+	@Override
+	public Map<String, Object> getChannelsChartData(Set<Long> deptIds) {
+		Map<String, Object> map = new HashMap<>();
+		map.put("total", channelsInfoRepository.getChannelsTotal(deptIds));
+		//获取日期
+		List<String> timeList = TimeUtils.listHistory7DaysDate(new Date());
+		//数量
+		List<Integer> countList = new ArrayList<>();
+		for (String time : timeList) {
+			Integer count = channelsInfoRepository.getChannelsCountByCreateTime(time, deptIds);
+			countList.add(count);
+		}
+		map.put("days", timeList);
+		map.put("counts", countList);
+		return map;
 	}
 
 	@Override

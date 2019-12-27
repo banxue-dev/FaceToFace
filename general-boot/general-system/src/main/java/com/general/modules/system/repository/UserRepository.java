@@ -5,8 +5,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.Date;
+import java.util.Set;
 
 /**
  * @author L
@@ -41,19 +43,19 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
     void updatePass(String username, String pass, Date lastPasswordResetTime);
 
     /**
-      * @Description: 修改定位开关
-      * @Author LuoJing
-      * @Date 2019/11/1 16:36
-      */
+     * @Description: 修改定位开关
+     * @Author LuoJing
+     * @Date 2019/11/1 16:36
+     */
     @Modifying
     @Query(value = "update user set location_switch = ?2 where id = ?1", nativeQuery = true)
     void updateLocationSwitch(Long id, Integer status);
 
     /**
-      * @Description: 修改视频开关
-      * @Author LuoJing
-      * @Date 2019/11/1 16:36
-      */
+     * @Description: 修改视频开关
+     * @Author LuoJing
+     * @Date 2019/11/1 16:36
+     */
     @Modifying
     @Query(value = "update user set video_switch = ?2 where id = ?1", nativeQuery = true)
     void updateVideoSwitch(Long id, Integer status);
@@ -77,4 +79,13 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
     @Modifying
     @Query(value = "update user set email = ?2 where username = ?1", nativeQuery = true)
     void updateEmail(String username, String email);
+
+    @Query(value = "SELECT count(1) FROM user where dept_id in (:deptIds)", nativeQuery = true)
+    Integer getUserTotal(@Param(value = "deptIds") Set<Long> deptIds);
+
+    @Query(value = "SELECT count(1) FROM user where DATE_FORMAT(create_time,'%Y-%m-%d') = :time and  dept_id in (:deptIds)", nativeQuery = true)
+    Integer getUserCountByCreateTime(@Param(value = "time") String time, @Param(value = "deptIds") Set<Long> deptIds);
+
+    @Query(value = "SELECT count(1) FROM user where DATE_FORMAT(create_time,'%Y-%m-%d') <= :time and  dept_id in (:deptIds)", nativeQuery = true)
+    Integer getUserTotalByCreateTime(@Param(value = "time") String time, @Param(value = "deptIds") Set<Long> deptIds);
 }

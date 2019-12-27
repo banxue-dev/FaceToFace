@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author L
@@ -108,11 +109,25 @@ public interface UserService {
     @CacheEvict(allEntries = true)
     void updateEmail(String username, String email);
 
-//    @Cacheable
-    Map<String,Object> queryAll(UserQueryCriteria criteria, Pageable pageable);
+    //    @Cacheable
+    Map<String, Object> queryAll(UserQueryCriteria criteria, Pageable pageable);
 
     @Cacheable
     List<UserDTO> queryAll(UserQueryCriteria criteria);
 
     void download(List<UserDTO> queryAll, HttpServletResponse response) throws IOException;
+
+    /**
+     * @Description: 用户七天内的新增数量
+     * @Author LuoJing
+     * @Date 2019/12/17 14:38
+     */
+    Map<String, Object> getUserChartData(Set<Long> deptIds);
+
+    /**
+      * @Description: 统计七天的数据
+      * @Author LuoJing
+      * @Date 2019/12/18 11:35
+      */
+    List<Map<String, Object>> getUserChannelsStatistics(Set<Long> deptIds);
 }

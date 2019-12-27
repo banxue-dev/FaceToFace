@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.Map;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author L
@@ -20,6 +21,7 @@ public interface ChannelsInfoService {
 
     /**
      * 查询数据分页
+     *
      * @param criteria
      * @param pageable
      * @return
@@ -29,13 +31,16 @@ public interface ChannelsInfoService {
 
     /**
      * 查询所有数据不分页
+     *
      * @param criteria
      * @return
      */
     @Cacheable
     List<ChannelsInfoDTO> queryAll(ChannelsInfoQueryCriteria criteria);
+
     /**
      * 查询所有数据不分页
+     *
      * @param criteria
      * @return
      */
@@ -44,13 +49,16 @@ public interface ChannelsInfoService {
 
     /**
      * 根据ID查询
+     *
      * @param id
      * @return
      */
     @Cacheable(key = "#p0")
     ChannelsInfoDTO findById(Long id);
+
     /**
      * 根据ID查询
+     *
      * @param id
      * @return
      */
@@ -59,6 +67,7 @@ public interface ChannelsInfoService {
 
     /**
      * 创建
+     *
      * @param resources
      * @return
      */
@@ -67,6 +76,7 @@ public interface ChannelsInfoService {
 
     /**
      * 编辑
+     *
      * @param resources
      */
     @CacheEvict(allEntries = true)
@@ -74,8 +84,16 @@ public interface ChannelsInfoService {
 
     /**
      * 删除
+     *
      * @param id
      */
     @CacheEvict(allEntries = true)
     void delete(Long id);
+
+    /**
+     * @Description: 用户七天内的新增数量
+     * @Author LuoJing
+     * @Date 2019/12/17 14:38
+     */
+    Map<String, Object> getChannelsChartData(Set<Long> deptIds);
 }

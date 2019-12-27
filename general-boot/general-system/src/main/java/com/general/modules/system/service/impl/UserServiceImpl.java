@@ -15,13 +15,20 @@ import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.general.config.DataScope;
+import com.general.utils.*;
+import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.general.exception.EntityExistException;
@@ -46,12 +53,6 @@ import com.general.modules.system.service.dto.RoleSmallDTO;
 import com.general.modules.system.service.dto.UserDTO;
 import com.general.modules.system.service.dto.UserQueryCriteria;
 import com.general.modules.system.service.mapper.UserMapper;
-import com.general.utils.EncryptUtils;
-import com.general.utils.FileUtil;
-import com.general.utils.QueryHelp;
-import com.general.utils.SecurityUtils;
-import com.general.utils.StringUtils;
-import com.general.utils.ValidationUtil;
 
 /**
  * @author L
@@ -75,60 +76,53 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private ChannelsInfoRepository channelsInfoRepository;
     @Autowired
-    private ChannelsInfoService channelsInfoService;
-    @Autowired
     private ChannelsUserRepository channelsUserRepository;
-    @Autowired
-    private ChannelsAdminRepository channelsAdminRepository;
-
-    @Autowired
-    private DeptService deptService;
 
     @Value("${file.avatar}")
     private String avatar;
 
     @Override
-    public Map<String,Object>  queryAll(UserQueryCriteria criteria, Pageable pageable) {
-        Page<User> page = userRepository.findAll((root, criteriaQuery, criteriaBuilder) -> QueryHelp.getPredicate(root,criteria,criteriaBuilder),pageable);
-        List<UserDTO> lst=userMapper.toDto(page.getContent());
-        for(UserDTO t:lst) {
-        	if(t.getDefaultChannelsId()!=null) {
-        		t.setChannels(channelsInfoRepository.findById(t.getDefaultChannelsId()).get());
-        	}
-        	List<ChanenlsUser> lstcus=channelsUserRepository.findByUserId(t.getId());
-    		if(lstcus!=null && lstcus.size()>0) {
-    			Set<ChannelsInfo> cis=new HashSet<ChannelsInfo>();
-    			for(ChanenlsUser cu:lstcus) {
-    				ChannelsInfo ci=channelsInfoRepository.findById(cu.getChannelsId()).get();
-    				if(ci!=null) {
-    					ci.setUserSet(null);
-    					ci.setUserAdmin(null);
-    					ci.setDept(null);
-    					cis.add(ci);
-    				}
-    			}
-    			if(cis.size()>0) {
-    				t.setChannelsSet(new HashSet<ChannelsInfo>(cis));
-    			}
-    		}
+    public Map<String, Object> queryAll(UserQueryCriteria criteria, Pageable pageable) {
+        Page<User> page = userRepository.findAll((root, criteriaQuery, criteriaBuilder) -> QueryHelp.getPredicate(root, criteria, criteriaBuilder), pageable);
+        List<UserDTO> lst = userMapper.toDto(page.getContent());
+        for (UserDTO t : lst) {
+            if (t.getDefaultChannelsId() != null) {
+                t.setChannels(channelsInfoRepository.findById(t.getDefaultChannelsId()).get());
+            }
+            List<ChanenlsUser> lstcus = channelsUserRepository.findByUserId(t.getId());
+            if (lstcus != null && lstcus.size() > 0) {
+                Set<ChannelsInfo> cis = new HashSet<ChannelsInfo>();
+                for (ChanenlsUser cu : lstcus) {
+                    ChannelsInfo ci = channelsInfoRepository.findById(cu.getChannelsId()).get();
+                    if (ci != null) {
+                        ci.setUserSet(null);
+                        ci.setUserAdmin(null);
+                        ci.setDept(null);
+                        cis.add(ci);
+                    }
+                }
+                if (cis.size() > 0) {
+                    t.setChannelsSet(new HashSet<ChannelsInfo>(cis));
+                }
+            }
         }
-        Map<String,Object> map = new HashMap<String,Object>();
-    	map.put("totalElements",lst.size());
-    	map.put("content",lst);
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("totalElements", lst.size());
+        map.put("content", lst);
         return map;
 //        return PageUtil.toPage(page.map(userMapper::toDto));
     }
 
     @Override
     public List<UserDTO> queryAll(UserQueryCriteria criteria) {
-        List<User> users = userRepository.findAll((root, criteriaQuery, criteriaBuilder) -> QueryHelp.getPredicate(root,criteria,criteriaBuilder));
+        List<User> users = userRepository.findAll((root, criteriaQuery, criteriaBuilder) -> QueryHelp.getPredicate(root, criteria, criteriaBuilder));
         return userMapper.toDto(users);
     }
 
     @Override
     public UserDTO findById(long id) {
         Optional<User> user = userRepository.findById(id);
-        ValidationUtil.isNull(user,"User","id",id);
+        ValidationUtil.isNull(user, "User", "id", id);
         return userMapper.toDto(user.get());
     }
 
@@ -141,31 +135,31 @@ public class UserServiceImpl implements UserService {
         //查询组织信息
 //        DeptDTO dept = deptService.findById(deptId);
         //查询组织下的人数
-        if(userRepository.findByUsername(resources.getUsername())!=null){
-            throw new EntityExistException(User.class,"username",resources.getUsername());
+        if (userRepository.findByUsername(resources.getUsername()) != null) {
+            throw new EntityExistException(User.class, "username", resources.getUsername());
         }
 
 //        if(userRepository.findByEmail(resources.getEmail())!=null){
 //            throw new EntityExistException(User.class,"email",resources.getEmail());
 //        }
-        
+
         resources.setDefaultChannelsId(resources.getChannels().getId());
         // 默认密码 123456，此密码是加密后的字符
-        if(StringUtils.isNotEmpty(resources.getPassword())){
+        if (StringUtils.isNotEmpty(resources.getPassword())) {
             resources.setPassword(EncryptUtils.encryptPassword(resources.getPassword()));
-        }else {
+        } else {
             resources.setPassword(EncryptUtils.encryptPassword("123456"));
         }
-        UserDTO res= userMapper.toDto(userRepository.save(resources));
-        if(resources.getChannelsSet()!=null && resources.getChannelsSet().size()>0) {
-        	List<ChanenlsUser> lst=new ArrayList<ChanenlsUser>();
-        	for(ChannelsInfo t:resources.getChannelsSet()) {
-        		ChanenlsUser s=new ChanenlsUser();
-        		s.setUserId(res.getId());
-        		s.setChannelsId(t.getId());
-        		lst.add(s);
-        	}
-        	channelsUserRepository.saveAll(lst);
+        UserDTO res = userMapper.toDto(userRepository.save(resources));
+        if (resources.getChannelsSet() != null && resources.getChannelsSet().size() > 0) {
+            List<ChanenlsUser> lst = new ArrayList<ChanenlsUser>();
+            for (ChannelsInfo t : resources.getChannelsSet()) {
+                ChanenlsUser s = new ChanenlsUser();
+                s.setUserId(res.getId());
+                s.setChannelsId(t.getId());
+                lst.add(s);
+            }
+            channelsUserRepository.saveAll(lst);
         }
         return res;
     }
@@ -174,12 +168,12 @@ public class UserServiceImpl implements UserService {
     @Transactional(rollbackFor = Exception.class)
     public void update(User resources) {
         Optional<User> userOptional = userRepository.findById(resources.getId());
-        ValidationUtil.isNull(userOptional,"User","id",resources.getId());
+        ValidationUtil.isNull(userOptional, "User", "id", resources.getId());
         User user = userOptional.get();
         User user1 = userRepository.findByUsername(user.getUsername());
 //        User user2 = userRepository.findByEmail(user.getEmail());
-        if(user1 !=null&&!user.getId().equals(user1.getId())){
-            throw new EntityExistException(User.class,"username",resources.getUsername());
+        if (user1 != null && !user.getId().equals(user1.getId())) {
+            throw new EntityExistException(User.class, "username", resources.getUsername());
         }
 //        if(user2!=null&&!user.getId().equals(user2.getId())){
 //            throw new EntityExistException(User.class,"email",resources.getEmail());
@@ -191,9 +185,9 @@ public class UserServiceImpl implements UserService {
             key = "role::findByUsers_Id:" + user.getId();
             redisService.delete(key);
         }
-        
-        if(StringUtils.isNotEmpty(resources.getPassword())){
-        	user.setPassword(EncryptUtils.encryptPassword(resources.getPassword()));
+
+        if (StringUtils.isNotEmpty(resources.getPassword())) {
+            user.setPassword(EncryptUtils.encryptPassword(resources.getPassword()));
         }
         user.setName(resources.getName());
         user.setUsername(resources.getUsername());
@@ -204,19 +198,19 @@ public class UserServiceImpl implements UserService {
         user.setRoles(resources.getRoles());
         user.setDept(resources.getDept());
         user.setDefaultChannelsId(resources.getChannels().getId());
-        List<ChanenlsUser> olst=channelsUserRepository.findByUserId(resources.getId());
-        
-        if(resources.getChannelsSet()!=null && resources.getChannelsSet().size()>0 && olst.size()>0) {
-        
-    		channelsUserRepository.deleteByUserId(resources.getId());
-    		List<ChanenlsUser> lst=new ArrayList<ChanenlsUser>();
-    		for(ChannelsInfo t:resources.getChannelsSet()) {
-    			ChanenlsUser s=new ChanenlsUser();
-    			s.setUserId(resources.getId());
-    			s.setChannelsId(t.getId());
-    			lst.add(s);
-    		}
-    		channelsUserRepository.saveAll(lst);
+        List<ChanenlsUser> olst = channelsUserRepository.findByUserId(resources.getId());
+
+        if (resources.getChannelsSet() != null && resources.getChannelsSet().size() > 0 && olst.size() > 0) {
+
+            channelsUserRepository.deleteByUserId(resources.getId());
+            List<ChanenlsUser> lst = new ArrayList<ChanenlsUser>();
+            for (ChannelsInfo t : resources.getChannelsSet()) {
+                ChanenlsUser s = new ChanenlsUser();
+                s.setUserId(resources.getId());
+                s.setChannelsId(t.getId());
+                lst.add(s);
+            }
+            channelsUserRepository.saveAll(lst);
         }
         user.setEnterpriseCode(resources.getEnterpriseCode());
         user.setLevel(resources.getLevel());
@@ -236,7 +230,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDTO findByName(String userName) {
         User user = null;
-        if(ValidationUtil.isEmail(userName)){
+        if (ValidationUtil.isEmail(userName)) {
             user = userRepository.findByEmail(userName);
         } else {
             user = userRepository.findByUsername(userName);
@@ -251,19 +245,19 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void updatePass(String username, String pass) {
-        userRepository.updatePass(username,pass,new Date());
+        userRepository.updatePass(username, pass, new Date());
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void updateLocationSwitch(Long id, Integer status) {
-        userRepository.updateLocationSwitch(id,status);
+        userRepository.updateLocationSwitch(id, status);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void updateVideoSwitch(Long id, Integer status) {
-        userRepository.updateVideoSwitch(id,status);
+        userRepository.updateVideoSwitch(id, status);
     }
 
     @Override
@@ -272,14 +266,14 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByUsername(SecurityUtils.getUsername());
         UserAvatar userAvatar = user.getUserAvatar();
         String oldPath = "";
-        if(userAvatar != null){
-           oldPath = userAvatar.getPath();
+        if (userAvatar != null) {
+            oldPath = userAvatar.getPath();
         }
         File file = FileUtil.upload(multipartFile, avatar);
-        userAvatar = userAvatarRepository.save(new UserAvatar(userAvatar,file.getName(), file.getPath(), FileUtil.getSize(multipartFile.getSize())));
+        userAvatar = userAvatarRepository.save(new UserAvatar(userAvatar, file.getName(), file.getPath(), FileUtil.getSize(multipartFile.getSize())));
         user.setUserAvatar(userAvatar);
         userRepository.save(user);
-        if(StringUtils.isNotBlank(oldPath)){
+        if (StringUtils.isNotBlank(oldPath)) {
             FileUtil.del(oldPath);
         }
     }
@@ -287,7 +281,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void updateEmail(String username, String email) {
-        userRepository.updateEmail(username,email);
+        userRepository.updateEmail(username, email);
     }
 
     @Override
@@ -308,5 +302,48 @@ public class UserServiceImpl implements UserService {
             list.add(map);
         }
         FileUtil.downloadExcel(list, response);
+    }
+
+    @Override
+    public Map<String, Object> getUserChartData(Set<Long> deptIds) {
+        Map<String, Object> map = new HashMap<>(3);
+        map.put("total", userRepository.getUserTotal(deptIds));
+        //获取日期
+        List<String> timeList = TimeUtils.listHistory7DaysDate(new Date());
+        //数量
+        List<Integer> countList = new ArrayList<>();
+        for (String time : timeList) {
+            Integer count = userRepository.getUserCountByCreateTime(time, deptIds);
+            countList.add(count);
+        }
+        map.put("days", timeList);
+        map.put("counts", countList);
+        return map;
+
+    }
+
+    @Override
+    public List<Map<String, Object>> getUserChannelsStatistics(Set<Long> deptIds) {
+        List<Map<String, Object>> list = new ArrayList<>();
+        //获取日期
+        List<String> timeList = TimeUtils.listHistory7DaysDate(new Date());
+        for (String time : timeList) {
+            Map<String, Object> map = new HashMap<>(4);
+            map.put("time",time);
+            //每日增加用户数
+            Integer addUserCount = userRepository.getUserCountByCreateTime(time, deptIds);
+            map.put("addUserCount",addUserCount);
+            //用户总数
+            Integer userCount = userRepository.getUserTotalByCreateTime(time, deptIds);
+            map.put("userCount",userCount);
+            //每日新增频道数
+            Integer addchannelsCount = channelsInfoRepository.getChannelsCountByCreateTime(time, deptIds);
+            map.put("addchannelsCount",addchannelsCount);
+            //频道总数
+            Integer channelsCount =channelsInfoRepository.getChannelsTotalByCreateTime(time, deptIds);
+            map.put("channelsCount",channelsCount);
+            list.add(map);
+        }
+        return list;
     }
 }

@@ -100,4 +100,6 @@ public class ChannelsInfoController {
         channelsInfoService.delete(id);
         return new ResponseEntity(HttpStatus.OK);
     }
+
+
 }
