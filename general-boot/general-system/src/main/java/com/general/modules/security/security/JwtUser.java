@@ -1,13 +1,16 @@
 package com.general.modules.security.security;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.general.modules.system.domain.ChannelsInfo;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
 import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -47,6 +50,18 @@ public class JwtUser implements UserDetails {
 
     @JsonIgnore
     private final Date lastPasswordResetDate;
+
+    private String name;
+
+    private String serviceTime;
+
+    private boolean videoSwitch;
+
+    private boolean locationSwitch;
+
+    private String locationInterval;
+
+    private Long defaultChannelsId;
 
     @JsonIgnore
     @Override

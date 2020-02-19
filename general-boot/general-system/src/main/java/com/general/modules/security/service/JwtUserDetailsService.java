@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.Optional;
 
 /**
@@ -28,7 +29,7 @@ public class JwtUserDetailsService implements UserDetailsService {
     private JwtPermissionService permissionService;
 
     @Override
-    public UserDetails loadUserByUsername(String username){
+    public UserDetails loadUserByUsername(String username) {
 
         UserDTO user = userService.findByName(username);
         if (user == null) {
@@ -52,7 +53,13 @@ public class JwtUserDetailsService implements UserDetailsService {
                 permissionService.mapToGrantedAuthorities(user),
                 user.getEnabled(),
                 user.getCreateTime(),
-                user.getLastPasswordResetTime()
+                user.getLastPasswordResetTime(),
+                user.getName(),
+                user.getServiceTime(),
+                user.getVideoSwitch() == null ? false : user.getVideoSwitch(),
+                user.getLocationSwitch() == null ? false : user.getLocationSwitch(),
+                user.getLocationInterval(),
+                user.getDefaultChannelsId()
         );
     }
 }
