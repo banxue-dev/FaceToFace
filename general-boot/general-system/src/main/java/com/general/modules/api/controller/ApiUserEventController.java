@@ -24,7 +24,7 @@ public class ApiUserEventController {
     @Autowired
     private UserEventService userEventService;
 
-    @Log("查询账号事件")
+    @Log("状态管理器-查询账号事件")
     @ApiOperation(value = "查询账号事件")
     @GetMapping(value = "/userEvent")
 //    @PreAuthorize("hasAnyRole('ADMIN','USEREVENT_ALL','USEREVENT_SELECT')")
@@ -33,7 +33,7 @@ public class ApiUserEventController {
     }
 
     @Log("状态管理器-新增账号事件")
-    @ApiOperation(value = "状态管理器-新增账号事件")
+    @ApiOperation(value = "新增账号事件")
     @PostMapping(value = "/addUserEvent")
 //    @PreAuthorize("hasAnyRole('ADMIN','USEREVENT_ALL','USEREVENT_CREATE')")
     public ResponseEntity create(@Validated @RequestBody UserEvent resources) {

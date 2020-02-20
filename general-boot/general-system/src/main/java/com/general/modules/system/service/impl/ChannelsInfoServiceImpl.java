@@ -2,6 +2,7 @@ package com.general.modules.system.service.impl;
 
 import java.util.*;
 
+import com.general.modules.api.domain.vo.AppChannelsInfoVO;
 import com.general.utils.TimeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -189,6 +190,15 @@ public class ChannelsInfoServiceImpl implements ChannelsInfoService {
 		map.put("days", timeList);
 		map.put("counts", countList);
 		return map;
+	}
+
+	@Override
+	public AppChannelsInfoVO getAppUserChannelsInfo(Long userId) {
+		AppChannelsInfoVO vo = new AppChannelsInfoVO();
+		//查询默认频道
+		vo.setDefaultChannels(channelsInfoRepository.getUserDefaultChannels(userId));
+		vo.setChannels(channelsInfoRepository.listUserChannels(userId));
+		return vo;
 	}
 
 	@Override

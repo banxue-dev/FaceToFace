@@ -1,5 +1,6 @@
 package com.general.modules.system.service;
 
+import com.general.modules.api.domain.vo.AppChannelsInfoVO;
 import com.general.modules.system.domain.ChannelsInfo;
 import com.general.modules.system.service.dto.ChannelsInfoDTO;
 import com.general.modules.system.service.dto.ChannelsInfoQueryCriteria;
@@ -96,4 +97,11 @@ public interface ChannelsInfoService {
      * @Date 2019/12/17 14:38
      */
     Map<String, Object> getChannelsChartData(Set<Long> deptIds);
+
+    /**
+      * @Description: APP端获取用户的所有频道
+      * @Author LuoJing
+      * @Date 2020/2/20 11:53
+      */
+    AppChannelsInfoVO getAppUserChannelsInfo(Long userId);
 }

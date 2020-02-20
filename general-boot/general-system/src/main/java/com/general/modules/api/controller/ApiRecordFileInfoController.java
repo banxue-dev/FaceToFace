@@ -29,7 +29,7 @@ public class ApiRecordFileInfoController {
     @Autowired
     private RecordFileInfoService recordFileInfoService;
 
-    @Log("查询录音文件")
+    @Log("状态管理器-查询录音文件")
     @ApiOperation(value = "查询录音文件")
     @GetMapping(value = "/recordFileInfo")
     public Result getRecordFileInfos(RecordFileInfoQueryCriteria criteria, Pageable pageable) {
@@ -37,7 +37,7 @@ public class ApiRecordFileInfoController {
         return new Result(map);
     }
 
-    @Log("新增录音文件")
+    @Log("状态管理器-新增录音文件")
     @ApiOperation(value = "新增录音文件")
     @PostMapping(value = "/recordFileInfo")
     public Result create(@Validated @RequestBody RecordFileInfo resources) {

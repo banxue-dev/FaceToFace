@@ -32,6 +32,20 @@ public class ApiChannelsInfoController {
     @Autowired
     private ChannelsInfoService channelsInfoService;
 
+    @Log("状态管理器-根据频道ID查询")
+    @ApiOperation(value = "状态管理器-根据频道ID查询")
+    @GetMapping(value = "/getChannelsInfosById/{id}")
+    public ResponseEntity getChannelsInfosById(@PathVariable Long id) {
+        return new ResponseEntity(channelsInfoService.findById(id), HttpStatus.OK);
+    }
+
+    @Log("状态管理器-根据频道ID查询")
+    @ApiOperation(value = "状态管理器-根据频道ID查询")
+    @GetMapping(value = "/getChannelsInfosByUserId/{userId}")
+    public ResponseEntity getChannelsInfosByUserId(@PathVariable Long userId) {
+        return new ResponseEntity(channelsInfoService.getAppUserChannelsInfo(userId), HttpStatus.OK);
+    }
+
     @Log("状态管理器-查询所有频道")
     @ApiOperation(value = "状态管理器-查询所有频道")
     @GetMapping(value = "/listChannelsInfos")
@@ -42,7 +56,7 @@ public class ApiChannelsInfoController {
     @Log("平台客户端-新增频道")
     @ApiOperation(value = "状态管理器-新增频道")
     @PostMapping(value = "/channelsInfo")
-    @PreAuthorize("hasAnyRole('ADMIN','CHANNELSINFO_ALL','CHANNELSINFO_CREATE')")
+//    @PreAuthorize("hasAnyRole('ADMIN','CHANNELSINFO_ALL','CHANNELSINFO_CREATE')")
     public ResponseEntity create(@Validated @RequestBody ChannelsInfo resources) {
         return new ResponseEntity(channelsInfoService.create(resources), HttpStatus.CREATED);
     }
