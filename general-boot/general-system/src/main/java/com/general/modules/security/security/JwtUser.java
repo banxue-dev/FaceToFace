@@ -21,7 +21,6 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class JwtUser implements UserDetails {
 
-    @JsonIgnore
     private final Long id;
 
     private final Integer userType;
