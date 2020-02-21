@@ -68,8 +68,8 @@
         <el-button :loading="loading" type="primary" @click="doSubmit">确认</el-button>
       </div>
     </el-dialog>
-    <el-dialog :append-to-body="true" :close-on-click-modal="false" :before-close="userDialogClose" :visible.sync="userDialog" :title="userTitle" width="300px">
-      <el-select v-model="selUsersId" filterable placeholder="请选择用户">
+    <el-dialog :append-to-body="true" :close-on-click-modal="false" :before-close="userDialogClose" :visible.sync="userDialog" :title="userTitle" width="400px">
+      <el-select v-model="selUsersIds" multiple placeholder="请选择用户">
         <el-option v-for="item in usersList" :key="item.id" :label="item.name" :value="item.id"/>
       </el-select>
       <div slot="footer" class="dialog-footer">
@@ -101,7 +101,7 @@ export default {
   data() {
     return {
       loading: false, dialog: false, userDialog: false, depts: [], deptId: null, usersList: [], adminTags: [], userTags: [], userTitle: '',
-      selUsersId: null,
+      selUsersIds: [],
       form: {
         attr: '',
         channelsName: '',
@@ -229,6 +229,7 @@ export default {
           // 选择人员
           this.userTitle = '请选择人员'
         }
+        this.selUsersIds = []
         this.selectType = type
         this.userDialog = true
       }
@@ -238,41 +239,57 @@ export default {
     },
     userDialogConfirm() {
       // 判断
+      let existAdminUser = ''
       const adminTags = this.adminTags
       for (let j = 0; j < adminTags.length; j++) {
-        if (this.selUsersId === adminTags[j].id) {
-          this.$notify({
-            title: '该用户已经存在管理员列表中',
-            type: 'warning',
-            duration: 2500
-          })
-          return
+        for (let x = 0; x < this.selUsersIds.length; x++) {
+          if (this.selUsersIds[x] === adminTags[j].id) {
+            existAdminUser += adminTags[j].name + ','
+          }
         }
       }
+      if (existAdminUser.length > 0) {
+        existAdminUser = existAdminUser.substring(0, existAdminUser.length - 1)
+        this.$notify({
+          title: '用户 ' + existAdminUser + ' 已经存在管理员列表中',
+          type: 'warning',
+          duration: 2500
+        })
+        return
+      }
+      let existUser = ''
       const userTags = this.userTags
       for (let j = 0; j < userTags.length; j++) {
-        if (this.selUsersId === userTags[j].id) {
-          this.$notify({
-            title: '该用户已经存在人员列表中',
-            type: 'warning',
-            duration: 2500
-          })
-          return
+        for (let x = 0; x < this.selUsersIds.length; x++) {
+          if (this.selUsersIds[x] === userTags[j].id) {
+            existUser += userTags[j].name + ','
+          }
         }
+      }
+      if (existUser.length > 0) {
+        existUser = existUser.substring(0, existUser.length - 1)
+        this.$notify({
+          title: '用户 ' + existUser + ' 已经存在管理员列表中',
+          type: 'warning',
+          duration: 2500
+        })
+        return
       }
       const arry = this.usersList
       for (let i = 0; i < arry.length; i++) {
-        if (arry[i].id === this.selUsersId) {
-          const obj = {}
-          obj.id = arry[i].id
-          obj.name = arry[i].name
-          if (this.selectType === 0) {
-            // 管理员
-            this.adminTags.push(obj)
-            this.form.userAdmin.push({ id: arry[i].id })
-          } else {
-            this.userTags.push(obj)
-            this.form.userSet.push({ id: arry[i].id })
+        for (let x = 0; x < this.selUsersIds.length; x++) {
+          if (arry[i].id === this.selUsersIds[x]) {
+            const obj = {}
+            obj.id = arry[i].id
+            obj.name = arry[i].name
+            if (this.selectType === 0) {
+              // 管理员
+              this.form.userAdmin.push({ id: arry[i].id })
+              this.adminTags.push(obj)
+            } else {
+              this.form.userSet.push({ id: arry[i].id })
+              this.userTags.push(obj)
+            }
           }
         }
       }
