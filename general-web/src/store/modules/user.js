@@ -1,7 +1,8 @@
 import { login, getInfo } from '@/api/login'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { decrypt } from '@/utils/rsaEncrypt'
-
+import Config from '@/config'
+import Cookies from 'js-cookie'
 const user = {
   state: {
     token: getToken(),

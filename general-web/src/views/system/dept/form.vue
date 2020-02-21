@@ -8,15 +8,15 @@
         <el-radio v-for="item in dicts" :key="item.id" v-model="form.enabled" :label="item.value">{{ item.label }}</el-radio>
       </el-form-item>
       <el-form-item v-if="!isAdd && !form.ifTop" label="上级组织">
-        <treeselect v-model="form.pid" :options="depts" style="width: 350px;" :disabled="isAdd ? false : true" @select="selectDept" placeholder="请选择上级组织" />
+        <treeselect v-model="form.pid" :options="depts" :disabled="isAdd ? false : true" style="width: 350px;" placeholder="请选择上级组织" @select="selectDept" />
       </el-form-item>
-	  <el-form-item v-if="isAdd " label="上级组织" >
-        <treeselect v-model="form.pid"  :options="depts" style="width: 350px;" :disabled="isAdd ? false : true" @select="selectDept" placeholder="请选择上级组织(默认当前)" />
+      <el-form-item v-if="isAdd " label="上级组织" >
+        <treeselect v-model="form.pid" :options="depts" :disabled="isAdd ? false : true" style="width: 350px;" placeholder="请选择上级组织(默认当前)" @select="selectDept" />
       </el-form-item>
       <el-form-item label="本级账号上限" prop="maxPersonNumber">
         <el-input-number v-model.number="form.maxPersonNumber" :min="0" controls-position="right" style="width: 350px;"/>
       </el-form-item>
-	  <el-form-item label="子集账号上限" prop="maxPersonNumber">
+      <el-form-item label="子集账号上限" prop="maxPersonNumber">
         <el-input-number v-model.number="form.childMaxPersonNumber" :min="0" controls-position="right" style="width: 350px;"/>
       </el-form-item>
       <el-form-item label="企业识别码" prop="enterpriseCode">
@@ -53,10 +53,10 @@ export default {
         id: '',
         name: '',
         pid: -1,
-		ifTop:false,
+        ifTop: false,
         enabled: 'true',
         enterpriseCode: '',
-		isHideEncode:false,
+        isHideEncode: false,
         maxPersonNumber: '',
         childMaxPersonNumber: '',
         user: { id: null }
@@ -88,14 +88,16 @@ export default {
           }
         }
       })
-    },selectDept(node, instanceId) {
-	  if(node.pid>1){
-		this.form.isHideEncode=true;
-		this.form.enterpriseCode = node.enterpriseCode;
-	  }else{
-		this.form.isHideEncode=false;
+    }, selectDept(node, instanceId) {
+      // eslint-disable-next-line no-mixed-spaces-and-tabs
+	  if (node.pid > 1) {
+        this.form.isHideEncode = true
+        this.form.enterpriseCode = node.enterpriseCode
+        // eslint-disable-next-line no-mixed-spaces-and-tabs
+	  } else {
+        this.form.isHideEncode = false
+        // eslint-disable-next-line no-mixed-spaces-and-tabs
 	  }
-
     },
     doAdd() {
       add(this.form).then(res => {
@@ -107,6 +109,7 @@ export default {
         })
         this.loading = false
         this.$parent.init()
+        // eslint-disable-next-line handle-callback-err
       }).catch(err => {
         this.loading = false
       })
@@ -121,6 +124,7 @@ export default {
         })
         this.loading = false
         this.$parent.init()
+        // eslint-disable-next-line handle-callback-err
       }).catch(err => {
         this.loading = false
       })
@@ -137,17 +141,17 @@ export default {
     },
     getDepts() {
       getDepts({ enabled: true }).then(res => {
-		if(this.isAdd){
-			this.form.pid=res.content[0].id;
-			if(res.content[0].pid>1){
-				this.form.isHideEncode=true;
-				this.form.enterpriseCode = res.content[0].enterpriseCode;
-			}
-		}else{
-			if(this.form.isTop){
-				this.form.pid=this.form.id
-			}
-		}
+        if (this.isAdd) {
+          this.form.pid = res.content[0].id
+          if (res.content[0].pid > 1) {
+            this.form.isHideEncode = true
+            this.form.enterpriseCode = res.content[0].enterpriseCode
+          }
+        } else {
+          if (this.form.isTop) {
+            this.form.pid = this.form.id
+          }
+        }
         this.depts = res.content
       })
     }

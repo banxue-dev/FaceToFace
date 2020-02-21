@@ -31,3 +31,4 @@ export function listChannelsInfosByDeptId(params) {
     params
   })
 }
+

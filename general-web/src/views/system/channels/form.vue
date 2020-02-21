@@ -153,7 +153,6 @@ export default {
       })
     },
     doAdd() {
-      console.log(this.form)
       add(this.form).then(res => {
         this.resetForm()
         this.$notify({

@@ -8,10 +8,10 @@
         <el-form-item v-if="isAdd" label="用户密码" prop="password">
           <el-input v-model="form.password" style="width: 350px;" placeholder="不填默认123456"/>
         </el-form-item>
-		<el-form-item label="用户密码" v-if="!isAdd" prop="password">
+        <el-form-item v-if="!isAdd" label="用户密码" prop="password">
           <el-input v-model="form.password" style="width: 350px;" placeholder="不填表示不更改"/>
         </el-form-item>
-		<el-form-item label="用户名" prop="name">
+        <el-form-item label="用户名" prop="name">
           <el-input v-model="form.name" style="width: 350px;" placeholder="请输入用户名"/>
         </el-form-item>
         <el-form-item label="状态" prop="enabled">
@@ -19,7 +19,7 @@
             <el-radio v-for="item in dictMap.user_status" :key="item.id" :label="item.value">{{ item.label }}</el-radio>
           </el-radio-group>
         </el-form-item>
-		<el-form-item label="用户类型" prop="userType">
+        <el-form-item label="用户类型" prop="userType">
           <el-radio-group v-model="form.userType">
             <el-radio v-for="item in dictMap.user_types" :key="item.id" :label="item.value">{{ item.label }}</el-radio>
           </el-radio-group>
@@ -27,7 +27,7 @@
         <el-form-item label="组织">
           <treeselect v-model="deptId" :options="depts" style="width: 350px" placeholder="请选择组织" @select="selectDept"/>
         </el-form-item>
-        <el-form-item label="角色" v-if="false">
+        <el-form-item v-if="false" label="角色">
           <el-select v-model="roleIds" style="width: 350px;" multiple placeholder="请选择角色">
             <el-option
               v-for="(item, index) in roles"
@@ -37,7 +37,7 @@
               :value="item.id"/>
           </el-select>
         </el-form-item>
-        <el-form-item label="等级"  v-if="false" prop="level">
+        <el-form-item v-if="false" label="等级" prop="level">
           <el-input-number v-model.number="form.level" style="width: 350px;" controls-position="right" placeholder="请输入等级"/>
         </el-form-item>
         <el-form-item label="企业识别码" prop="enterpriseCode">
@@ -57,13 +57,12 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="服务期限" prop="serviceTime">
-		<el-date-picker
+          <el-date-picker
             v-model="form.serviceTime"
             type="datetime"
             format="yyyy-MM-dd"
             value-format="yyyy-MM-dd"
-            placeholder="选择日期时间">
-    </el-date-picker>
+            placeholder="选择日期时间"/>
         </el-form-item>
         <el-form-item label="默认频道">
           <el-select v-model="form.channels.id" filterable style="width: 350px;" placeholder="请选择默认频道" @change="defaultChanneChange">
@@ -129,14 +128,13 @@ export default {
     }
   },
   data() {
-	
     return {
       dialog: false, loading: false,
       roleIds: [], roles: [], depts: [], deptId: null, level: 3, channelsDialog: false, channelsList: [], channelsTags: [], channelsId: null,
       form: {
         username: '',
         name: '',
-		password:'',
+        password: '',
         enterpriseCode: '',
         enabled: null,
         roles: [],
@@ -154,7 +152,7 @@ export default {
           { required: true, message: '请输入登录名', trigger: 'blur' },
           { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur' }
         ],
-		password: [
+        password: [
           { required: false, message: '请输入密码', trigger: 'blur' },
           { min: 6, max: 20, message: '长度在 6 到 20 个字符', trigger: 'blur' }
         ],
@@ -182,10 +180,10 @@ export default {
               type: 'warning'
             })
           } else if (this.roleIds.length === 0) {
-            //this.$message({
+            // this.$message({
             //  message: '角色不能为空',
             //  type: 'warning'
-            //})
+            // })
           } else {
             this.loading = true
             this.form.roles = []
@@ -253,7 +251,7 @@ export default {
         serviceTime: '',
         channels: { id: '' },
         channelsSet: [],
-		userType:0,
+        userType: 0,
         videoSwitch: null
       }
     },

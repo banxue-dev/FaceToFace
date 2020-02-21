@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <!--form 组件-->
-    <eForm ref="form" :is-add="isAdd" :dictMap="dictMap"/>
+    <eForm ref="form" :is-add="isAdd" :dict-map="dictMap"/>
     <el-row :gutter="20">
       <!--组织数据-->
       <el-col :xs="9" :sm="6" :md="4" :lg="4" :xl="4">
@@ -56,7 +56,7 @@
               </div>
             </template>
           </el-table-column>
-		  <el-table-column label="状态" align="center">
+          <el-table-column label="状态" align="center">
             <template slot-scope="scope">
               <div v-for="item in dictMap.user_status" :key="item.id">
                 <el-tag v-if="scope.row.enabled.toString() === item.value" :type="scope.row.enabled ? '' : 'info'">{{ item.label }}</el-tag>
@@ -228,7 +228,7 @@ export default {
         id: data.id,
         username: data.username,
         name: data.name,
-		userType:data.userType.toString(),
+        userType: data.userType.toString(),
         enterpriseCode: data.enterpriseCode,
         enabled: data.enabled.toString(),
         roles: [],

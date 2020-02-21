@@ -47,8 +47,8 @@ export default {
       codeUrl: '',
       cookiePass: '',
       loginForm: {
-        username: 'admin',
-        password: '123456',
+        username: '',
+        password: '',
         rememberMe: false,
         code: '',
         uuid: ''
@@ -126,7 +126,6 @@ export default {
             this.getCode()
           })
         } else {
-          console.log('error submit!!')
           return false
         }
       })
