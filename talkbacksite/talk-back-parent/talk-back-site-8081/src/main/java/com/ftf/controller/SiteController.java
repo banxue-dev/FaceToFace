@@ -23,10 +23,11 @@ public class SiteController {
 
 	@PostMapping("/add")
 	@ResponseBody
-	public R add(String siteJson,String userId,Integer upDownState) {
+	public R add(String siteJson,String userId,Integer upDownState,String locationTime) {
 		TimeSite p1 = new TimeSite();
 		p1.setSiteJson(siteJson);
 		p1.setUserId(userId);
+		p1.setLocationTime(locationTime);
 		p1.setUpDownState(upDownState);
 		R r=siteService.add(p1);
 		return r;
@@ -39,9 +40,9 @@ public class SiteController {
 	}
 	@PostMapping("/getByUserIdAndTimes")
 	@ResponseBody
-	public R getByUserIdAndTimes(String userId,String startTime,String endTime,String pageNum,String pageSize) {
+	public R getByUserIdAndTimes(String userId,String startTime,String endTime,String pageNum,String pageSize,int timeType) {
 		
-		R r=siteService.getByUserIdAndTimes( userId, startTime, endTime,pageNum,pageSize);
+		R r=siteService.getByUserIdAndTimes( userId, startTime, endTime,pageNum,pageSize,timeType);
 		return r;
 	}
 }

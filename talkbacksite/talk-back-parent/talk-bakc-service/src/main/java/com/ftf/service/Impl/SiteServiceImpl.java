@@ -90,7 +90,7 @@ public class SiteServiceImpl implements ISiteService {
 	 * pageNum 从1 开始
 	 */
 	@Override
-	public R getByUserIdAndTimes(String userId, String startTime, String endTime,String pageNum,String pageSize) {
+	public R getByUserIdAndTimes(String userId, String startTime, String endTime,String pageNum,String pageSize,int timeType) {
 
 		List<TimeSite> lst = new LinkedList<TimeSite>();
 		if (StringUtils.isNull(userId)) {
@@ -152,7 +152,12 @@ public class SiteServiceImpl implements ISiteService {
 				}
 			}
 			query.addCriteria(criter);
-			Sort sort=new Sort(Sort.Direction.DESC, "createTime");
+			Sort sort;
+			if(timeType==0) {
+				sort=new Sort(Sort.Direction.DESC, "createTime");
+			}else {
+				sort=new Sort(Sort.Direction.DESC, "locationTime");
+			}
 			query.with(sort);
 			Boolean isBreak=false;
 			/**

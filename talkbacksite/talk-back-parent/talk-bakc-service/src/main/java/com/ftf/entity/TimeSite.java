@@ -29,8 +29,16 @@ public class TimeSite {
 	private Integer upDownState;
 	
 	private String userId;
+	private String locationTime;
 	
 	
+	
+	public String getLocationTime() {
+		return locationTime;
+	}
+	public void setLocationTime(String locationTime) {
+		this.locationTime = locationTime;
+	}
 	public Integer getUpDownState() {
 		return upDownState;
 	}

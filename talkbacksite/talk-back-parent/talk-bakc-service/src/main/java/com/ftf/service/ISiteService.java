@@ -29,7 +29,7 @@ public interface ISiteService {
 	 * 2019年10月17日
 	 * 作者：fengchase
 	 */
-	R getByUserIdAndTimes(String userId, String startTime, String endTime,String pageNum,String pageSize);
+	R getByUserIdAndTimes(String userId, String startTime, String endTime,String pageNum,String pageSize,int timeType);
 
 	/**
 	 * 添加一条数据
